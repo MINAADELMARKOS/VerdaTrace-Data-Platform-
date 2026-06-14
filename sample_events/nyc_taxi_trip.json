@@ -1,0 +1,12 @@
+{
+  "event_id": "nyc-tlc-yellow-2024-01-000001",
+  "use_case": "mobility_expense_assurance",
+  "employee_id": "employee-1042",
+  "event_timestamp": "2024-01-15T08:42:00Z",
+  "service_type": "yellow_taxi",
+  "currency": "USD",
+  "fare_amount": 18.5,
+  "total_amount": 26.76,
+  "trip_distance": 3.2,
+  "source_system": "nyc_tlc_trip_records"
+}

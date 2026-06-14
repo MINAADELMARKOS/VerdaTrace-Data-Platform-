@@ -1,0 +1,10 @@
+{
+  "event_id": "retail-pos-000001",
+  "use_case": "retail_transaction_privacy",
+  "customer_id": "customer-9876",
+  "event_timestamp": "2024-03-01T12:15:00Z",
+  "item_category": "grocery",
+  "currency": "EUR",
+  "total_amount": 42.35,
+  "source_system": "demo_pos_feed"
+}

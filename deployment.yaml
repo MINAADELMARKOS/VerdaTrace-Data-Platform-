@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ey-data-pipeline
+  annotations:
+    iam.gke.io/gcp-service-account: ey-data-pipeline@PROJECT_ID.iam.gserviceaccount.com
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ey-data-pipeline
+  labels:
+    app: ey-data-pipeline
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ey-data-pipeline
+  template:
+    metadata:
+      labels:
+        app: ey-data-pipeline
+    spec:
+      serviceAccountName: ey-data-pipeline
+      containers:
+        - name: worker
+          image: gcr.io/PROJECT_ID/ey-gcp-data-pipeline:latest
+          imagePullPolicy: Always
+          env:
+            - name: GCP_PROJECT
+              value: PROJECT_ID
+            - name: PUBSUB_SUBSCRIPTION
+              value: ey-transaction-worker
+            - name: BQ_DATASET
+              value: ey_data_engineering
+            - name: BQ_TABLE
+              value: processed_events
+            - name: PSEUDONYM_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: ey-pseudonym-salt
+                  key: latest
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
