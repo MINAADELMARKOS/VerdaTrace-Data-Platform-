@@ -1,0 +1,28 @@
+# VerdaTrace uses Kaggle datasets as external inputs. The huge datasets are not
+# committed to this repository; download them with the Kaggle CLI in GCP.
+datasets:
+  mobility_expense_assurance:
+    kaggle_slug: elemento/nyc-yellow-taxi-trip-data
+    expected_files:
+      - yellow_tripdata_2016-01.csv
+    issue_examples:
+      - high fare per mile
+      - unusual tip ratio
+      - negative or zero distance
+      - duplicate trip identifiers
+  esg_transport_emissions:
+    kaggle_slug: shashwatwork/dataco-smart-supply-chain-for-big-data-analysis
+    expected_files:
+      - DataCoSupplyChainDataset.csv
+    issue_examples:
+      - long-distance shipments with high estimated CO2e
+      - missing carrier/category data
+      - duplicate order identifiers
+  retail_transaction_privacy:
+    kaggle_slug: mkechinov/ecommerce-behavior-data-from-multi-category-store
+    expected_files:
+      - 2019-Oct.csv
+    issue_examples:
+      - direct identifiers in raw event fields
+      - missing product category
+      - negative or malformed prices

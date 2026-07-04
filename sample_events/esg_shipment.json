@@ -1,0 +1,12 @@
+{
+  "event_id": "shipment-000001",
+  "use_case": "esg_transport_emissions",
+  "vendor_id": "carrier-204",
+  "event_timestamp": "2024-05-02T09:00:00Z",
+  "service_type": "truckload",
+  "currency": "USD",
+  "total_amount": 650.0,
+  "trip_distance_miles": 420.0,
+  "duplicate_hint": true,
+  "source_dataset": "kaggle_dataco_supply_chain"
+}
