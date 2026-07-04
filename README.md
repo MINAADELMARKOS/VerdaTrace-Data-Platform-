@@ -1,3 +1,64 @@
+# VerdaTrace Data Platform
+
+**VerdaTrace — A GCP-native platform for trusted, governed, and sustainable data pipelines.**
+
+VerdaTrace is a GCP-native enterprise data platform that receives customer data, validates and governs it, applies privacy controls, archives raw evidence, processes events in the backend, and delivers trusted analytics-ready data to BigQuery and downstream systems.
+
+## Platform use cases
+
+| Use case | Huge Kaggle dataset for demos | Issues the platform detects |
+| --- | --- | --- |
+| **Mobility expense assurance** | NYC yellow taxi trip data | High fare per mile, unusual tip ratios, negative/zero distance, duplicate trip identifiers. |
+| **ESG transport emissions reporting** | Supply-chain or logistics shipment data | High estimated CO2e, missing transport category, duplicate shipment/order IDs. |
+| **Retail transaction privacy pipeline** | Multi-category ecommerce behaviour data | Direct identifiers in raw events, missing categories, negative/malformed prices, privacy minimisation gaps. |
+
+The repository does **not** commit huge Kaggle files. Use `config/kaggle_datasets.yml` and `scripts/kaggle_to_pubsub.py` to download datasets in a GCP environment and stream selected CSV rows into Pub/Sub.
+
+## Architecture
+
+```mermaid
+flowchart TD
+  A[Customer and Kaggle data sources] --> B[Pub/Sub ingestion]
+  B --> C[Cloud DLP inspection]
+  B --> D[GKE backend workers]
+  B --> E[Pub/Sub dead-letter topic]
+  C --> F[Optional Dataflow enrichment]
+  F --> G[BigQuery curated tables]
+  D --> H[Cloud Storage raw evidence archive]
+  D --> G
+  I[Secret Manager pseudonym salt] --> D
+  J[Cloud KMS CMEK] --> B
+  J --> G
+  J --> H
+  K[Artifact Registry images] --> D
+  G --> L[Dataplex and Data Catalog]
+  H --> L
+  D --> M[Cloud Logging]
+  M --> N[Cloud Monitoring alerts]
+  O[IAM least privilege] --> D
+  P[Retention policies] --> G
+  P --> H
+```
+
+
+
+## Platform UI
+
+The UI is a Cloud Run-ready portal for data engineers. It shows platform health, use-case KPIs, detected issue queues, governance controls, and an end-to-end pipeline builder for source selection, ingestion, governance, transformation, and analytics.
+
+![VerdaTrace dashboard sample](docs/screenshots/verdatrace-dashboard.svg)
+
+![VerdaTrace pipeline builder sample](docs/screenshots/verdatrace-pipeline-builder.svg)
+
+### How a data engineer uses the UI for an end-to-end use case
+
+1. Select the use case: mobility expense assurance, ESG transport emissions, or retail transaction privacy.
+2. Choose a source: customer upload, operational API, Cloud Storage landing path, or Kaggle CSV loader.
+3. Start ingestion to Pub/Sub and monitor backend worker status.
+4. Review `quality_flags`, issue severity, raw evidence archive status, and BigQuery output table.
+5. Use the controls panel to confirm IAM, Logging, Monitoring, Retention, KMS, and DLP coverage.
+6. Copy the deployed Cloud Run URL into demos, documentation, or stakeholder walkthroughs.
+
 # GCP End-to-End Data Engineering for EY Use Cases
 
 This repository demonstrates a production-style, end-to-end data engineering pattern on Google Cloud Platform (GCP) for EY-relevant analytics workloads. It combines Terraform-managed cloud infrastructure, Pub/Sub ingestion, a Python worker on Google Kubernetes Engine (GKE), BigQuery storage, and governance controls such as pseudonymisation, retention, logging, and least-privilege IAM.

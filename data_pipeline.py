@@ -1,3 +1,4 @@
+"""Pub/Sub to BigQuery worker for VerdaTrace-aligned data engineering use cases.
 """Pub/Sub to BigQuery worker for EY-aligned data engineering use cases.
 
 The module is intentionally split into pure transformation functions and cloud I/O
@@ -11,6 +12,7 @@ import hashlib
 import json
 import logging
 import os
+import re
 import sys
 from datetime import datetime, timezone
 from typing import Any, Dict, Iterable, List, Optional
@@ -22,6 +24,12 @@ except ImportError:  # pragma: no cover - optional for local unit tests
     pubsub_v1 = None
     storage = None
 
+LOGGER = logging.getLogger("verdatrace_data_pipeline")
+DEFAULT_DATASET = "verdatrace_data_engineering"
+DEFAULT_TABLE = "processed_events"
+DEFAULT_EMISSIONS_FACTOR_KG_PER_MILE = 0.404
+EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+PHONE_PATTERN = re.compile(r"\+?\d[\d .()\-]{7,}\d")
 LOGGER = logging.getLogger("ey_data_pipeline")
 DEFAULT_DATASET = "ey_data_engineering"
 DEFAULT_TABLE = "processed_events"
@@ -73,6 +81,18 @@ def as_float(value: Any, field_name: str, default: Optional[float] = None) -> Op
         raise TransformationError(f"{field_name} must be numeric") from exc
 
 
+def build_quality_flags(
+    event: Dict[str, Any],
+    total_amount: Optional[float],
+    trip_distance: Optional[float],
+    co2e_kg: Optional[float],
+) -> List[str]:
+    """Return row-level issue flags for assurance, ESG and privacy use cases."""
+
+    flags: List[str] = []
+    if total_amount is None:
+        flags.append("missing_amount")
+    elif total_amount < 0:
 def build_quality_flags(total_amount: Optional[float], trip_distance: Optional[float]) -> List[str]:
     """Return lightweight data-quality flags for audit and assurance queries."""
 
@@ -83,6 +103,22 @@ def build_quality_flags(total_amount: Optional[float], trip_distance: Optional[f
         flags.append("negative_distance")
     if total_amount is not None and trip_distance is not None and trip_distance > 0:
         if total_amount / trip_distance > 25:
+            flags.append("mobility_high_amount_per_mile")
+    if event.get("tip_amount") not in (None, ""):
+        tip_amount = as_float(event.get("tip_amount"), "tip_amount", 0) or 0
+        if total_amount and total_amount > 0 and tip_amount / total_amount > 0.5:
+            flags.append("mobility_unusual_tip_ratio")
+    if co2e_kg is not None and co2e_kg > 100:
+        flags.append("esg_high_emissions")
+    if not (event.get("item_category") or event.get("category") or event.get("service_type")):
+        flags.append("missing_category")
+    for pii_field in ("email", "customer_email", "phone", "phone_number"):
+        value = str(event.get(pii_field) or "")
+        if EMAIL_PATTERN.match(value) or PHONE_PATTERN.search(value):
+            flags.append("privacy_direct_identifier_present")
+            break
+    if event.get("duplicate_hint") is True:
+        flags.append("possible_duplicate_event")
             flags.append("high_amount_per_mile")
     return flags
 
@@ -101,6 +137,7 @@ def transform_event(event: Dict[str, Any], salt: str = "") -> Dict[str, Any]:
     if co2e_kg is None and trip_distance is not None and trip_distance >= 0:
         co2e_kg = round(trip_distance * DEFAULT_EMISSIONS_FACTOR_KG_PER_MILE, 6)
 
+    flags = build_quality_flags(event, total_amount, trip_distance, co2e_kg)
     flags = build_quality_flags(total_amount, trip_distance)
     transformed = {
         "event_id": str(event.get("event_id") or event.get("transaction_id") or event.get("trip_id") or ""),
@@ -113,6 +150,7 @@ def transform_event(event: Dict[str, Any], salt: str = "") -> Dict[str, Any]:
         "total_amount": total_amount,
         "trip_distance_miles": trip_distance,
         "co2e_kg": co2e_kg,
+        "source_system": str(event.get("source_system") or event.get("source_dataset") or "unknown"),
         "source_system": str(event.get("source_system") or "unknown"),
         "quality_flags": ",".join(flags),
     }
