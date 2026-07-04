@@ -193,6 +193,7 @@ def run_worker() -> None:
 def main(argv: Optional[List[str]] = None) -> int:
     """CLI entrypoint for local samples and cloud worker mode."""
 
+    parser = argparse.ArgumentParser(description="VerdaTrace Data Platform pipeline worker")
     parser = argparse.ArgumentParser(description="EY GCP data engineering pipeline")
     parser.add_argument("--local-sample", help="Path to a JSON event to transform locally")
     parser.add_argument("--salt", default=os.getenv("PSEUDONYM_SALT", "local-demo-salt"))

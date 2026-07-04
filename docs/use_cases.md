@@ -1,3 +1,6 @@
+# VerdaTrace End-to-End Use Cases with Kaggle Data
+
+The architecture serves technical scenarios where raw operational events must be ingested, governed, transformed, inspected for issues, and analysed. The examples below use huge public Kaggle datasets downloaded at runtime rather than committed to the repository.
 # EY End-to-End Use Cases with Real Data
 
 The architecture can serve many EY client scenarios where raw operational events must be ingested, governed, transformed, and analysed. The examples below use public datasets or public-data-shaped records so teams can run demonstrations without exposing client data.
@@ -6,6 +9,9 @@ The architecture can serve many EY client scenarios where raw operational events
 
 **Business problem:** Organisations reimburse employee travel and mobility costs, but finance teams need scalable controls to detect duplicate claims, inflated fares, and policy exceptions.
 
+**Real data source:** Kaggle NYC yellow taxi trip data provides trip distance, fare, tip, tolls, timestamps, passenger counts, and location-zone IDs. These fields resemble the structure of corporate mobility or expense events.
+
+**Detected issues:** `mobility_high_amount_per_mile`, `mobility_unusual_tip_ratio`, `negative_distance`, `possible_duplicate_event`.
 **Real data source:** NYC Taxi & Limousine Commission trip record data provides trip distance, fare, tip, tolls, timestamps, passenger counts, and location-zone IDs. These fields resemble the structure of corporate mobility or expense events.
 
 **Architecture fit:**
@@ -25,6 +31,7 @@ SELECT
   trip_distance_miles,
   total_amount,
   SAFE_DIVIDE(total_amount, NULLIF(trip_distance_miles, 0)) AS amount_per_mile
+FROM `PROJECT.verdatrace_data_engineering.processed_events`
 FROM `PROJECT.ey_data_engineering.processed_events`
 WHERE use_case = 'mobility_expense_assurance'
   AND SAFE_DIVIDE(total_amount, NULLIF(trip_distance_miles, 0)) > 25
@@ -35,6 +42,9 @@ ORDER BY amount_per_mile DESC;
 
 **Business problem:** Companies need transparent and repeatable emissions calculations for transport activity, especially where mobility, field service, and logistics data come from many systems.
 
+**Real data source:** Kaggle supply-chain/logistics datasets can be used to demonstrate distance-based Scope 3 transport estimation. Implementations can replace the demo feed with fleet, rail, air, or logistics-provider feeds.
+
+**Detected issues:** `esg_high_emissions`, `missing_category`, `possible_duplicate_event`.
 **Real data source:** NYC TLC trip distance and taxi-service metadata can be used to demonstrate distance-based Scope 3 transport estimation. Client implementations can replace the public event feed with fleet, rail, air, or logistics-provider feeds.
 
 **Architecture fit:**
@@ -51,6 +61,7 @@ SELECT
   DATE(event_timestamp) AS activity_date,
   item_category AS service_type,
   ROUND(SUM(co2e_kg), 2) AS estimated_co2e_kg
+FROM `PROJECT.verdatrace_data_engineering.processed_events`
 FROM `PROJECT.ey_data_engineering.processed_events`
 WHERE use_case = 'esg_transport_emissions'
 GROUP BY activity_date, service_type
@@ -61,6 +72,9 @@ ORDER BY activity_date;
 
 **Business problem:** Retailers need customer, category, and basket analytics, but analytics platforms should avoid storing direct customer identifiers unless strictly necessary.
 
+**Real data source:** Kaggle multi-category ecommerce behaviour data and retail transaction datasets share a common event structure: customer ID, event time, category, and price.
+
+**Detected issues:** `privacy_direct_identifier_present`, `missing_category`, `negative_amount`, `missing_amount`.
 **Real data source:** Public retail basket datasets and POS exports share a common transaction structure: customer ID, transaction amount, timestamp, and category. This repository includes a minimal JSON event contract that mirrors that structure.
 
 **Architecture fit:**
@@ -77,6 +91,7 @@ SELECT
   item_category,
   COUNT(*) AS transactions,
   ROUND(SUM(total_amount), 2) AS revenue
+FROM `PROJECT.verdatrace_data_engineering.processed_events`
 FROM `PROJECT.ey_data_engineering.processed_events`
 WHERE use_case = 'retail_transaction_privacy'
 GROUP BY item_category
@@ -95,6 +110,7 @@ All use cases land in a shared BigQuery table using the following canonical fiel
 | `event_timestamp` | TIMESTAMP | Business event timestamp. |
 | `ingestion_timestamp` | TIMESTAMP | Time the worker processed the message. |
 | `item_category` | STRING | Product, service, or activity category. |
+| `currency` | STRING | ISO currency code where monverdatrace is present. |
 | `currency` | STRING | ISO currency code where money is present. |
 | `total_amount` | FLOAT | Normalised transaction amount. |
 | `trip_distance_miles` | FLOAT | Distance field used for mobility and ESG calculations. |

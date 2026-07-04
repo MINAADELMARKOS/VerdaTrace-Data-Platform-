@@ -33,6 +33,20 @@ flowchart LR
     DF[Dataflow optional enrichment]
   end
 
+  subgraph Process[Backend processing]
+    GKE[GKE worker pods]
+    SM[Secret Manager pseudonym salt]
+    KMS[Cloud KMS CMEK]
+    AR[Artifact Registry images]
+  end
+
+  subgraph Data[Governed storage and analytics]
+    ARCH[Cloud Storage raw evidence archive]
+    BQ[BigQuery partitioned curated table]
+    DP[Dataplex / Data Catalog]
+  end
+
+  subgraph Ops[IAM, logging, monitoring and retention]
   subgraph Process[Processing and orchestration]
     GKE[GKE worker pods]
     SM[Secret Manager pseudonym salt]
@@ -51,9 +65,11 @@ flowchart LR
     LOG[Cloud Logging]
     MON[Cloud Monitoring alerts]
     AUD[Cloud Audit Logs / Error Reporting / Trace]
+    RET[BigQuery and GCS retention]
   end
 
   APP --> PUB
+  KAG --> PUB
   RUN --> PUB
   SCH --> RUN
   GCSRAW --> DF
@@ -75,19 +91,82 @@ flowchart LR
   LOG --> MON
   IAM --> GKE
   AUD --> MON
+  RET --> ARCH
+  RET --> BQ
 ```
 
-The solution now uses a broader GCP service map for production demos: Cloud Storage for raw landing and audit archive, Cloud DLP for sensitive-data inspection, Pub/Sub for streaming ingestion, Dataflow as an optional managed streaming enrichment tier, GKE for the Python worker, BigQuery for governed analytics, Dataplex/Data Catalog for discovery and governance, Cloud Composer and Cloud Scheduler for orchestration, Cloud KMS and Secret Manager for security, Artifact Registry for images, and Cloud Logging, Monitoring, Trace, Error Reporting, and Audit Logs for observability.
+## How the backend detects issues
 
-The solution implements this flow:
+The `data_pipeline.py` worker transforms each raw event into a canonical BigQuery row and adds `quality_flags` for downstream dashboards and alerts:
 
-1. Cloud Scheduler, Cloud Run loaders, client applications, or batch uploads publish JSON events to Pub/Sub and optionally land raw files in Cloud Storage.
-2. Cloud DLP can inspect payloads before curation, and Dataflow can be enabled for high-volume streaming enrichment when managed autoscaling is preferred.
-3. A Python microservice running on GKE consumes messages from the subscription, validates and normalises records, hashes identifiers with SHA-256, drops non-required fields, and adds processing metadata.
-4. Raw messages can be archived to Cloud Storage, while cleansed records are written to partitioned BigQuery tables.
-5. Dataplex/Data Catalog document the data estate, and Cloud Logging, Monitoring, Trace, Error Reporting, and Audit Logs provide accountability and operational health.
+* `mobility_high_amount_per_mile` for unusually expensive trips.
+* `mobility_unusual_tip_ratio` for suspicious mobility expense tips.
+* `esg_high_emissions` for high estimated transport emissions.
+* `privacy_direct_identifier_present` when raw ecommerce/retail events contain email or phone fields.
+* `possible_duplicate_event`, `missing_amount`, `missing_category`, `negative_amount`, and `negative_distance` for common data-quality failures.
 
-Detailed architecture notes are in [`docs/architecture.md`](docs/architecture.md).
+## Apply inside GCP environments
+
+1. **Provision security, storage and processing**
+
+   ```bash
+   terraform init
+   terraform apply -var="project_id=$PROJECT_ID" -var="region=europe-west2"
+   ```
+
+   Terraform configures IAM, Cloud Logging/Monitoring, BigQuery partition retention, Cloud Storage lifecycle retention, Pub/Sub DLQ, Cloud KMS encryption, Artifact Registry, GKE, DLP, and the raw archive bucket.
+
+2. **Build and deploy the backend worker**
+
+   ```bash
+   docker build -t gcr.io/$PROJECT_ID/verdatrace-data-pipeline:latest .
+   docker push gcr.io/$PROJECT_ID/verdatrace-data-pipeline:latest
+   kubectl apply -f deployment.yaml
+   ```
+
+3. **Download huge Kaggle data in GCP**
+
+   ```bash
+   pip install kaggle
+   export KAGGLE_CONFIG_DIR=/secrets/kaggle
+   kaggle datasets download -d elemento/nyc-yellow-taxi-trip-data -p /data --unzip
+   ```
+
+4. **Stream Kaggle rows into Pub/Sub**
+
+   ```bash
+   python scripts/kaggle_to_pubsub.py \
+     --project "$PROJECT_ID" \
+     --topic verdatrace-transaction-events \
+     --use-case mobility_expense_assurance \
+     --csv /data/yellow_tripdata_2016-01.csv \
+     --limit 100000
+   ```
+
+5. **Query detected issues in BigQuery**
+
+   ```sql
+   SELECT use_case, quality_flags, COUNT(*) AS flagged_rows
+   FROM `PROJECT.verdatrace_data_engineering.processed_events`
+   WHERE quality_flags != ''
+   GROUP BY use_case, quality_flags
+   ORDER BY flagged_rows DESC;
+   ```
+
+6. **Deploy the frontend portal and capture its URL**
+
+   ```bash
+   gcloud run deploy verdatrace-portal \
+     --source frontend \
+     --region europe-west2 \
+     --allow-unauthenticated
+
+   gcloud run services describe verdatrace-portal \
+     --region europe-west2 \
+     --format='value(status.url)'
+   ```
+
+   Put the returned Cloud Run URL in demos and screenshots. The static portal is in `frontend/index.html`, and text screenshot wireframes are in `docs/screenshots.md` so the repository remains binary-free.
 
 ## Repository layout
 
@@ -95,90 +174,45 @@ Detailed architecture notes are in [`docs/architecture.md`](docs/architecture.md
 .
 ├── data_pipeline.py              # Pub/Sub -> transformation -> BigQuery worker
 ├── deployment.yaml               # Kubernetes deployment for GKE
-├── Dockerfile                    # Container image definition
+├── Dockerfile                    # Backend container image definition
+├── frontend/                     # Cloud Run portal frontend
 ├── main.tf                       # Terraform infrastructure definition
 ├── requirements.txt              # Python runtime dependencies
-├── sample_events/                # Real-data-shaped demo events
+├── config/kaggle_datasets.yml    # External huge-data dataset registry
+├── sample_events/                # Small problematic sample events
+├── scripts/kaggle_to_pubsub.py   # Kaggle CSV -> Pub/Sub loader
 ├── tests/                        # Unit tests for transformations
 └── docs/
     ├── architecture.md
+    ├── screenshots.md
     └── use_cases.md
 ```
 
 ## Local development
 
-Create a virtual environment and install dependencies:
-
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-```
-
-Run unit tests:
-
-```bash
 python -m pytest
-```
-
-Transform a local sample event without connecting to GCP:
-
-```bash
 python data_pipeline.py --local-sample sample_events/nyc_taxi_trip.json
 ```
 
-## Deployment overview
-
-1. Build and push the container image:
-
-   ```bash
-   docker build -t gcr.io/$PROJECT_ID/ey-gcp-data-pipeline:latest .
-   docker push gcr.io/$PROJECT_ID/ey-gcp-data-pipeline:latest
-   ```
-
-2. Provision infrastructure:
-
-   ```bash
-   terraform init
-   terraform apply -var="project_id=$PROJECT_ID" -var="region=europe-west2"
-   ```
-
-3. Deploy the worker to GKE:
-
-   ```bash
-   kubectl apply -f deployment.yaml
-   ```
-
-4. Publish a sample message:
-
-   ```bash
-   gcloud pubsub topics publish ey-transaction-events \
-     --message="$(cat sample_events/nyc_taxi_trip.json)"
-   ```
-
-## Configuration
-
-The worker reads configuration from environment variables:
+## Runtime configuration
 
 | Variable | Description | Default |
 | --- | --- | --- |
 | `GCP_PROJECT` | GCP project ID | Required for cloud mode |
 | `PUBSUB_SUBSCRIPTION` | Pub/Sub subscription name or full path | Required for cloud mode |
-| `BQ_DATASET` | BigQuery dataset | `ey_data_engineering` |
+| `BQ_DATASET` | BigQuery dataset | `verdatrace_data_engineering` |
 | `BQ_TABLE` | BigQuery destination table | `processed_events` |
 | `PSEUDONYM_SALT` | Secret salt used before SHA-256 hashing | Empty string for local demo only |
 | `RAW_ARCHIVE_BUCKET` | Optional Cloud Storage bucket for encrypted raw-message audit archive | Disabled |
 
-In production, inject `PSEUDONYM_SALT` from Secret Manager rather than storing it in code or Kubernetes manifests.
+## Governance controls
 
-## Compliance design
-
-* **Data minimisation:** Transformation code only persists analytics-required fields.
-* **Pseudonymisation:** Direct identifiers are salted and hashed before BigQuery storage.
-* **Retention:** Terraform configures partition expiration on BigQuery tables.
-* **Least privilege:** Workload identity is designed around Pub/Sub subscriber and BigQuery data editor roles only.
-* **Accountability:** Structured logs capture event type, processing status, and error context without logging raw personal data.
-
-### Architecture diagram notes
-
-The README architecture is rendered as Mermaid text so the repository remains source-only and avoids unsupported binary image files. The diagram represents the major GCP service layers used by this repository: sources and schedulers, ingestion and inspection, transformation and orchestration, governed storage and analytics, and security/operations services.
+* **IAM:** Terraform grants the worker only Pub/Sub subscriber, BigQuery data editor, Storage object creator, and KMS encrypter/decrypter permissions required by the pipeline.
+* **Logging:** The worker emits structured processing logs without raw personal data.
+* **Monitoring:** Terraform creates a log-based metric and alert policy for backend processing errors.
+* **Retention:** BigQuery partitions expire after the configured retention period, and the raw Cloud Storage archive uses lifecycle deletion.
+* **Privacy:** Direct identifiers are salted and hashed before curated BigQuery storage, while raw events are retained only in the controlled evidence archive.

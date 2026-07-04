@@ -1,12 +1,12 @@
 ## Architecture Overview
 
-The high‑level architecture of this end‑to‑end data engineering solution combines infrastructure provisioning, container orchestration and data‑pipeline logic on Google Cloud Platform.  The design prioritises scalability, resilience and compliance with European data‑protection regulations.
+The high‑level architecture of this VerdaTrace Data Platform combines infrastructure provisioning, container orchestration and data-pipeline logic on Google Cloud Platform.  The design prioritises scalability, resilience and compliance with European data‑protection regulations.
 
 ### Components
 
 | Component | Description |
 | --- | --- |
-| **Terraform** | Defines and provisions all cloud resources: GKE cluster, Pub/Sub topic & subscription, BigQuery dataset/table, IAM roles and networking. |
+| **Terraform** | Defines and provisions cloud resources: GKE, Pub/Sub, BigQuery, IAM, KMS, Cloud Storage retention, DLP, Artifact Registry and Monitoring. |
 | **Google Kubernetes Engine (GKE)** | Hosts the Python microservice that consumes messages from Pub/Sub, pseudonymises sensitive fields and writes to BigQuery.  Each pod runs a container built from the `data_pipeline.py` service. |
 | **Pub/Sub** | Serves as the ingestion layer for raw transaction events.  Messages are published by the upstream application and consumed by the worker service. |
 | **BigQuery** | Stores cleansed and pseudonymised data.  Tables are partitioned by ingestion date to improve query performance and support retention policies. |
