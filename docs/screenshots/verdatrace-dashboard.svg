@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="VerdaTrace dashboard screenshot sample">
+  <rect width="1280" height="720" fill="#f4f8f6"/>
+  <rect width="1280" height="210" fill="#0b6b57"/>
+  <rect x="0" y="0" width="1280" height="210" fill="url(#g)"/>
+  <defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#0b6b57"/><stop offset="1" stop-color="#174ea6"/></linearGradient></defs>
+  <text x="54" y="62" fill="white" font-family="Arial" font-size="26" font-weight="700">VerdaTrace</text>
+  <text x="54" y="126" fill="white" font-family="Arial" font-size="54" font-weight="800">VerdaTrace Data Platform</text>
+  <text x="56" y="166" fill="#e8f4ff" font-family="Arial" font-size="20">Trusted, governed, and sustainable data pipelines on GCP</text>
+  <rect x="880" y="48" rx="18" width="330" height="128" fill="white" opacity="0.96"/>
+  <text x="906" y="88" fill="#102033" font-family="Arial" font-size="22" font-weight="700">Platform health</text>
+  <text x="906" y="132" fill="#0b6b57" font-family="Arial" font-size="42" font-weight="800">99.95%</text>
+  <text x="906" y="158" fill="#5b6b7a" font-family="Arial" font-size="15">IAM • KMS • Logging • Monitoring</text>
+  <g font-family="Arial">
+    <rect x="54" y="244" width="270" height="120" rx="18" fill="white" stroke="#dce8e2"/>
+    <text x="78" y="285" font-size="22" font-weight="700" fill="#102033">Mobility assurance</text><text x="78" y="330" font-size="36" font-weight="800" fill="#0b6b57">14.8k</text><text x="78" y="350" font-size="14" fill="#5b6b7a">trips scanned</text>
+    <rect x="354" y="244" width="270" height="120" rx="18" fill="white" stroke="#dce8e2"/>
+    <text x="378" y="285" font-size="22" font-weight="700" fill="#102033">ESG emissions</text><text x="378" y="330" font-size="36" font-weight="800" fill="#0b6b57">121t</text><text x="378" y="350" font-size="14" fill="#5b6b7a">CO2e estimated</text>
+    <rect x="654" y="244" width="270" height="120" rx="18" fill="white" stroke="#dce8e2"/>
+    <text x="678" y="285" font-size="22" font-weight="700" fill="#102033">Retail privacy</text><text x="678" y="330" font-size="36" font-weight="800" fill="#0b6b57">98%</text><text x="678" y="350" font-size="14" fill="#5b6b7a">IDs protected</text>
+    <rect x="954" y="244" width="270" height="120" rx="18" fill="white" stroke="#dce8e2"/>
+    <text x="978" y="285" font-size="22" font-weight="700" fill="#102033">Audit evidence</text><text x="978" y="330" font-size="36" font-weight="800" fill="#0b6b57">90d</text><text x="978" y="350" font-size="14" fill="#5b6b7a">raw retention</text>
+    <rect x="54" y="400" width="560" height="248" rx="18" fill="white" stroke="#dce8e2"/>
+    <text x="78" y="442" font-size="24" font-weight="700" fill="#102033">Detected issue queue</text>
+    <text x="78" y="488" font-size="17" fill="#b3261e">HIGH   mobility_high_amount_per_mile</text>
+    <text x="78" y="528" font-size="17" fill="#b65c00">MED    esg_high_emissions</text>
+    <text x="78" y="568" font-size="17" fill="#b3261e">HIGH   privacy_direct_identifier_present</text>
+    <rect x="654" y="400" width="570" height="248" rx="18" fill="white" stroke="#dce8e2"/>
+    <text x="678" y="442" font-size="24" font-weight="700" fill="#102033">Controls mapped to GCP</text>
+    <text x="678" y="488" font-size="17" fill="#137333">✓ IAM least privilege</text>
+    <text x="678" y="528" font-size="17" fill="#137333">✓ Cloud Logging and Monitoring alerts</text>
+    <text x="678" y="568" font-size="17" fill="#137333">✓ BigQuery and GCS retention</text>
+    <text x="678" y="608" font-size="17" fill="#137333">✓ KMS encryption and Secret Manager</text>
+  </g>
+</svg>
