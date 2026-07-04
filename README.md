@@ -95,7 +95,6 @@ See [`docs/use_cases.md`](docs/use_cases.md) for detailed use-case definitions, 
 
 ## Architecture
 
-
 ```mermaid
 flowchart LR
   subgraph Sources[Sources and scheduling]
@@ -112,7 +111,7 @@ flowchart LR
     DF[Dataflow optional enrichment]
   end
 
-  subgraph Process[Backend processing]
+  subgraph Process[Processing and orchestration]
     GKE[GKE worker pods]
     SM[Secret Manager pseudonym salt]
     KMS[Cloud KMS CMEK]
@@ -125,51 +124,45 @@ flowchart LR
     DP[Dataplex / Data Catalog]
   end
 
-  subgraph Ops[IAM, logging, monitoring and retention]
-  subgraph Process[Processing and orchestration]
-    GKE[GKE worker pods]
-    SM[Secret Manager pseudonym salt]
-    KMS[Cloud KMS CMEK]
-    AR[Artifact Registry image]
-  end
-
-  subgraph Data[Governed storage and analytics]
-    ARCH[Cloud Storage raw archive]
-    BQ[BigQuery partitioned table]
-    DP[Dataplex / Data Catalog]
-  end
-
   subgraph Ops[Security and operations]
     IAM[IAM least privilege]
     LOG[Cloud Logging]
     MON[Cloud Monitoring alerts]
     AUD[Cloud Audit Logs / Error Reporting / Trace]
-    RET[BigQuery and GCS retention]
+    RET[BigQuery and GCS retention policies]
   end
 
   APP --> PUB
-  KAG --> PUB
   RUN --> PUB
   SCH --> RUN
   GCSRAW --> DF
+
   PUB --> DLP
   PUB --> GKE
   PUB --> DLQ
+
   DLP --> DF
   DF --> BQ
+
   AR --> GKE
   SM --> GKE
+
   KMS --> PUB
   KMS --> ARCH
   KMS --> BQ
+
   GKE --> ARCH
   GKE --> BQ
+
   ARCH --> DP
   BQ --> DP
+
   GKE --> LOG
   LOG --> MON
-  IAM --> GKE
   AUD --> MON
+
+  IAM --> GKE
+
   RET --> ARCH
   RET --> BQ
 ```
