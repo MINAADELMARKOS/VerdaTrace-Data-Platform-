@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: verdatrace-data-pipeline
+  annotations:
+    iam.gke.io/gcp-service-account: verdatrace-data-pipeline@PROJECT_ID.iam.gserviceaccount.com
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: verdatrace-data-pipeline
+  labels:
+    app: verdatrace-data-pipeline
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: verdatrace-data-pipeline
+  template:
+    metadata:
+      labels:
+        app: verdatrace-data-pipeline
+    spec:
+      serviceAccountName: verdatrace-data-pipeline
+      containers:
+        - name: worker
+          image: gcr.io/PROJECT_ID/verdatrace-data-pipeline:latest
+          imagePullPolicy: Always
+          env:
+            - name: GCP_PROJECT
+              value: PROJECT_ID
+            - name: PUBSUB_SUBSCRIPTION
+              value: verdatrace-transaction-worker
+            - name: BQ_DATASET
+              value: verdatrace_data_engineering
+            - name: BQ_TABLE
+              value: processed_events
+            - name: RAW_ARCHIVE_BUCKET
+              value: PROJECT_ID-verdatrace-raw-event-archive
+            - name: PSEUDONYM_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: verdatrace-pseudonym-salt
+                  key: latest
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

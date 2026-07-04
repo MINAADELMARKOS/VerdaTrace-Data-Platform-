@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="VerdaTrace pipeline builder screenshot sample">
+  <rect width="1280" height="720" fill="#f4f8f6"/>
+  <text x="54" y="70" fill="#102033" font-family="Arial" font-size="42" font-weight="800">End-to-end pipeline builder</text>
+  <text x="54" y="106" fill="#5b6b7a" font-family="Arial" font-size="19">Data engineer workflow for customer and Kaggle datasets</text>
+  <g font-family="Arial" font-size="18">
+    <rect x="54" y="150" width="210" height="160" rx="18" fill="#eef7f3" stroke="#cae5da"/><text x="78" y="196" font-size="24" font-weight="700" fill="#0b6b57">1 Source</text><text x="78" y="238" fill="#102033">Customer files</text><text x="78" y="268" fill="#102033">Kaggle CSVs</text>
+    <path d="M270 230 L330 230" stroke="#174ea6" stroke-width="5" marker-end="url(#a)"/>
+    <rect x="340" y="150" width="210" height="160" rx="18" fill="#eef7f3" stroke="#cae5da"/><text x="364" y="196" font-size="24" font-weight="700" fill="#0b6b57">2 Ingest</text><text x="364" y="238" fill="#102033">Pub/Sub</text><text x="364" y="268" fill="#102033">Cloud Storage</text>
+    <path d="M556 230 L616 230" stroke="#174ea6" stroke-width="5" marker-end="url(#a)"/>
+    <rect x="626" y="150" width="210" height="160" rx="18" fill="#eef7f3" stroke="#cae5da"/><text x="650" y="196" font-size="24" font-weight="700" fill="#0b6b57">3 Govern</text><text x="650" y="238" fill="#102033">DLP / IAM</text><text x="650" y="268" fill="#102033">KMS / Secrets</text>
+    <path d="M842 230 L902 230" stroke="#174ea6" stroke-width="5" marker-end="url(#a)"/>
+    <rect x="912" y="150" width="210" height="160" rx="18" fill="#eef7f3" stroke="#cae5da"/><text x="936" y="196" font-size="24" font-weight="700" fill="#0b6b57">4 Transform</text><text x="936" y="238" fill="#102033">GKE workers</text><text x="936" y="268" fill="#102033">Quality flags</text>
+    <defs><marker id="a" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#174ea6"/></marker></defs>
+  </g>
+  <rect x="54" y="370" width="1070" height="230" rx="18" fill="white" stroke="#dce8e2"/>
+  <text x="84" y="420" fill="#102033" font-family="Arial" font-size="26" font-weight="700">Use case implementation steps</text>
+  <text x="84" y="466" fill="#102033" font-family="Arial" font-size="18">1. Select Kaggle dataset or customer source and upload credentials/secrets.</text>
+  <text x="84" y="506" fill="#102033" font-family="Arial" font-size="18">2. Choose use case: mobility assurance, ESG emissions, or retail privacy.</text>
+  <text x="84" y="546" fill="#102033" font-family="Arial" font-size="18">3. Run Pub/Sub loader, monitor GKE processing, and inspect BigQuery quality flags.</text>
+  <text x="84" y="586" fill="#102033" font-family="Arial" font-size="18">4. Review dashboard issues, Cloud Monitoring alerts, raw evidence archive, and lineage.</text>
+</svg>
