@@ -16,6 +16,27 @@ The repository does **not** commit huge Kaggle files. Use `config/kaggle_dataset
 
 ## Architecture
 
+| Layer | GCP services | Responsibility |
+| --- | --- | --- |
+| Sources | Customer apps, Kaggle CSV loader, Cloud Run loaders, Cloud Scheduler, Cloud Storage raw files | Accept customer and demo data from batch or streaming sources. |
+| Ingestion | Pub/Sub, Pub/Sub dead-letter topic, Cloud DLP, optional Dataflow | Buffer events, inspect sensitive data, route failed messages and optionally enrich streams. |
+| Backend processing | GKE worker pods, Secret Manager, Cloud KMS, Artifact Registry | Run transformations, pseudonymise identifiers, calculate quality flags and pull container images securely. |
+| Governed storage | Cloud Storage raw evidence archive, BigQuery curated tables, Dataplex/Data Catalog | Archive raw evidence, publish analytics-ready records and expose metadata/lineage. |
+| Operations | IAM, Cloud Logging, Cloud Monitoring, Audit Logs, retention policies | Enforce least privilege, observability, alerting, auditability and lifecycle deletion. |
+
+```text
+Customer/Kaggle data -> Pub/Sub -> DLP inspection -> GKE worker -> BigQuery curated table
+                                      |              |            |
+                                      |              |            +-> Cloud Logging -> Monitoring alerts
+                                      |              +--------------> Cloud Storage raw evidence archive
+                                      +-----------------------------> Pub/Sub dead-letter topic
+Secret Manager + Cloud KMS + IAM protect the backend worker, storage, Pub/Sub and BigQuery.
+Dataplex/Data Catalog document the curated BigQuery and raw archive zones.
+```
+
+
+
+
 ```mermaid
 flowchart TD
   A[Customer and Kaggle data sources] --> B[Pub/Sub ingestion]
