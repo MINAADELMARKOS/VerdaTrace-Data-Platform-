@@ -5,6 +5,10 @@ terraform {
       source  = "hashicorp/google"
       version = "~> 5.40"
     }
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "~> 5.40"
+    }
   }
 }
 
@@ -14,7 +18,7 @@ variable "project_id" {
 }
 
 variable "region" {
-  description = "Primary GCP region. Use a European region for GDPR-aligned deployments."
+  description = "Primary GCP region."
   type        = string
   default     = "europe-west2"
 }
@@ -23,7 +27,16 @@ variable "cluster_name" {
   description = "GKE cluster name."
   type        = string
   default     = "verdatrace-data-engineering-gke"
-  default     = "ey-data-engineering-gke"
+}
+
+variable "retention_days" {
+  description = "Retention for raw objects and curated BigQuery partitions."
+  type        = number
+  default     = 90
+  validation {
+    condition     = var.retention_days >= 1 && var.retention_days <= 3650
+    error_message = "retention_days must be between 1 and 3650."
+  }
 }
 
 locals {
@@ -31,20 +44,17 @@ locals {
     "artifactregistry.googleapis.com",
     "bigquery.googleapis.com",
     "cloudkms.googleapis.com",
-    "cloudscheduler.googleapis.com",
-    "composer.googleapis.com",
     "container.googleapis.com",
     "datacatalog.googleapis.com",
     "dataplex.googleapis.com",
-    "dataflow.googleapis.com",
     "dlp.googleapis.com",
     "logging.googleapis.com",
     "monitoring.googleapis.com",
     "pubsub.googleapis.com",
-    "run.googleapis.com",
     "secretmanager.googleapis.com",
     "storage.googleapis.com"
   ])
+  kms_services = toset(["bigquery", "pubsub", "storage"])
 }
 
 provider "google" {
@@ -52,57 +62,86 @@ provider "google" {
   region  = var.region
 }
 
+provider "google-beta" {
+  project = var.project_id
+  region  = var.region
+}
+
+data "google_project" "current" {
+  project_id = var.project_id
+}
+
 resource "google_project_service" "enabled" {
   for_each           = local.services
+  project            = var.project_id
   service            = each.value
   disable_on_destroy = false
 }
 
+resource "google_project_service_identity" "kms_clients" {
+  provider   = google-beta
+  for_each   = local.kms_services
+  project    = var.project_id
+  service    = "${each.key}.googleapis.com"
+  depends_on = [google_project_service.enabled]
+}
+
 resource "google_kms_key_ring" "data_platform" {
-  name     = "verdatrace-data-platform"
-  name     = "ey-data-platform"
-  location = var.region
+  name       = "verdatrace-data-platform"
+  location   = var.region
+  depends_on = [google_project_service.enabled]
 }
 
 resource "google_kms_crypto_key" "data_encryption" {
   name            = "verdatrace-data-encryption"
-  name            = "ey-data-encryption"
   key_ring        = google_kms_key_ring.data_platform.id
   rotation_period = "7776000s"
 }
 
+resource "google_kms_crypto_key_iam_member" "service_agents" {
+  for_each      = google_project_service_identity.kms_clients
+  crypto_key_id = google_kms_crypto_key.data_encryption.id
+  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+  member        = "serviceAccount:${each.value.email}"
+}
+
 resource "google_storage_bucket" "raw_archive" {
   name                        = "${var.project_id}-verdatrace-raw-event-archive"
-  name                        = "${var.project_id}-ey-raw-event-archive"
   location                    = "EU"
   uniform_bucket_level_access = true
+  public_access_prevention    = "enforced"
+  force_destroy               = false
 
   encryption {
     default_kms_key_name = google_kms_crypto_key.data_encryption.id
   }
 
   lifecycle_rule {
-    condition { age = 90 }
-    action { type = "Delete" }
+    condition {
+      age = var.retention_days
+    }
+    action {
+      type = "Delete"
+    }
   }
+
+  depends_on = [google_kms_crypto_key_iam_member.service_agents]
 }
 
 resource "google_pubsub_topic" "transaction_events" {
-  name = "verdatrace-transaction-events"
-  name = "ey-transaction-events"
-
+  name         = "verdatrace-transaction-events"
   kms_key_name = google_kms_crypto_key.data_encryption.id
+  depends_on   = [google_kms_crypto_key_iam_member.service_agents]
 }
 
 resource "google_pubsub_topic" "dead_letter" {
   name         = "verdatrace-transaction-events-dlq"
-  name         = "ey-transaction-events-dlq"
   kms_key_name = google_kms_crypto_key.data_encryption.id
+  depends_on   = [google_kms_crypto_key_iam_member.service_agents]
 }
 
 resource "google_pubsub_subscription" "transaction_worker" {
   name                       = "verdatrace-transaction-worker"
-  name                       = "ey-transaction-worker"
   topic                      = google_pubsub_topic.transaction_events.id
   ack_deadline_seconds       = 60
   message_retention_duration = "604800s"
@@ -115,13 +154,14 @@ resource "google_pubsub_subscription" "transaction_worker" {
 
 resource "google_bigquery_dataset" "analytics" {
   dataset_id                 = "verdatrace_data_engineering"
-  dataset_id                 = "ey_data_engineering"
   location                   = "EU"
   delete_contents_on_destroy = false
 
   default_encryption_configuration {
     kms_key_name = google_kms_crypto_key.data_encryption.id
   }
+
+  depends_on = [google_kms_crypto_key_iam_member.service_agents]
 }
 
 resource "google_bigquery_table" "processed_events" {
@@ -132,11 +172,14 @@ resource "google_bigquery_table" "processed_events" {
   time_partitioning {
     type          = "DAY"
     field         = "ingestion_timestamp"
-    expiration_ms = 7776000000
+    expiration_ms = var.retention_days * 86400000
   }
+
+  clustering = ["dataset_id", "use_case", "device_id"]
 
   schema = jsonencode([
     { name = "event_id", type = "STRING", mode = "REQUIRED" },
+    { name = "dataset_id", type = "STRING", mode = "NULLABLE" },
     { name = "use_case", type = "STRING", mode = "REQUIRED" },
     { name = "hashed_subject_id", type = "STRING", mode = "REQUIRED" },
     { name = "event_timestamp", type = "TIMESTAMP", mode = "REQUIRED" },
@@ -147,21 +190,45 @@ resource "google_bigquery_table" "processed_events" {
     { name = "trip_distance_miles", type = "FLOAT", mode = "NULLABLE" },
     { name = "co2e_kg", type = "FLOAT", mode = "NULLABLE" },
     { name = "source_system", type = "STRING", mode = "NULLABLE" },
+    { name = "device_id", type = "STRING", mode = "NULLABLE" },
+    { name = "route_id", type = "STRING", mode = "NULLABLE" },
+    { name = "origin", type = "STRING", mode = "NULLABLE" },
+    { name = "destination", type = "STRING", mode = "NULLABLE" },
+    { name = "latitude", type = "FLOAT", mode = "NULLABLE" },
+    { name = "longitude", type = "FLOAT", mode = "NULLABLE" },
+    { name = "speed_kph", type = "FLOAT", mode = "NULLABLE" },
+    { name = "heading", type = "FLOAT", mode = "NULLABLE" },
+    { name = "temperature_c", type = "FLOAT", mode = "NULLABLE" },
+    { name = "humidity_pct", type = "FLOAT", mode = "NULLABLE" },
+    { name = "pressure_hpa", type = "FLOAT", mode = "NULLABLE" },
+    { name = "co_ppm", type = "FLOAT", mode = "NULLABLE" },
+    { name = "co2_ppm", type = "FLOAT", mode = "NULLABLE" },
+    { name = "lpg_ppm", type = "FLOAT", mode = "NULLABLE" },
+    { name = "smoke_ppm", type = "FLOAT", mode = "NULLABLE" },
+    { name = "rainfall_mm", type = "FLOAT", mode = "NULLABLE" },
+    { name = "wind_speed_kph", type = "FLOAT", mode = "NULLABLE" },
+    { name = "geometry_json", type = "JSON", mode = "NULLABLE" },
+    { name = "crs", type = "STRING", mode = "NULLABLE" },
+    { name = "schema_version", type = "STRING", mode = "NULLABLE" },
     { name = "quality_flags", type = "STRING", mode = "NULLABLE" }
   ])
 }
 
 resource "google_data_loss_prevention_inspect_template" "pii" {
   parent       = "projects/${var.project_id}/locations/${var.region}"
-  description  = "Inspect incoming VerdaTrace demo payloads for common PII before analytics curation."
+  description  = "Inspect VerdaTrace payloads for common direct identifiers before curation."
   display_name = "verdatrace-pii-inspection"
-  description  = "Inspect incoming EY demo payloads for common PII before analytics curation."
-  display_name = "ey-pii-inspection"
 
   inspect_config {
-    info_types { name = "EMAIL_ADDRESS" }
-    info_types { name = "PHONE_NUMBER" }
-    info_types { name = "PERSON_NAME" }
+    info_types {
+      name = "EMAIL_ADDRESS"
+    }
+    info_types {
+      name = "PHONE_NUMBER"
+    }
+    info_types {
+      name = "PERSON_NAME"
+    }
     min_likelihood = "POSSIBLE"
   }
 }
@@ -169,60 +236,80 @@ resource "google_data_loss_prevention_inspect_template" "pii" {
 resource "google_artifact_registry_repository" "containers" {
   location      = var.region
   repository_id = "verdatrace-data-platform"
-  description   = "Container images for VerdaTrace data engineering workloads"
-  repository_id = "ey-data-platform"
-  description   = "Container images for EY data engineering workloads"
+  description   = "Container images for VerdaTrace data workloads"
   format        = "DOCKER"
 }
 
 resource "google_service_account" "pipeline" {
   account_id   = "verdatrace-data-pipeline"
-  display_name = "VerdaTrace data pipeline worker"
-  account_id   = "ey-data-pipeline"
-  display_name = "EY data pipeline worker"
+  display_name = "VerdaTrace pipeline workload"
 }
 
-resource "google_project_iam_member" "pipeline_pubsub" {
-  project = var.project_id
-  role    = "roles/pubsub.subscriber"
-  member  = "serviceAccount:${google_service_account.pipeline.email}"
+resource "google_service_account" "gke_nodes" {
+  account_id   = "verdatrace-gke-nodes"
+  display_name = "VerdaTrace GKE nodes"
 }
 
-resource "google_project_iam_member" "pipeline_bigquery" {
-  project = var.project_id
-  role    = "roles/bigquery.dataEditor"
-  member  = "serviceAccount:${google_service_account.pipeline.email}"
+resource "google_pubsub_subscription_iam_member" "pipeline_subscriber" {
+  subscription = google_pubsub_subscription.transaction_worker.name
+  role         = "roles/pubsub.subscriber"
+  member       = "serviceAccount:${google_service_account.pipeline.email}"
 }
 
-resource "google_project_iam_member" "pipeline_storage" {
-  project = var.project_id
-  role    = "roles/storage.objectCreator"
-  member  = "serviceAccount:${google_service_account.pipeline.email}"
+resource "google_bigquery_dataset_iam_member" "pipeline_editor" {
+  dataset_id = google_bigquery_dataset.analytics.dataset_id
+  role       = "roles/bigquery.dataEditor"
+  member     = "serviceAccount:${google_service_account.pipeline.email}"
 }
 
-resource "google_project_iam_member" "pipeline_kms" {
-  project = var.project_id
-  role    = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
-  member  = "serviceAccount:${google_service_account.pipeline.email}"
+resource "google_storage_bucket_iam_member" "pipeline_archive_creator" {
+  bucket = google_storage_bucket.raw_archive.name
+  role   = "roles/storage.objectCreator"
+  member = "serviceAccount:${google_service_account.pipeline.email}"
 }
 
 resource "google_secret_manager_secret" "pseudonym_salt" {
   secret_id = "verdatrace-pseudonym-salt"
-  secret_id = "ey-pseudonym-salt"
   replication {
     user_managed {
-      replicas { location = var.region }
+      replicas {
+        location = var.region
+      }
     }
   }
 }
 
+resource "google_secret_manager_secret_iam_member" "pipeline_secret_reader" {
+  secret_id = google_secret_manager_secret.pseudonym_salt.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.pipeline.email}"
+}
+
+resource "google_project_iam_member" "node_roles" {
+  for_each = toset([
+    "roles/artifactregistry.reader",
+    "roles/logging.logWriter",
+    "roles/monitoring.metricWriter"
+  ])
+  project = var.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.gke_nodes.email}"
+}
+
 resource "google_container_cluster" "primary" {
+  provider                 = google-beta
   name                     = var.cluster_name
   location                 = var.region
   remove_default_node_pool = true
   initial_node_count       = 1
+  deletion_protection      = true
+
   workload_identity_config {
     workload_pool = "${var.project_id}.svc.id.goog"
+  }
+
+  secret_manager_config {
+    enabled = true
   }
 }
 
@@ -234,16 +321,28 @@ resource "google_container_node_pool" "workers" {
 
   node_config {
     machine_type    = "e2-standard-2"
-    service_account = google_service_account.pipeline.email
+    service_account = google_service_account.gke_nodes.email
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
+    metadata = {
+      disable-legacy-endpoints = "true"
+    }
+    workload_metadata_config {
+      mode = "GKE_METADATA"
+    }
   }
+
+  depends_on = [google_project_iam_member.node_roles]
+}
+
+resource "google_service_account_iam_member" "pipeline_workload_identity" {
+  service_account_id = google_service_account.pipeline.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[default/verdatrace-data-pipeline]"
 }
 
 resource "google_logging_metric" "pipeline_errors" {
   name   = "verdatrace_pipeline_error_count"
   filter = "resource.type=\"k8s_container\" AND severity>=ERROR AND labels.k8s-pod/app=\"verdatrace-data-pipeline\""
-  name   = "ey_pipeline_error_count"
-  filter = "resource.type=\"k8s_container\" AND severity>=ERROR AND labels.k8s-pod/app=\"ey-data-pipeline\""
 
   metric_descriptor {
     metric_kind = "DELTA"
@@ -252,8 +351,7 @@ resource "google_logging_metric" "pipeline_errors" {
 }
 
 resource "google_monitoring_alert_policy" "pipeline_errors" {
-  display_name = "VerdaTrace data pipeline processing errors"
-  display_name = "EY data pipeline processing errors"
+  display_name = "VerdaTrace pipeline processing errors"
   combiner     = "OR"
 
   conditions {

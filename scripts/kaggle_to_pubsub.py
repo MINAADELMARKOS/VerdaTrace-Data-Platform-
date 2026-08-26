@@ -36,6 +36,22 @@ def map_row(row: Dict[str, str], use_case: str, row_number: int) -> Dict[str, An
             "trip_distance": row.get("trip_distance"),
             "source_dataset": "kaggle_nyc_yellow_taxi_trip_data",
         }
+    if use_case == "environmental_sensor_telemetry":
+        return {
+            "event_id": f"{row.get('device', 'device')}-{row.get('ts', row_number)}",
+            "dataset_id": "environmental_sensor_telemetry_132k",
+            "use_case": use_case,
+            "device_id": row.get("device") or f"device-{row_number}",
+            "event_timestamp": row.get("ts"),
+            "temperature_f": row.get("temp"),
+            "humidity_pct": row.get("humidity"),
+            "co_ppm": row.get("co"),
+            "lpg_ppm": row.get("lpg"),
+            "smoke_ppm": row.get("smoke"),
+            "light": row.get("light"),
+            "motion": row.get("motion"),
+            "source_dataset": "kaggle_environmental_sensor_telemetry_132k",
+        }
     if use_case == "esg_transport_emissions":
         return {
             "event_id": row.get("Order Id") or row.get("order_id") or f"shipment-{row_number}",
@@ -76,7 +92,13 @@ def publish_events(project: str, topic: str, events: Iterable[Dict[str, Any]]) -
     topic_path = topic if topic.startswith("projects/") else publisher.topic_path(project, topic)
     count = 0
     for event in events:
-        publisher.publish(topic_path, json.dumps(event).encode("utf-8"))
+        future = publisher.publish(
+            topic_path,
+            json.dumps(event).encode("utf-8"),
+            dataset_id=str(event.get("dataset_id") or event.get("source_dataset") or "unknown"),
+            use_case=str(event.get("use_case") or "unknown"),
+        )
+        future.result(timeout=30)
         count += 1
     return count
 
@@ -85,7 +107,16 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Publish Kaggle data to VerdaTrace Pub/Sub")
     parser.add_argument("--project", required=True)
     parser.add_argument("--topic", default="verdatrace-transaction-events")
-    parser.add_argument("--use-case", required=True, choices=["mobility_expense_assurance", "esg_transport_emissions", "retail_transaction_privacy"])
+    parser.add_argument(
+        "--use-case",
+        required=True,
+        choices=[
+            "environmental_sensor_telemetry",
+            "mobility_expense_assurance",
+            "esg_transport_emissions",
+            "retail_transaction_privacy",
+        ],
+    )
     parser.add_argument("--csv", required=True)
     parser.add_argument("--limit", type=int, default=10000)
     args = parser.parse_args()

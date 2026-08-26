@@ -1,37 +1,110 @@
-## Architecture Overview
+# Architecture and implementation map
 
-The high‑level architecture of this VerdaTrace Data Platform combines infrastructure provisioning, container orchestration and data-pipeline logic on Google Cloud Platform.  The design prioritises scalability, resilience and compliance with European data‑protection regulations.
+## Repository discovery
 
-### Components
+The repository originally contained a single Python Pub/Sub worker, GCP SDK clients, a BigQuery/GCS target, Terraform, a GKE deployment, Kaggle-to-Pub/Sub loader, static Nginx portal, and pytest tests. There was no application database, HTTP API, GIS library, charting library, authentication service, orchestration engine, or server-side web framework.
 
-| Component | Description |
-| --- | --- |
-| **Terraform** | Defines and provisions cloud resources: GKE, Pub/Sub, BigQuery, IAM, KMS, Cloud Storage retention, DLP, Artifact Registry and Monitoring. |
-| **Google Kubernetes Engine (GKE)** | Hosts the Python microservice that consumes messages from Pub/Sub, pseudonymises sensitive fields and writes to BigQuery.  Each pod runs a container built from the `data_pipeline.py` service. |
-| **Pub/Sub** | Serves as the ingestion layer for raw transaction events.  Messages are published by the upstream application and consumed by the worker service. |
-| **BigQuery** | Stores cleansed and pseudonymised data.  Tables are partitioned by ingestion date to improve query performance and support retention policies. |
-| **Secret Manager** | Securely stores pseudonymisation salts, database URIs and other secrets. |
-| **Cloud Storage** | Lands optional raw event archives and batch files with lifecycle retention and CMEK encryption. |
-| **Cloud Dataflow** | Optional managed streaming/batch enrichment path for higher-volume workloads before BigQuery. |
-| **Cloud DLP** | Inspects sample or production payloads for common PII patterns before curated analytics storage. |
-| **Cloud KMS** | Provides customer-managed encryption keys for Pub/Sub, BigQuery and Cloud Storage. |
-| **Artifact Registry** | Stores the worker container image used by GKE deployments. |
-| **Dataplex / Data Catalog** | Adds governance, discovery and metadata management across curated BigQuery and raw GCS zones. |
-| **Cloud Scheduler / Cloud Run** | Supports scheduled public-data loaders and lightweight API ingestion endpoints that publish to Pub/Sub. |
-| **Cloud Logging, Monitoring, Error Reporting, Trace & Audit Logs** | Provides observability into pipeline health, throughput, latency and errors. Logs are audited to satisfy GDPR accountability requirements. |
+The existing architectural intent was retained:
 
-### Data Flow
+- Python and standard-library-first domain logic;
+- GCP Pub/Sub for event ingestion;
+- GKE for the long-running worker;
+- BigQuery for curated analytics storage;
+- Cloud Storage for controlled raw evidence;
+- Secret Manager, KMS, IAM, DLP, Logging, and Monitoring for controls;
+- static frontend deployment;
+- pytest for automated validation;
+- environment variables for runtime configuration.
 
-1. **Event Publishing:** Retail, mobility, ESG, Cloud Run loader or Cloud Scheduler-triggered jobs publish JSON events to the Pub/Sub topic and may land raw batch files in Cloud Storage.
-2. **Message Consumption:** The Python microservice running on GKE subscribes to the topic and pulls messages in real time.
-3. **Pseudonymisation & Processing:** The service applies a SHA‑256 hash to the user ID, removes unnecessary fields (data minimisation) and adds an ingestion timestamp. Additional transformations (e.g., currency conversion) can be applied here.
-4. **Storage:** The processed record is written to the BigQuery table. Optionally, the raw message is archived to Cloud Storage for auditing and replay.
-5. **Governance:** Cloud DLP inspection templates, Dataplex/Data Catalog metadata and retention policies support discovery, lineage and privacy controls.
-6. **Monitoring:** Cloud Logging records processing status, errors and throughput metrics. Monitoring alert policies can be configured on failure rates or latency.
+The checked-out repository head also contained merge corruption: duplicated Python declarations and docstrings, invalid JSON samples, conflicting repeated Terraform attributes, duplicate Kubernetes object fields, and duplicated HTML. Those files had to be normalized before any reliable extension was possible.
 
-### Compliance Notes
+## Implementation map
 
-* **Data minimisation:** Only required fields are persisted.  Identifiers are hashed to prevent re‑identification.
-* **Retention:** BigQuery’s table partitioning and GCS lifecycle rules enforce automatic deletion of data after a defined period.
-* **Security:** All data is encrypted at rest and in transit, with Cloud KMS customer-managed keys where configured. Service accounts are granted minimal roles (principle of least privilege). Secrets are not stored in code.
-* **Transparency & accountability:** The README and this document describe data handling practices clearly.  Logging and audit trails support investigations or GDPR subject‑access requests.
+| Requested layer/capability | Existing component extended | Module |
+| --- | --- | --- |
+| Ingestion | Pub/Sub worker and Kaggle CSV publisher | `verdatrace/ingestion.py`, `scripts/kaggle_to_pubsub.py` |
+| Schema discovery/catalog | New pure layer adjacent to transformations | `verdatrace/catalog.py` |
+| Quality | Existing row flags generalized to dataset reports | `verdatrace/quality.py` and compatible flags in `data_pipeline.py` |
+| Analysis | New pure layer | `verdatrace/analytics.py` |
+| Evaluation | New pure layer | `verdatrace/evaluation.py` |
+| Normalized results | Typed dataclasses | `verdatrace/models.py` |
+| Visualization intelligence | New pure deterministic rules | `verdatrace/visualization.py` |
+| Spatial visualization | Existing static portal extended with Leaflet | `frontend/index.html`, `frontend/app.js` |
+| Governance | Metadata carried beside results | `verdatrace/pipeline.py` |
+| Authorization and audit | New cross-cutting service | `verdatrace/security.py` |
+| Lineage | New cross-cutting graph | `verdatrace/lineage.py` |
+| Storage/IAM | Existing Terraform resources repaired and narrowed | `main.tf` |
+| Deployment hardening | Existing GKE manifest repaired | `deployment.yaml` |
+
+## Layered flow
+
+```
+source
+  ↓ provenance registration
+raw ingestion
+  ↓ schema discovery
+catalog / classification
+  ↓ deterministic checks
+quality report
+  ↓ typed analytics
+analysis result
+  ↓ task readiness
+evaluation
+  ↓ safe chart/map rules
+visualization recommendation
+  ↓ normalized portal payload
+interactive visualization
+```
+
+Each layer accepts plain records and typed results, and can be unit-tested without GCP. `MultimodalPipeline` composes the layers and adds audit/lineage events. The portal payload is built by `scripts/build_demo.py` from pipeline outcomes.
+
+## Canonical model
+
+The original BigQuery columns remain. Nullable multimodal columns add dataset identity, devices/routes/origins/destinations, WGS84 coordinates, speed/heading, environmental measurements, geometry JSON, CRS, and schema version.
+
+Typed Python contracts include:
+
+- `Provenance`;
+- `FieldProfile` and `DatasetProfile`;
+- `QualityIssue` and `QualityReport`;
+- `AnalysisResult`;
+- `EvaluationReport`;
+- `VisualizationSpec` and `VisualizationRecommendation`;
+- `PipelineOutcome`.
+
+No downstream UI depends on pandas, BigQuery row objects, Leaflet objects, or another implementation-specific analytical object.
+
+## Spatial choices
+
+No server-side GIS stack existed. Adding PostGIS, GeoServer, or a distributed raster engine would have created a parallel platform. The implementation therefore uses:
+
+- GeoJSON and WGS84 coordinate ingestion;
+- bounds and geometry validity checks;
+- simple point/line/polygon validation;
+- BigQuery JSON geometry compatibility and a path to BigQuery GIS;
+- Leaflet only in the browser for lightweight embedded maps;
+- a GeoTIFF signature/metadata boundary that fails explicitly when rasterio/GDAL is required.
+
+For high-volume spatial workloads, extend BigQuery with `GEOGRAPHY` columns, use server-side filters/aggregates, and publish vector/raster tiles. Do not send full operational datasets to the portal.
+
+## Cross-cutting controls
+
+Authorization runs before ingestion, quality execution, and analysis. Governance is attached to every outcome. Audit events contain metadata only. Lineage references immutable logical resources rather than embedding rows. Structured errors include a stable code, message, corrective action, and bounded details.
+
+## Deployment topology
+
+```
+Publishers / Cloud Run jobs
+          ↓
+     Pub/Sub topic ─────→ dead-letter topic
+          ↓
+ GKE worker with Workload Identity
+      ↙                 ↘
+GCS raw archive      BigQuery curated table
+
+Secret Manager → worker
+KMS → Pub/Sub, GCS, BigQuery service agents
+Logging/Monitoring ← worker and GKE
+```
+
+The worker service account and GKE node service account are distinct. Permissions are bound at subscription, dataset, bucket, and secret scope whenever the GCP provider supports it.

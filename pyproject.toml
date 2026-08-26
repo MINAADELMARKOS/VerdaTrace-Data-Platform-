@@ -1,0 +1,10 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.coverage.run]
+source = ["verdatrace", "data_pipeline"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

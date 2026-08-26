@@ -1,0 +1,13 @@
+{
+  "type": "FeatureCollection",
+  "name": "SYNTHETIC refrigerated shipment route fixture",
+  "crs": {"type": "name", "properties": {"name": "EPSG:4326"}},
+  "features": [
+    {"type": "Feature", "id": "route-1-01", "properties": {"event_id": "route-1-01", "event_timestamp": "2024-02-10T08:00:00Z", "vehicle_id": "fixture-truck-17", "route_id": "fixture-route-1", "origin": "synthetic-port-gate", "destination": "synthetic-cold-store", "distance_km": 0.0, "speed_kph": 0, "temperature_c": 4.1, "humidity_pct": 68}, "geometry": {"type": "Point", "coordinates": [29.8752, 31.1901]}},
+    {"type": "Feature", "id": "route-1-02", "properties": {"event_id": "route-1-02", "event_timestamp": "2024-02-10T08:08:00Z", "vehicle_id": "fixture-truck-17", "route_id": "fixture-route-1", "origin": "synthetic-port-gate", "destination": "synthetic-cold-store", "distance_km": 4.3, "speed_kph": 31, "temperature_c": 4.2, "humidity_pct": 68}, "geometry": {"type": "Point", "coordinates": [29.9020, 31.1740]}},
+    {"type": "Feature", "id": "route-1-03", "properties": {"event_id": "route-1-03", "event_timestamp": "2024-02-10T08:16:00Z", "vehicle_id": "fixture-truck-17", "route_id": "fixture-route-1", "origin": "synthetic-port-gate", "destination": "synthetic-cold-store", "distance_km": 9.1, "speed_kph": 36, "temperature_c": 4.4, "humidity_pct": 69}, "geometry": {"type": "Point", "coordinates": [29.9410, 31.1550]}},
+    {"type": "Feature", "id": "route-1-04", "properties": {"event_id": "route-1-04", "event_timestamp": "2024-02-10T08:25:00Z", "vehicle_id": "fixture-truck-17", "route_id": "fixture-route-1", "origin": "synthetic-port-gate", "destination": "synthetic-cold-store", "distance_km": 14.8, "speed_kph": 38, "temperature_c": 4.7, "humidity_pct": 70}, "geometry": {"type": "Point", "coordinates": [29.9880, 31.1420]}},
+    {"type": "Feature", "id": "route-1-05", "properties": {"event_id": "route-1-05", "event_timestamp": "2024-02-10T08:35:00Z", "vehicle_id": "fixture-truck-17", "route_id": "fixture-route-1", "origin": "synthetic-port-gate", "destination": "synthetic-cold-store", "distance_km": 21.2, "speed_kph": 41, "temperature_c": 5.1, "humidity_pct": 72}, "geometry": {"type": "Point", "coordinates": [30.0400, 31.1250]}},
+    {"type": "Feature", "id": "route-1-06", "properties": {"event_id": "route-1-06", "event_timestamp": "2024-02-10T08:44:00Z", "vehicle_id": "fixture-truck-17", "route_id": "fixture-route-1", "origin": "synthetic-port-gate", "destination": "synthetic-cold-store", "distance_km": 27.6, "speed_kph": 39, "temperature_c": 5.6, "humidity_pct": 74}, "geometry": {"type": "Point", "coordinates": [30.0910, 31.1070]}}
+  ]
+}

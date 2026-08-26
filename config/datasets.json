@@ -1,0 +1,126 @@
+{
+  "schema_version": "verdatrace_dataset_registry_v1",
+  "datasets": [
+    {
+      "id": "open_meteo_cairo_historical",
+      "dataset_name": "Open-Meteo Historical Weather API — Cairo sample",
+      "provider": "Open-Meteo",
+      "original_url": "https://archive-api.open-meteo.com/v1/archive",
+      "retrieved_at": "generated_at_retrieval",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "geographic_coverage": "Cairo, Egypt point sample (30.0444, 31.2357)",
+      "temporal_coverage": "configured by retrieval command",
+      "source_format": "JSON",
+      "original_schema": {
+        "hourly.time": "ISO-8601 local timestamp",
+        "hourly.temperature_2m": "number (degC)",
+        "hourly.relative_humidity_2m": "number (percent)",
+        "hourly.precipitation": "number (mm)",
+        "hourly.wind_speed_10m": "number (km/h)"
+      },
+      "transformations": [
+        "zip hourly arrays into one event per timestamp",
+        "attach WGS84 query coordinates",
+        "rename measurements to VerdaTrace canonical semantics"
+      ],
+      "target_schema": "verdatrace_multimodal_v1",
+      "limitations": [
+        "Point sample is not representative of all Cairo microclimates.",
+        "Historical values inherit the limitations of the upstream reanalysis/weather models."
+      ],
+      "commit_policy": "A bounded attributed sample may be committed."
+    },
+    {
+      "id": "environmental_sensor_telemetry_132k",
+      "dataset_name": "Environmental Sensor Telemetry Data",
+      "provider": "Gary A. Stafford via Kaggle",
+      "original_url": "https://www.kaggle.com/datasets/garystafford/environmental-sensor-data-132k",
+      "retrieved_at": "metadata verified 2026-08-26",
+      "license": "CC0: Public Domain (as displayed by Kaggle metadata)",
+      "geographic_coverage": "Three undisclosed physical sensor locations",
+      "temporal_coverage": "2020 epoch timestamps; exact bounds determined after retrieval",
+      "source_format": "CSV",
+      "original_schema": {
+        "ts": "epoch timestamp",
+        "device": "string",
+        "co": "number",
+        "humidity": "percentage",
+        "light": "boolean",
+        "lpg": "number",
+        "motion": "boolean",
+        "smoke": "number",
+        "temp": "degrees Fahrenheit"
+      },
+      "transformations": [
+        "convert epoch timestamp to UTC",
+        "map device to device_id",
+        "convert Fahrenheit temperature to Celsius",
+        "preserve reported CO/LPG/smoke values and source units"
+      ],
+      "target_schema": "verdatrace_multimodal_v1",
+      "limitations": [
+        "Kaggle retrieval may require a Kaggle account/API token.",
+        "Locations and sensor calibration specifications are not provided.",
+        "The 61.93 MB source file is intentionally not committed."
+      ],
+      "commit_policy": "Retrieval-only; use a clearly labeled synthetic fixture for tests."
+    },
+    {
+      "id": "nyc_tlc_trip_records",
+      "dataset_name": "NYC TLC Trip Record Data",
+      "provider": "New York City Taxi and Limousine Commission",
+      "original_url": "https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page",
+      "retrieved_at": "source verified 2026-08-26",
+      "license": "not_provided on the source page",
+      "geographic_coverage": "New York City taxi zones",
+      "temporal_coverage": "Monthly files; select explicitly at retrieval",
+      "source_format": "Parquet",
+      "original_schema": {
+        "pickup/dropoff timestamps": "timestamp",
+        "pickup/dropoff location IDs": "integer",
+        "trip_distance": "number",
+        "itemized fares": "number",
+        "passenger_count": "integer"
+      },
+      "transformations": [
+        "select a bounded monthly partition",
+        "map trip timestamps, distance, fare, and zone IDs",
+        "join the official taxi-zone lookup only when spatial polygons are required"
+      ],
+      "target_schema": "verdatrace_multimodal_v1",
+      "limitations": [
+        "TLC states that it cannot guarantee source accuracy or completeness.",
+        "Current downloads are Parquet and require a Parquet-capable batch worker.",
+        "No trip-level source data is committed because files are large and license terms are not explicit."
+      ],
+      "commit_policy": "Retrieval-only connector documentation."
+    },
+    {
+      "id": "natural_earth_admin0",
+      "dataset_name": "Natural Earth Admin 0 Countries",
+      "provider": "Natural Earth",
+      "original_url": "https://www.naturalearthdata.com/downloads/110m-cultural-vectors/110m-admin-0-countries/",
+      "retrieved_at": "source verified 2026-08-26",
+      "license": "Public Domain",
+      "geographic_coverage": "Global",
+      "temporal_coverage": "not_applicable",
+      "source_format": "Shapefile / GeoPackage",
+      "original_schema": {
+        "geometry": "multipolygon",
+        "administrative attributes": "provider-defined fields"
+      },
+      "transformations": [
+        "select an official distribution",
+        "reproject to EPSG:4326 if needed",
+        "export a bounded GeoJSON layer for browser visualization"
+      ],
+      "target_schema": "verdatrace_multimodal_v1",
+      "limitations": [
+        "Small-scale generalized boundaries are unsuitable for cadastral or navigation use.",
+        "The platform does not commit the source archive."
+      ],
+      "commit_policy": "Retrieval-only; public-domain redistribution is permitted."
+    }
+  ]
+}

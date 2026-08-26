@@ -1,0 +1,4 @@
+event_id,event_timestamp,device_id,temperature_c,humidity_pct,co_ppm,latitude,longitude
+sensor-1,2024-01-01T00:00:00Z,device-a,22.1,48,0.004,30.0444,31.2357
+sensor-2,,device-a,22.3,130,0.005,138.4,-245.1
+sensor-2,,device-a,22.3,130,0.005,138.4,-245.1

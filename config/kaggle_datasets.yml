@@ -1,6 +1,17 @@
 # VerdaTrace uses Kaggle datasets as external inputs. The huge datasets are not
 # committed to this repository; download them with the Kaggle CLI in GCP.
 datasets:
+  environmental_sensor_telemetry:
+    kaggle_slug: garystafford/environmental-sensor-data-132k
+    expected_files:
+      - iot_telemetry_data.csv
+    license: "CC0: Public Domain (verify against Kaggle metadata at retrieval)"
+    commit_policy: "Do not commit the 61.93 MB source file; stream or sample at runtime."
+    issue_examples:
+      - humidity outside 0 to 100 percent
+      - negative physical measurements
+      - missing or malformed epoch timestamps
+      - duplicate sensor events
   mobility_expense_assurance:
     kaggle_slug: elemento/nyc-yellow-taxi-trip-data
     expected_files:

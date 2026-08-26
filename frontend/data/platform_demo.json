@@ -1,0 +1,2550 @@
+{
+  "schema_version": "verdatrace_portal_payload_v1",
+  "generated_at": "2026-08-26T20:08:23.893835+00:00",
+  "datasets": [
+    {
+      "id": "open_meteo_cairo_historical",
+      "title": "Cairo historical weather",
+      "domain": "climate_environmental",
+      "fixture": false,
+      "attribution": {
+        "label": "Weather data by Open-Meteo.com",
+        "url": "https://open-meteo.com/",
+        "license": "CC BY 4.0"
+      },
+      "records": [
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T00:00",
+          "event_timestamp": "2024-01-01T00:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 12.8,
+          "humidity_pct": 93,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 6.4,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T01:00",
+          "event_timestamp": "2024-01-01T01:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 11.9,
+          "humidity_pct": 97,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 6.2,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T02:00",
+          "event_timestamp": "2024-01-01T02:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 11.2,
+          "humidity_pct": 99,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 7.9,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T03:00",
+          "event_timestamp": "2024-01-01T03:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 11.1,
+          "humidity_pct": 100,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 7.5,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T04:00",
+          "event_timestamp": "2024-01-01T04:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 11.7,
+          "humidity_pct": 100,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 5.6,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T05:00",
+          "event_timestamp": "2024-01-01T05:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 11.9,
+          "humidity_pct": 100,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 4.0,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T06:00",
+          "event_timestamp": "2024-01-01T06:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 12.3,
+          "humidity_pct": 98,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 2.1,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T07:00",
+          "event_timestamp": "2024-01-01T07:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 14.6,
+          "humidity_pct": 87,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 3.1,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T08:00",
+          "event_timestamp": "2024-01-01T08:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 17.4,
+          "humidity_pct": 74,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 3.1,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T09:00",
+          "event_timestamp": "2024-01-01T09:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 19.6,
+          "humidity_pct": 63,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 6.2,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T10:00",
+          "event_timestamp": "2024-01-01T10:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 21.0,
+          "humidity_pct": 54,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 9.4,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T11:00",
+          "event_timestamp": "2024-01-01T11:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 21.7,
+          "humidity_pct": 49,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 10.3,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T12:00",
+          "event_timestamp": "2024-01-01T12:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 22.1,
+          "humidity_pct": 46,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 9.7,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T13:00",
+          "event_timestamp": "2024-01-01T13:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 22.0,
+          "humidity_pct": 46,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 8.4,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T14:00",
+          "event_timestamp": "2024-01-01T14:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 21.3,
+          "humidity_pct": 48,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 8.0,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T15:00",
+          "event_timestamp": "2024-01-01T15:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 19.3,
+          "humidity_pct": 55,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 5.0,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T16:00",
+          "event_timestamp": "2024-01-01T16:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 17.7,
+          "humidity_pct": 63,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 5.9,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T17:00",
+          "event_timestamp": "2024-01-01T17:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 17.0,
+          "humidity_pct": 65,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 6.6,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T18:00",
+          "event_timestamp": "2024-01-01T18:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 17.5,
+          "humidity_pct": 58,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 9.0,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T19:00",
+          "event_timestamp": "2024-01-01T19:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 17.2,
+          "humidity_pct": 65,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 14.2,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T20:00",
+          "event_timestamp": "2024-01-01T20:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 16.4,
+          "humidity_pct": 75,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 12.3,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T21:00",
+          "event_timestamp": "2024-01-01T21:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 15.2,
+          "humidity_pct": 83,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 9.7,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T22:00",
+          "event_timestamp": "2024-01-01T22:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 14.4,
+          "humidity_pct": 87,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 7.7,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-01T23:00",
+          "event_timestamp": "2024-01-01T23:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 13.5,
+          "humidity_pct": 92,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 5.9,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T00:00",
+          "event_timestamp": "2024-01-02T00:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 12.8,
+          "humidity_pct": 94,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 6.9,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T01:00",
+          "event_timestamp": "2024-01-02T01:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 12.8,
+          "humidity_pct": 94,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 8.2,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T02:00",
+          "event_timestamp": "2024-01-02T02:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 12.8,
+          "humidity_pct": 93,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 7.6,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T03:00",
+          "event_timestamp": "2024-01-02T03:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 12.0,
+          "humidity_pct": 94,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 8.7,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T04:00",
+          "event_timestamp": "2024-01-02T04:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 12.3,
+          "humidity_pct": 93,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 7.1,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T05:00",
+          "event_timestamp": "2024-01-02T05:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 11.5,
+          "humidity_pct": 95,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 8.0,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T06:00",
+          "event_timestamp": "2024-01-02T06:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 13.8,
+          "humidity_pct": 86,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 4.4,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T07:00",
+          "event_timestamp": "2024-01-02T07:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 16.3,
+          "humidity_pct": 73,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 2.4,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T08:00",
+          "event_timestamp": "2024-01-02T08:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 18.7,
+          "humidity_pct": 64,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 5.2,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T09:00",
+          "event_timestamp": "2024-01-02T09:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 20.8,
+          "humidity_pct": 54,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 12.7,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T10:00",
+          "event_timestamp": "2024-01-02T10:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 21.6,
+          "humidity_pct": 49,
+          "rainfall_mm": 0.1,
+          "wind_speed_kph": 14.1,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T11:00",
+          "event_timestamp": "2024-01-02T11:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 22.5,
+          "humidity_pct": 43,
+          "rainfall_mm": 0.1,
+          "wind_speed_kph": 13.3,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T12:00",
+          "event_timestamp": "2024-01-02T12:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 22.6,
+          "humidity_pct": 42,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 13.1,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T13:00",
+          "event_timestamp": "2024-01-02T13:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 22.7,
+          "humidity_pct": 40,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 13.2,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T14:00",
+          "event_timestamp": "2024-01-02T14:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 22.4,
+          "humidity_pct": 40,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 11.2,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T15:00",
+          "event_timestamp": "2024-01-02T15:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 21.0,
+          "humidity_pct": 44,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 5.2,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T16:00",
+          "event_timestamp": "2024-01-02T16:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 18.6,
+          "humidity_pct": 52,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 8.8,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T17:00",
+          "event_timestamp": "2024-01-02T17:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 17.7,
+          "humidity_pct": 56,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 8.6,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T18:00",
+          "event_timestamp": "2024-01-02T18:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 17.8,
+          "humidity_pct": 56,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 5.8,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T19:00",
+          "event_timestamp": "2024-01-02T19:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 17.8,
+          "humidity_pct": 58,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 7.2,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T20:00",
+          "event_timestamp": "2024-01-02T20:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 16.5,
+          "humidity_pct": 64,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 5.8,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T21:00",
+          "event_timestamp": "2024-01-02T21:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 14.4,
+          "humidity_pct": 75,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 7.9,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T22:00",
+          "event_timestamp": "2024-01-02T22:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 13.9,
+          "humidity_pct": 80,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 6.9,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-02T23:00",
+          "event_timestamp": "2024-01-02T23:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 14.3,
+          "humidity_pct": 79,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 5.0,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T00:00",
+          "event_timestamp": "2024-01-03T00:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 14.1,
+          "humidity_pct": 82,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 3.1,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T01:00",
+          "event_timestamp": "2024-01-03T01:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 13.7,
+          "humidity_pct": 81,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 2.3,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T02:00",
+          "event_timestamp": "2024-01-03T02:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 13.0,
+          "humidity_pct": 85,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 4.7,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T03:00",
+          "event_timestamp": "2024-01-03T03:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 12.7,
+          "humidity_pct": 87,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 3.8,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T04:00",
+          "event_timestamp": "2024-01-03T04:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 11.3,
+          "humidity_pct": 92,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 3.6,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T05:00",
+          "event_timestamp": "2024-01-03T05:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 10.1,
+          "humidity_pct": 96,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 5.1,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T06:00",
+          "event_timestamp": "2024-01-03T06:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 12.7,
+          "humidity_pct": 88,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 5.4,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T07:00",
+          "event_timestamp": "2024-01-03T07:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 16.5,
+          "humidity_pct": 70,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 1.8,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T08:00",
+          "event_timestamp": "2024-01-03T08:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 19.1,
+          "humidity_pct": 61,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 3.3,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T09:00",
+          "event_timestamp": "2024-01-03T09:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 21.0,
+          "humidity_pct": 50,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 8.4,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T10:00",
+          "event_timestamp": "2024-01-03T10:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 22.0,
+          "humidity_pct": 42,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 9.0,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T11:00",
+          "event_timestamp": "2024-01-03T11:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 22.7,
+          "humidity_pct": 38,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 8.7,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T12:00",
+          "event_timestamp": "2024-01-03T12:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 23.0,
+          "humidity_pct": 35,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 8.7,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T13:00",
+          "event_timestamp": "2024-01-03T13:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 23.0,
+          "humidity_pct": 36,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 6.2,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T14:00",
+          "event_timestamp": "2024-01-03T14:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 22.5,
+          "humidity_pct": 35,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 7.0,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T15:00",
+          "event_timestamp": "2024-01-03T15:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 20.3,
+          "humidity_pct": 42,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 5.9,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T16:00",
+          "event_timestamp": "2024-01-03T16:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 18.7,
+          "humidity_pct": 46,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 7.3,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T17:00",
+          "event_timestamp": "2024-01-03T17:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 17.2,
+          "humidity_pct": 51,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 7.1,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T18:00",
+          "event_timestamp": "2024-01-03T18:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 16.3,
+          "humidity_pct": 54,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 6.9,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T19:00",
+          "event_timestamp": "2024-01-03T19:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 15.9,
+          "humidity_pct": 57,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 7.9,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T20:00",
+          "event_timestamp": "2024-01-03T20:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 15.2,
+          "humidity_pct": 63,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 7.4,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T21:00",
+          "event_timestamp": "2024-01-03T21:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 13.4,
+          "humidity_pct": 73,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 7.6,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T22:00",
+          "event_timestamp": "2024-01-03T22:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 12.4,
+          "humidity_pct": 79,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 9.0,
+          "source_system": "open_meteo_historical_api"
+        },
+        {
+          "event_id": "open-meteo-cairo-2024-01-03T23:00",
+          "event_timestamp": "2024-01-03T23:00:00Z",
+          "device_id": "open-meteo-grid-cell",
+          "latitude": 30.052723,
+          "longitude": 31.190199,
+          "temperature_c": 11.7,
+          "humidity_pct": 86,
+          "rainfall_mm": 0.0,
+          "wind_speed_kph": 9.3,
+          "source_system": "open_meteo_historical_api"
+        }
+      ],
+      "outcome": {
+        "profile": {
+          "dataset_id": "open_meteo_cairo_historical",
+          "name": "Cairo historical weather",
+          "row_count": 72,
+          "source_format": "json",
+          "fields": [
+            {
+              "name": "device_id",
+              "data_type": "string",
+              "semantic_type": "device_identifier",
+              "non_null_count": 72,
+              "null_count": 0,
+              "unique_count": 1,
+              "confidence": 0.72,
+              "evidence": [
+                "field name matches the device_identifier alias set"
+              ],
+              "sample_values": [
+                "open-meteo-grid-cell",
+                "open-meteo-grid-cell",
+                "open-meteo-grid-cell"
+              ]
+            },
+            {
+              "name": "event_id",
+              "data_type": "string",
+              "semantic_type": "identifier",
+              "non_null_count": 72,
+              "null_count": 0,
+              "unique_count": 72,
+              "confidence": 0.72,
+              "evidence": [
+                "field name matches the identifier alias set"
+              ],
+              "sample_values": [
+                "open-meteo-cairo-2024-01-01T00:00",
+                "open-meteo-cairo-2024-01-01T01:00",
+                "open-meteo-cairo-2024-01-01T02:00"
+              ]
+            },
+            {
+              "name": "event_timestamp",
+              "data_type": "datetime",
+              "semantic_type": "timestamp",
+              "non_null_count": 72,
+              "null_count": 0,
+              "unique_count": 72,
+              "confidence": 0.96,
+              "evidence": [
+                "field name matches the timestamp alias set",
+                "100% of populated values parse as dates/timestamps"
+              ],
+              "sample_values": [
+                "2024-01-01T00:00:00Z",
+                "2024-01-01T01:00:00Z",
+                "2024-01-01T02:00:00Z"
+              ]
+            },
+            {
+              "name": "humidity_pct",
+              "data_type": "number",
+              "semantic_type": "humidity",
+              "non_null_count": 72,
+              "null_count": 0,
+              "unique_count": 44,
+              "confidence": 0.9,
+              "evidence": [
+                "field name matches the humidity alias set",
+                "observed values are compatible with number semantics"
+              ],
+              "sample_values": [
+                93,
+                97,
+                99
+              ]
+            },
+            {
+              "name": "latitude",
+              "data_type": "number",
+              "semantic_type": "latitude",
+              "non_null_count": 72,
+              "null_count": 0,
+              "unique_count": 1,
+              "confidence": 0.96,
+              "evidence": [
+                "field name matches the latitude alias set",
+                "100% of numeric values are within coordinate bounds"
+              ],
+              "sample_values": [
+                30.052723,
+                30.052723,
+                30.052723
+              ]
+            },
+            {
+              "name": "longitude",
+              "data_type": "number",
+              "semantic_type": "longitude",
+              "non_null_count": 72,
+              "null_count": 0,
+              "unique_count": 1,
+              "confidence": 0.96,
+              "evidence": [
+                "field name matches the longitude alias set",
+                "100% of numeric values are within coordinate bounds"
+              ],
+              "sample_values": [
+                31.190199,
+                31.190199,
+                31.190199
+              ]
+            },
+            {
+              "name": "rainfall_mm",
+              "data_type": "number",
+              "semantic_type": "rainfall",
+              "non_null_count": 72,
+              "null_count": 0,
+              "unique_count": 2,
+              "confidence": 0.9,
+              "evidence": [
+                "field name matches the rainfall alias set",
+                "observed values are compatible with number semantics"
+              ],
+              "sample_values": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "source_system",
+              "data_type": "string",
+              "semantic_type": "categorical",
+              "non_null_count": 72,
+              "null_count": 0,
+              "unique_count": 1,
+              "confidence": 0.78,
+              "evidence": [
+                "1 distinct values indicate a bounded domain"
+              ],
+              "sample_values": [
+                "open_meteo_historical_api",
+                "open_meteo_historical_api",
+                "open_meteo_historical_api"
+              ]
+            },
+            {
+              "name": "temperature_c",
+              "data_type": "number",
+              "semantic_type": "temperature",
+              "non_null_count": 72,
+              "null_count": 0,
+              "unique_count": 51,
+              "confidence": 0.9,
+              "evidence": [
+                "field name matches the temperature alias set",
+                "observed values are compatible with number semantics"
+              ],
+              "sample_values": [
+                12.8,
+                11.9,
+                11.2
+              ]
+            },
+            {
+              "name": "wind_speed_kph",
+              "data_type": "number",
+              "semantic_type": "wind",
+              "non_null_count": 72,
+              "null_count": 0,
+              "unique_count": 50,
+              "confidence": 0.9,
+              "evidence": [
+                "field name matches the wind alias set",
+                "observed values are compatible with number semantics"
+              ],
+              "sample_values": [
+                6.4,
+                6.2,
+                7.9
+              ]
+            }
+          ],
+          "categories": [
+            "tabular",
+            "geospatial_vector",
+            "numerical",
+            "categorical",
+            "temporal_time_series",
+            "sensor_iot",
+            "environmental",
+            "climate",
+            "event_data"
+          ],
+          "category_confidence": {
+            "tabular": 0.94,
+            "geospatial_vector": 0.96,
+            "numerical": 0.9,
+            "categorical": 0.84,
+            "temporal_time_series": 0.94,
+            "sensor_iot": 0.93,
+            "environmental": 0.9,
+            "climate": 0.9,
+            "event_data": 0.91
+          },
+          "category_evidence": {
+            "tabular": [
+              "records were ingested from JSON"
+            ],
+            "geospatial_vector": [
+              "valid coordinate or geometry fields were detected"
+            ],
+            "numerical": [
+              "one or more numeric measurement fields were detected"
+            ],
+            "categorical": [
+              "bounded categorical or boolean fields were detected"
+            ],
+            "temporal_time_series": [
+              "date or timestamp values were validated"
+            ],
+            "sensor_iot": [
+              "4 sensor/environmental measurements were detected"
+            ],
+            "environmental": [
+              "environmental measurement semantics were detected"
+            ],
+            "climate": [
+              "multiple timestamped weather/climate variables were detected"
+            ],
+            "event_data": [
+              "event identity and event time were detected"
+            ]
+          },
+          "geographic_bounds": {
+            "min_latitude": 30.052723,
+            "max_latitude": 30.052723,
+            "min_longitude": 31.190199,
+            "max_longitude": 31.190199
+          },
+          "temporal_coverage": {
+            "start": "2024-01-01T00:00:00+00:00",
+            "end": "2024-01-03T23:00:00+00:00"
+          }
+        },
+        "quality": {
+          "dataset_id": "open_meteo_cairo_historical",
+          "total_rows": 72,
+          "valid_rows": 72,
+          "score": 100.0,
+          "status": "passed",
+          "issues": [],
+          "metrics": {
+            "error_occurrences": 0,
+            "warning_occurrences": 0,
+            "duplicate_rows": 0,
+            "null_cells": 0,
+            "field_count": 10
+          }
+        },
+        "analysis": {
+          "result_type": "climate_analysis",
+          "computed_values": {
+            "row_count": 72,
+            "numeric_summaries": {
+              "humidity_pct": {
+                "count": 72,
+                "min": 35.0,
+                "max": 100.0,
+                "mean": 68.666667,
+                "median": 65.0,
+                "p25": 50.75,
+                "p75": 87.0,
+                "stddev": 20.336065
+              },
+              "rainfall_mm": {
+                "count": 72,
+                "min": 0.0,
+                "max": 0.1,
+                "mean": 0.002778,
+                "median": 0.0,
+                "p25": 0.0,
+                "p75": 0.0,
+                "stddev": 0.016434
+              },
+              "temperature_c": {
+                "count": 72,
+                "min": 10.1,
+                "max": 23.0,
+                "mean": 16.623611,
+                "median": 16.45,
+                "p25": 12.8,
+                "p75": 20.425,
+                "stddev": 3.88689
+              },
+              "wind_speed_kph": {
+                "count": 72,
+                "min": 1.8,
+                "max": 14.2,
+                "mean": 7.236111,
+                "median": 7.15,
+                "p25": 5.35,
+                "p75": 8.7,
+                "stddev": 2.873263
+              }
+            },
+            "temporal_aggregation": [
+              {
+                "period": "2024-01-01",
+                "mean": 74.875,
+                "count": 24
+              },
+              {
+                "period": "2024-01-02",
+                "mean": 67.416667,
+                "count": 24
+              },
+              {
+                "period": "2024-01-03",
+                "mean": 63.708333,
+                "count": 24
+              }
+            ],
+            "trend_change": -11.166667,
+            "spatial_bounds": {
+              "min_latitude": 30.052723,
+              "max_latitude": 30.052723,
+              "min_longitude": 31.190199,
+              "max_longitude": 31.190199
+            },
+            "correlations": {
+              "humidity_pct__rainfall_mm": -0.188403
+            },
+            "grouped_statistics": [
+              {
+                "group": "open-meteo-grid-cell",
+                "metric": "humidity_pct",
+                "mean": 68.666667,
+                "count": 72
+              }
+            ]
+          },
+          "dimensions": [
+            "event_timestamp",
+            "longitude",
+            "latitude",
+            "device_id"
+          ],
+          "metrics": [
+            "humidity_pct",
+            "rainfall_mm",
+            "temperature_c",
+            "wind_speed_kph"
+          ],
+          "units": {
+            "humidity_pct": "percent",
+            "rainfall_mm": "mm",
+            "temperature_c": "degC",
+            "wind_speed_kph": "source_unit"
+          },
+          "warnings": [],
+          "provenance": {
+            "dataset_name": "Open-Meteo Historical Weather API \u2014 Cairo sample",
+            "provider": "Open-Meteo",
+            "original_url": "https://archive-api.open-meteo.com/v1/archive?latitude=30.0444&longitude=31.2357&start_date=2024-01-01&end_date=2024-01-03&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m&timezone=UTC",
+            "retrieved_at": "2026-08-26T13:06:50.722273+00:00",
+            "license": "CC BY 4.0",
+            "geographic_coverage": "point sample near 30.052723, 31.190199",
+            "temporal_coverage": "2024-01-01T00:00:00Z to 2024-01-03T23:00:00Z",
+            "source_format": "JSON",
+            "original_schema": {
+              "hourly.time": "ISO-8601",
+              "hourly.temperature_2m": "degC",
+              "hourly.relative_humidity_2m": "percent",
+              "hourly.precipitation": "mm",
+              "hourly.wind_speed_10m": "km/h"
+            },
+            "transformations": [
+              "zipped hourly arrays",
+              "attached WGS84 query coordinates",
+              "renamed fields to VerdaTrace canonical semantics"
+            ],
+            "target_schema": "verdatrace_multimodal_v1",
+            "limitations": [
+              "Point sample is not representative of all Cairo microclimates.",
+              "Values inherit upstream weather-model and reanalysis limitations."
+            ]
+          },
+          "quality_reference": "quality:open_meteo_cairo_historical",
+          "analysis_metadata": {
+            "task": "climate",
+            "method": "deterministic_descriptive_v1",
+            "input_rows": 72,
+            "quality_score": 100.0
+          },
+          "lineage": [
+            {
+              "stage": "raw_ingestion",
+              "input_ref": "https://archive-api.open-meteo.com/v1/archive?latitude=30.0444&longitude=31.2357&start_date=2024-01-01&end_date=2024-01-03&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m&timezone=UTC",
+              "output_ref": "raw:open_meteo_cairo_historical",
+              "operation": "ingest_json",
+              "timestamp": "2026-08-26T20:08:23.886912+00:00"
+            },
+            {
+              "stage": "schema_discovery",
+              "input_ref": "raw:open_meteo_cairo_historical",
+              "output_ref": "catalog:open_meteo_cairo_historical",
+              "operation": "profile_and_classify",
+              "timestamp": "2026-08-26T20:08:23.888752+00:00"
+            },
+            {
+              "stage": "quality_checks",
+              "input_ref": "raw:open_meteo_cairo_historical",
+              "output_ref": "quality:open_meteo_cairo_historical",
+              "operation": "deterministic_quality_rules",
+              "timestamp": "2026-08-26T20:08:23.889834+00:00"
+            },
+            {
+              "stage": "analysis",
+              "input_ref": "quality:open_meteo_cairo_historical",
+              "output_ref": "analysis:open_meteo_cairo_historical",
+              "operation": "climate_analysis",
+              "timestamp": "2026-08-26T20:08:23.891834+00:00"
+            },
+            {
+              "stage": "evaluation",
+              "input_ref": "analysis:open_meteo_cairo_historical",
+              "output_ref": "evaluation:open_meteo_cairo_historical",
+              "operation": "evaluate_climate",
+              "timestamp": "2026-08-26T20:08:23.891834+00:00"
+            },
+            {
+              "stage": "visualization",
+              "input_ref": "evaluation:open_meteo_cairo_historical",
+              "output_ref": "visualization:open_meteo_cairo_historical",
+              "operation": "deterministic_recommendation",
+              "timestamp": "2026-08-26T20:08:23.891834+00:00"
+            }
+          ]
+        },
+        "evaluation": {
+          "task": "climate",
+          "eligible": true,
+          "score": 100.0,
+          "reasons": [
+            "analysis produced requirement is satisfied",
+            "has numeric metric requirement is satisfied",
+            "has rows requirement is satisfied",
+            "has temporal axis requirement is satisfied"
+          ],
+          "warnings": [],
+          "checks": {
+            "has_rows": true,
+            "sample_size": true,
+            "quality_acceptable": true,
+            "has_numeric_metric": true,
+            "has_temporal_axis": true,
+            "spatial_ready": true,
+            "analysis_produced": true
+          }
+        },
+        "visualization": {
+          "dataset_type": "sensor_geospatial",
+          "eligible": true,
+          "recommended_visualizations": [
+            {
+              "type": "line_chart",
+              "fields": [
+                "event_timestamp",
+                "humidity_pct"
+              ],
+              "confidence": 0.95,
+              "reason": "A validated temporal axis and continuous numeric measurement were detected.",
+              "config": {
+                "aggregate": "mean",
+                "sort": "ascending_time"
+              }
+            },
+            {
+              "type": "scatter_plot",
+              "fields": [
+                "humidity_pct",
+                "rainfall_mm"
+              ],
+              "confidence": 0.9,
+              "reason": "Two continuous numeric variables support relationship analysis.",
+              "config": {}
+            },
+            {
+              "type": "histogram",
+              "fields": [
+                "humidity_pct"
+              ],
+              "confidence": 0.88,
+              "reason": "A continuous numeric field supports distribution analysis.",
+              "config": {}
+            },
+            {
+              "type": "bar_chart",
+              "fields": [
+                "source_system",
+                "humidity_pct"
+              ],
+              "confidence": 0.9,
+              "reason": "A bounded categorical dimension and numeric metric support comparison.",
+              "config": {
+                "aggregate": "mean"
+              }
+            },
+            {
+              "type": "point_map",
+              "fields": [
+                "longitude",
+                "latitude"
+              ],
+              "confidence": 0.98,
+              "reason": "Validated WGS84 longitude and latitude observations were detected.",
+              "config": {
+                "crs": "EPSG:4326",
+                "cluster": false
+              }
+            },
+            {
+              "type": "proportional_symbol_map",
+              "fields": [
+                "longitude",
+                "latitude",
+                "humidity_pct"
+              ],
+              "confidence": 0.9,
+              "reason": "Geographic points have an associated magnitude field.",
+              "config": {
+                "crs": "EPSG:4326"
+              }
+            },
+            {
+              "type": "temporal_spatial_animation",
+              "fields": [
+                "longitude",
+                "latitude",
+                "event_timestamp"
+              ],
+              "confidence": 0.87,
+              "reason": "Timestamped geographic observations support temporal playback.",
+              "config": {}
+            }
+          ],
+          "warnings": [],
+          "unsupported_fields": []
+        },
+        "governance": {
+          "owner": "not_provided",
+          "source": "Open-Meteo",
+          "license": "CC BY 4.0",
+          "classification": [
+            "tabular",
+            "geospatial_vector",
+            "numerical",
+            "categorical",
+            "temporal_time_series",
+            "sensor_iot",
+            "environmental",
+            "climate",
+            "event_data"
+          ],
+          "sensitivity": "public",
+          "retention_policy": "sample retained in source control; refresh reproducibly",
+          "ingestion_timestamp": "2026-08-26T20:08:23.886912+00:00",
+          "transformation_history": [
+            "zipped hourly arrays",
+            "attached WGS84 query coordinates",
+            "renamed fields to VerdaTrace canonical semantics"
+          ],
+          "schema_version": "verdatrace_multimodal_v1",
+          "quality_status": "passed",
+          "geographic_coverage": "point sample near 30.052723, 31.190199",
+          "temporal_coverage": "2024-01-01T00:00:00Z to 2024-01-03T23:00:00Z"
+        },
+        "lineage": [
+          {
+            "stage": "raw_ingestion",
+            "input_ref": "https://archive-api.open-meteo.com/v1/archive?latitude=30.0444&longitude=31.2357&start_date=2024-01-01&end_date=2024-01-03&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m&timezone=UTC",
+            "output_ref": "raw:open_meteo_cairo_historical",
+            "operation": "ingest_json",
+            "timestamp": "2026-08-26T20:08:23.886912+00:00"
+          },
+          {
+            "stage": "schema_discovery",
+            "input_ref": "raw:open_meteo_cairo_historical",
+            "output_ref": "catalog:open_meteo_cairo_historical",
+            "operation": "profile_and_classify",
+            "timestamp": "2026-08-26T20:08:23.888752+00:00"
+          },
+          {
+            "stage": "quality_checks",
+            "input_ref": "raw:open_meteo_cairo_historical",
+            "output_ref": "quality:open_meteo_cairo_historical",
+            "operation": "deterministic_quality_rules",
+            "timestamp": "2026-08-26T20:08:23.889834+00:00"
+          },
+          {
+            "stage": "analysis",
+            "input_ref": "quality:open_meteo_cairo_historical",
+            "output_ref": "analysis:open_meteo_cairo_historical",
+            "operation": "climate_analysis",
+            "timestamp": "2026-08-26T20:08:23.891834+00:00"
+          },
+          {
+            "stage": "evaluation",
+            "input_ref": "analysis:open_meteo_cairo_historical",
+            "output_ref": "evaluation:open_meteo_cairo_historical",
+            "operation": "evaluate_climate",
+            "timestamp": "2026-08-26T20:08:23.891834+00:00"
+          },
+          {
+            "stage": "visualization",
+            "input_ref": "evaluation:open_meteo_cairo_historical",
+            "output_ref": "visualization:open_meteo_cairo_historical",
+            "operation": "deterministic_recommendation",
+            "timestamp": "2026-08-26T20:08:23.891834+00:00"
+          }
+        ],
+        "audit_events": [
+          {
+            "event_id": "31b00947-1a43-4c27-a205-44f836abc84a",
+            "timestamp": "2026-08-26T20:08:23.886912+00:00",
+            "actor": "demo-builder",
+            "operation": "dataset_ingestion",
+            "target": "open_meteo_cairo_historical",
+            "outcome": "started",
+            "correlation_id": "3be7c7af-05e6-41da-b9d9-99dc98cfb2a4",
+            "details": {
+              "record_count": 72,
+              "source_format": "json"
+            }
+          },
+          {
+            "event_id": "266f2dda-a842-4a8e-bd13-d4b392a89267",
+            "timestamp": "2026-08-26T20:08:23.889834+00:00",
+            "actor": "demo-builder",
+            "operation": "quality_evaluation",
+            "target": "open_meteo_cairo_historical",
+            "outcome": "passed",
+            "correlation_id": "3be7c7af-05e6-41da-b9d9-99dc98cfb2a4",
+            "details": {
+              "quality_score": 100.0,
+              "issue_count": 0
+            }
+          },
+          {
+            "event_id": "67e5abe6-aa37-4fa9-ac16-973d7d355f00",
+            "timestamp": "2026-08-26T20:08:23.891834+00:00",
+            "actor": "demo-builder",
+            "operation": "analysis_execution",
+            "target": "open_meteo_cairo_historical",
+            "outcome": "succeeded",
+            "correlation_id": "3be7c7af-05e6-41da-b9d9-99dc98cfb2a4",
+            "details": {
+              "result_type": "climate_analysis",
+              "metric_count": 4
+            }
+          },
+          {
+            "event_id": "8c215d8f-9bc4-4e94-8fdf-a0753f4d12b2",
+            "timestamp": "2026-08-26T20:08:23.891834+00:00",
+            "actor": "demo-builder",
+            "operation": "dataset_ingestion",
+            "target": "open_meteo_cairo_historical",
+            "outcome": "succeeded",
+            "correlation_id": "3be7c7af-05e6-41da-b9d9-99dc98cfb2a4",
+            "details": {
+              "quality_status": "passed",
+              "analysis_result_type": "climate_analysis",
+              "visualization_count": 7
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "synthetic_refrigerated_route",
+      "title": "Synthetic refrigerated shipment route",
+      "domain": "logistics_mobility_sensor",
+      "fixture": true,
+      "attribution": {
+        "label": "Clearly labeled generated test fixture",
+        "url": "https://github.com/MINAADELMARKOS/VerdaTrace-Data-Platform-",
+        "license": "not_applicable_test_fixture"
+      },
+      "records": [
+        {
+          "event_id": "route-1-01",
+          "event_timestamp": "2024-02-10T08:00:00Z",
+          "vehicle_id": "fixture-truck-17",
+          "route_id": "fixture-route-1",
+          "origin": "synthetic-port-gate",
+          "destination": "synthetic-cold-store",
+          "distance_km": 0.0,
+          "speed_kph": 0,
+          "temperature_c": 4.1,
+          "humidity_pct": 68,
+          "feature_id": "route-1-01",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              29.8752,
+              31.1901
+            ]
+          },
+          "crs": "EPSG:4326",
+          "longitude": 29.8752,
+          "latitude": 31.1901
+        },
+        {
+          "event_id": "route-1-02",
+          "event_timestamp": "2024-02-10T08:08:00Z",
+          "vehicle_id": "fixture-truck-17",
+          "route_id": "fixture-route-1",
+          "origin": "synthetic-port-gate",
+          "destination": "synthetic-cold-store",
+          "distance_km": 4.3,
+          "speed_kph": 31,
+          "temperature_c": 4.2,
+          "humidity_pct": 68,
+          "feature_id": "route-1-02",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              29.902,
+              31.174
+            ]
+          },
+          "crs": "EPSG:4326",
+          "longitude": 29.902,
+          "latitude": 31.174
+        },
+        {
+          "event_id": "route-1-03",
+          "event_timestamp": "2024-02-10T08:16:00Z",
+          "vehicle_id": "fixture-truck-17",
+          "route_id": "fixture-route-1",
+          "origin": "synthetic-port-gate",
+          "destination": "synthetic-cold-store",
+          "distance_km": 9.1,
+          "speed_kph": 36,
+          "temperature_c": 4.4,
+          "humidity_pct": 69,
+          "feature_id": "route-1-03",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              29.941,
+              31.155
+            ]
+          },
+          "crs": "EPSG:4326",
+          "longitude": 29.941,
+          "latitude": 31.155
+        },
+        {
+          "event_id": "route-1-04",
+          "event_timestamp": "2024-02-10T08:25:00Z",
+          "vehicle_id": "fixture-truck-17",
+          "route_id": "fixture-route-1",
+          "origin": "synthetic-port-gate",
+          "destination": "synthetic-cold-store",
+          "distance_km": 14.8,
+          "speed_kph": 38,
+          "temperature_c": 4.7,
+          "humidity_pct": 70,
+          "feature_id": "route-1-04",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              29.988,
+              31.142
+            ]
+          },
+          "crs": "EPSG:4326",
+          "longitude": 29.988,
+          "latitude": 31.142
+        },
+        {
+          "event_id": "route-1-05",
+          "event_timestamp": "2024-02-10T08:35:00Z",
+          "vehicle_id": "fixture-truck-17",
+          "route_id": "fixture-route-1",
+          "origin": "synthetic-port-gate",
+          "destination": "synthetic-cold-store",
+          "distance_km": 21.2,
+          "speed_kph": 41,
+          "temperature_c": 5.1,
+          "humidity_pct": 72,
+          "feature_id": "route-1-05",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              30.04,
+              31.125
+            ]
+          },
+          "crs": "EPSG:4326",
+          "longitude": 30.04,
+          "latitude": 31.125
+        },
+        {
+          "event_id": "route-1-06",
+          "event_timestamp": "2024-02-10T08:44:00Z",
+          "vehicle_id": "fixture-truck-17",
+          "route_id": "fixture-route-1",
+          "origin": "synthetic-port-gate",
+          "destination": "synthetic-cold-store",
+          "distance_km": 27.6,
+          "speed_kph": 39,
+          "temperature_c": 5.6,
+          "humidity_pct": 74,
+          "feature_id": "route-1-06",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              30.091,
+              31.107
+            ]
+          },
+          "crs": "EPSG:4326",
+          "longitude": 30.091,
+          "latitude": 31.107
+        }
+      ],
+      "outcome": {
+        "profile": {
+          "dataset_id": "synthetic_refrigerated_route",
+          "name": "Synthetic refrigerated shipment route",
+          "row_count": 6,
+          "source_format": "geojson",
+          "fields": [
+            {
+              "name": "crs",
+              "data_type": "string",
+              "semantic_type": "crs",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 1,
+              "confidence": 0.72,
+              "evidence": [
+                "field name matches the crs alias set"
+              ],
+              "sample_values": [
+                "EPSG:4326",
+                "EPSG:4326",
+                "EPSG:4326"
+              ]
+            },
+            {
+              "name": "destination",
+              "data_type": "string",
+              "semantic_type": "destination",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 1,
+              "confidence": 0.9,
+              "evidence": [
+                "field name matches the destination alias set",
+                "observed values are compatible with string semantics"
+              ],
+              "sample_values": [
+                "synthetic-cold-store",
+                "synthetic-cold-store",
+                "synthetic-cold-store"
+              ]
+            },
+            {
+              "name": "distance_km",
+              "data_type": "number",
+              "semantic_type": "distance",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 6,
+              "confidence": 0.9,
+              "evidence": [
+                "field name matches the distance alias set",
+                "observed values are compatible with number semantics"
+              ],
+              "sample_values": [
+                0.0,
+                4.3,
+                9.1
+              ]
+            },
+            {
+              "name": "event_id",
+              "data_type": "string",
+              "semantic_type": "identifier",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 6,
+              "confidence": 0.72,
+              "evidence": [
+                "field name matches the identifier alias set"
+              ],
+              "sample_values": [
+                "route-1-01",
+                "route-1-02",
+                "route-1-03"
+              ]
+            },
+            {
+              "name": "event_timestamp",
+              "data_type": "datetime",
+              "semantic_type": "timestamp",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 6,
+              "confidence": 0.96,
+              "evidence": [
+                "field name matches the timestamp alias set",
+                "100% of populated values parse as dates/timestamps"
+              ],
+              "sample_values": [
+                "2024-02-10T08:00:00Z",
+                "2024-02-10T08:08:00Z",
+                "2024-02-10T08:16:00Z"
+              ]
+            },
+            {
+              "name": "feature_id",
+              "data_type": "string",
+              "semantic_type": "categorical",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 6,
+              "confidence": 0.78,
+              "evidence": [
+                "6 distinct values indicate a bounded domain"
+              ],
+              "sample_values": [
+                "route-1-01",
+                "route-1-02",
+                "route-1-03"
+              ]
+            },
+            {
+              "name": "geometry",
+              "data_type": "object",
+              "semantic_type": "geometry",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 6,
+              "confidence": 0.98,
+              "evidence": [
+                "field name matches the geometry alias set",
+                "GeoJSON geometry objects were observed"
+              ],
+              "sample_values": [
+                {
+                  "type": "Point",
+                  "coordinates": [
+                    29.8752,
+                    31.1901
+                  ]
+                },
+                {
+                  "type": "Point",
+                  "coordinates": [
+                    29.902,
+                    31.174
+                  ]
+                },
+                {
+                  "type": "Point",
+                  "coordinates": [
+                    29.941,
+                    31.155
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "humidity_pct",
+              "data_type": "number",
+              "semantic_type": "humidity",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 5,
+              "confidence": 0.9,
+              "evidence": [
+                "field name matches the humidity alias set",
+                "observed values are compatible with number semantics"
+              ],
+              "sample_values": [
+                68,
+                68,
+                69
+              ]
+            },
+            {
+              "name": "latitude",
+              "data_type": "number",
+              "semantic_type": "latitude",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 6,
+              "confidence": 0.96,
+              "evidence": [
+                "field name matches the latitude alias set",
+                "100% of numeric values are within coordinate bounds"
+              ],
+              "sample_values": [
+                31.1901,
+                31.174,
+                31.155
+              ]
+            },
+            {
+              "name": "longitude",
+              "data_type": "number",
+              "semantic_type": "longitude",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 6,
+              "confidence": 0.96,
+              "evidence": [
+                "field name matches the longitude alias set",
+                "100% of numeric values are within coordinate bounds"
+              ],
+              "sample_values": [
+                29.8752,
+                29.902,
+                29.941
+              ]
+            },
+            {
+              "name": "origin",
+              "data_type": "string",
+              "semantic_type": "origin",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 1,
+              "confidence": 0.9,
+              "evidence": [
+                "field name matches the origin alias set",
+                "observed values are compatible with string semantics"
+              ],
+              "sample_values": [
+                "synthetic-port-gate",
+                "synthetic-port-gate",
+                "synthetic-port-gate"
+              ]
+            },
+            {
+              "name": "route_id",
+              "data_type": "string",
+              "semantic_type": "route",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 1,
+              "confidence": 0.9,
+              "evidence": [
+                "field name matches the route alias set",
+                "observed values are compatible with string semantics"
+              ],
+              "sample_values": [
+                "fixture-route-1",
+                "fixture-route-1",
+                "fixture-route-1"
+              ]
+            },
+            {
+              "name": "speed_kph",
+              "data_type": "number",
+              "semantic_type": "speed",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 6,
+              "confidence": 0.9,
+              "evidence": [
+                "field name matches the speed alias set",
+                "observed values are compatible with number semantics"
+              ],
+              "sample_values": [
+                0,
+                31,
+                36
+              ]
+            },
+            {
+              "name": "temperature_c",
+              "data_type": "number",
+              "semantic_type": "temperature",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 6,
+              "confidence": 0.9,
+              "evidence": [
+                "field name matches the temperature alias set",
+                "observed values are compatible with number semantics"
+              ],
+              "sample_values": [
+                4.1,
+                4.2,
+                4.4
+              ]
+            },
+            {
+              "name": "vehicle_id",
+              "data_type": "string",
+              "semantic_type": "vehicle_identifier",
+              "non_null_count": 6,
+              "null_count": 0,
+              "unique_count": 1,
+              "confidence": 0.9,
+              "evidence": [
+                "field name matches the vehicle_identifier alias set",
+                "observed values are compatible with string semantics"
+              ],
+              "sample_values": [
+                "fixture-truck-17",
+                "fixture-truck-17",
+                "fixture-truck-17"
+              ]
+            }
+          ],
+          "categories": [
+            "tabular",
+            "geospatial_vector",
+            "numerical",
+            "categorical",
+            "temporal_time_series",
+            "sensor_iot",
+            "environmental",
+            "climate",
+            "mobility",
+            "logistics",
+            "event_data"
+          ],
+          "category_confidence": {
+            "tabular": 0.94,
+            "geospatial_vector": 0.96,
+            "numerical": 0.9,
+            "categorical": 0.84,
+            "temporal_time_series": 0.94,
+            "sensor_iot": 0.93,
+            "environmental": 0.9,
+            "climate": 0.9,
+            "mobility": 0.92,
+            "logistics": 0.9,
+            "event_data": 0.91
+          },
+          "category_evidence": {
+            "tabular": [
+              "records were ingested from GEOJSON"
+            ],
+            "geospatial_vector": [
+              "valid coordinate or geometry fields were detected"
+            ],
+            "numerical": [
+              "one or more numeric measurement fields were detected"
+            ],
+            "categorical": [
+              "bounded categorical or boolean fields were detected"
+            ],
+            "temporal_time_series": [
+              "date or timestamp values were validated"
+            ],
+            "sensor_iot": [
+              "2 sensor/environmental measurements were detected"
+            ],
+            "environmental": [
+              "environmental measurement semantics were detected"
+            ],
+            "climate": [
+              "multiple timestamped weather/climate variables were detected"
+            ],
+            "mobility": [
+              "6 mobility semantics were detected"
+            ],
+            "logistics": [
+              "shipment or origin/destination semantics were detected"
+            ],
+            "event_data": [
+              "event identity and event time were detected"
+            ]
+          },
+          "geographic_bounds": {
+            "min_latitude": 31.107,
+            "max_latitude": 31.1901,
+            "min_longitude": 29.8752,
+            "max_longitude": 30.091
+          },
+          "temporal_coverage": {
+            "start": "2024-02-10T08:00:00+00:00",
+            "end": "2024-02-10T08:44:00+00:00"
+          }
+        },
+        "quality": {
+          "dataset_id": "synthetic_refrigerated_route",
+          "total_rows": 6,
+          "valid_rows": 6,
+          "score": 100.0,
+          "status": "passed",
+          "issues": [],
+          "metrics": {
+            "error_occurrences": 0,
+            "warning_occurrences": 0,
+            "duplicate_rows": 0,
+            "null_cells": 0,
+            "field_count": 15
+          }
+        },
+        "analysis": {
+          "result_type": "mobility_analysis",
+          "computed_values": {
+            "row_count": 6,
+            "numeric_summaries": {
+              "distance_km": {
+                "count": 6,
+                "min": 0.0,
+                "max": 27.6,
+                "mean": 12.833333,
+                "median": 11.95,
+                "p25": 5.5,
+                "p75": 19.6,
+                "stddev": 9.516419
+              },
+              "humidity_pct": {
+                "count": 6,
+                "min": 68.0,
+                "max": 74.0,
+                "mean": 70.166667,
+                "median": 69.5,
+                "p25": 68.25,
+                "p75": 71.5,
+                "stddev": 2.192158
+              },
+              "speed_kph": {
+                "count": 6,
+                "min": 0.0,
+                "max": 41.0,
+                "mean": 30.833333,
+                "median": 37.0,
+                "p25": 32.25,
+                "p75": 38.75,
+                "stddev": 14.135259
+              },
+              "temperature_c": {
+                "count": 6,
+                "min": 4.1,
+                "max": 5.6,
+                "mean": 4.683333,
+                "median": 4.55,
+                "p25": 4.25,
+                "p75": 5.0,
+                "stddev": 0.52731
+              }
+            },
+            "temporal_aggregation": [
+              {
+                "period": "2024-02-10",
+                "mean": 12.833333,
+                "count": 6
+              }
+            ],
+            "mobility_summary": {
+              "total_distance": 77.0,
+              "average_distance": 12.833333,
+              "average_speed": 30.833333
+            },
+            "spatial_bounds": {
+              "min_latitude": 31.107,
+              "max_latitude": 31.1901,
+              "min_longitude": 29.8752,
+              "max_longitude": 30.091
+            },
+            "correlations": {
+              "distance_km__humidity_pct": 0.976813
+            },
+            "grouped_statistics": [
+              {
+                "group": "route-1-01",
+                "metric": "distance_km",
+                "mean": 0.0,
+                "count": 1
+              },
+              {
+                "group": "route-1-02",
+                "metric": "distance_km",
+                "mean": 4.3,
+                "count": 1
+              },
+              {
+                "group": "route-1-03",
+                "metric": "distance_km",
+                "mean": 9.1,
+                "count": 1
+              },
+              {
+                "group": "route-1-04",
+                "metric": "distance_km",
+                "mean": 14.8,
+                "count": 1
+              },
+              {
+                "group": "route-1-05",
+                "metric": "distance_km",
+                "mean": 21.2,
+                "count": 1
+              },
+              {
+                "group": "route-1-06",
+                "metric": "distance_km",
+                "mean": 27.6,
+                "count": 1
+              }
+            ]
+          },
+          "dimensions": [
+            "event_timestamp",
+            "longitude",
+            "latitude",
+            "feature_id"
+          ],
+          "metrics": [
+            "distance_km",
+            "humidity_pct",
+            "speed_kph",
+            "temperature_c"
+          ],
+          "units": {
+            "distance_km": "km",
+            "humidity_pct": "percent",
+            "speed_kph": "km/h",
+            "temperature_c": "degC"
+          },
+          "warnings": [],
+          "provenance": {
+            "dataset_name": "Synthetic refrigerated shipment route fixture",
+            "provider": "VerdaTrace test suite",
+            "original_url": "repository://tests/fixtures/synthetic_mobility_route.geojson",
+            "retrieved_at": "not_applicable_generated_fixture",
+            "license": "not_applicable_test_fixture",
+            "geographic_coverage": "Synthetic route near Alexandria, Egypt; not operational data",
+            "temporal_coverage": "2024-02-10T08:00:00Z to 2024-02-10T08:44:00Z",
+            "source_format": "GeoJSON",
+            "original_schema": {
+              "geometry": "GeoJSON Point EPSG:4326",
+              "event_timestamp": "ISO-8601",
+              "vehicle_id": "string",
+              "route_id": "string",
+              "speed_kph": "number",
+              "temperature_c": "number"
+            },
+            "transformations": [
+              "flattened GeoJSON properties",
+              "derived latitude and longitude from Point geometry"
+            ],
+            "target_schema": "verdatrace_multimodal_v1",
+            "limitations": [
+              "Synthetic fixture for deterministic tests and UI demonstration; not a real shipment."
+            ]
+          },
+          "quality_reference": "quality:synthetic_refrigerated_route",
+          "analysis_metadata": {
+            "task": "mobility",
+            "method": "deterministic_descriptive_v1",
+            "input_rows": 6,
+            "quality_score": 100.0
+          },
+          "lineage": [
+            {
+              "stage": "raw_ingestion",
+              "input_ref": "repository://tests/fixtures/synthetic_mobility_route.geojson",
+              "output_ref": "raw:synthetic_refrigerated_route",
+              "operation": "ingest_geojson",
+              "timestamp": "2026-08-26T20:08:23.892835+00:00"
+            },
+            {
+              "stage": "schema_discovery",
+              "input_ref": "raw:synthetic_refrigerated_route",
+              "output_ref": "catalog:synthetic_refrigerated_route",
+              "operation": "profile_and_classify",
+              "timestamp": "2026-08-26T20:08:23.892835+00:00"
+            },
+            {
+              "stage": "quality_checks",
+              "input_ref": "raw:synthetic_refrigerated_route",
+              "output_ref": "quality:synthetic_refrigerated_route",
+              "operation": "deterministic_quality_rules",
+              "timestamp": "2026-08-26T20:08:23.893835+00:00"
+            },
+            {
+              "stage": "analysis",
+              "input_ref": "quality:synthetic_refrigerated_route",
+              "output_ref": "analysis:synthetic_refrigerated_route",
+              "operation": "mobility_analysis",
+              "timestamp": "2026-08-26T20:08:23.893835+00:00"
+            },
+            {
+              "stage": "evaluation",
+              "input_ref": "analysis:synthetic_refrigerated_route",
+              "output_ref": "evaluation:synthetic_refrigerated_route",
+              "operation": "evaluate_mobility",
+              "timestamp": "2026-08-26T20:08:23.893835+00:00"
+            },
+            {
+              "stage": "visualization",
+              "input_ref": "evaluation:synthetic_refrigerated_route",
+              "output_ref": "visualization:synthetic_refrigerated_route",
+              "operation": "deterministic_recommendation",
+              "timestamp": "2026-08-26T20:08:23.893835+00:00"
+            }
+          ]
+        },
+        "evaluation": {
+          "task": "mobility",
+          "eligible": true,
+          "score": 100.0,
+          "reasons": [
+            "analysis produced requirement is satisfied",
+            "has rows requirement is satisfied",
+            "spatial ready requirement is satisfied"
+          ],
+          "warnings": [],
+          "checks": {
+            "has_rows": true,
+            "sample_size": true,
+            "quality_acceptable": true,
+            "has_numeric_metric": true,
+            "has_temporal_axis": true,
+            "spatial_ready": true,
+            "analysis_produced": true
+          }
+        },
+        "visualization": {
+          "dataset_type": "mobility_geospatial",
+          "eligible": true,
+          "recommended_visualizations": [
+            {
+              "type": "line_chart",
+              "fields": [
+                "event_timestamp",
+                "distance_km"
+              ],
+              "confidence": 0.95,
+              "reason": "A validated temporal axis and continuous numeric measurement were detected.",
+              "config": {
+                "aggregate": "mean",
+                "sort": "ascending_time"
+              }
+            },
+            {
+              "type": "scatter_plot",
+              "fields": [
+                "distance_km",
+                "humidity_pct"
+              ],
+              "confidence": 0.9,
+              "reason": "Two continuous numeric variables support relationship analysis.",
+              "config": {}
+            },
+            {
+              "type": "histogram",
+              "fields": [
+                "distance_km"
+              ],
+              "confidence": 0.88,
+              "reason": "A continuous numeric field supports distribution analysis.",
+              "config": {}
+            },
+            {
+              "type": "bar_chart",
+              "fields": [
+                "feature_id",
+                "distance_km"
+              ],
+              "confidence": 0.9,
+              "reason": "A bounded categorical dimension and numeric metric support comparison.",
+              "config": {
+                "aggregate": "mean"
+              }
+            },
+            {
+              "type": "point_map",
+              "fields": [
+                "longitude",
+                "latitude"
+              ],
+              "confidence": 0.98,
+              "reason": "Validated WGS84 longitude and latitude observations were detected.",
+              "config": {
+                "crs": "EPSG:4326",
+                "cluster": false
+              }
+            },
+            {
+              "type": "proportional_symbol_map",
+              "fields": [
+                "longitude",
+                "latitude",
+                "distance_km"
+              ],
+              "confidence": 0.9,
+              "reason": "Geographic points have an associated magnitude field.",
+              "config": {
+                "crs": "EPSG:4326"
+              }
+            },
+            {
+              "type": "route_map",
+              "fields": [
+                "longitude",
+                "latitude",
+                "event_timestamp",
+                "route_id"
+              ],
+              "confidence": 0.96,
+              "reason": "Ordered geographic observations with temporal sequencing were detected.",
+              "config": {
+                "crs": "EPSG:4326",
+                "order_by": "event_timestamp"
+              }
+            },
+            {
+              "type": "temporal_spatial_animation",
+              "fields": [
+                "longitude",
+                "latitude",
+                "event_timestamp"
+              ],
+              "confidence": 0.87,
+              "reason": "Timestamped geographic observations support temporal playback.",
+              "config": {}
+            }
+          ],
+          "warnings": [],
+          "unsupported_fields": []
+        },
+        "governance": {
+          "owner": "VerdaTrace maintainers",
+          "source": "VerdaTrace test suite",
+          "license": "not_applicable_test_fixture",
+          "classification": [
+            "tabular",
+            "geospatial_vector",
+            "numerical",
+            "categorical",
+            "temporal_time_series",
+            "sensor_iot",
+            "environmental",
+            "climate",
+            "mobility",
+            "logistics",
+            "event_data"
+          ],
+          "sensitivity": "public_fixture",
+          "retention_policy": "repository test fixture",
+          "ingestion_timestamp": "2026-08-26T20:08:23.892835+00:00",
+          "transformation_history": [
+            "flattened GeoJSON properties",
+            "derived latitude and longitude from Point geometry"
+          ],
+          "schema_version": "verdatrace_multimodal_v1",
+          "quality_status": "passed",
+          "geographic_coverage": "Synthetic route near Alexandria, Egypt; not operational data",
+          "temporal_coverage": "2024-02-10T08:00:00Z to 2024-02-10T08:44:00Z"
+        },
+        "lineage": [
+          {
+            "stage": "raw_ingestion",
+            "input_ref": "repository://tests/fixtures/synthetic_mobility_route.geojson",
+            "output_ref": "raw:synthetic_refrigerated_route",
+            "operation": "ingest_geojson",
+            "timestamp": "2026-08-26T20:08:23.892835+00:00"
+          },
+          {
+            "stage": "schema_discovery",
+            "input_ref": "raw:synthetic_refrigerated_route",
+            "output_ref": "catalog:synthetic_refrigerated_route",
+            "operation": "profile_and_classify",
+            "timestamp": "2026-08-26T20:08:23.892835+00:00"
+          },
+          {
+            "stage": "quality_checks",
+            "input_ref": "raw:synthetic_refrigerated_route",
+            "output_ref": "quality:synthetic_refrigerated_route",
+            "operation": "deterministic_quality_rules",
+            "timestamp": "2026-08-26T20:08:23.893835+00:00"
+          },
+          {
+            "stage": "analysis",
+            "input_ref": "quality:synthetic_refrigerated_route",
+            "output_ref": "analysis:synthetic_refrigerated_route",
+            "operation": "mobility_analysis",
+            "timestamp": "2026-08-26T20:08:23.893835+00:00"
+          },
+          {
+            "stage": "evaluation",
+            "input_ref": "analysis:synthetic_refrigerated_route",
+            "output_ref": "evaluation:synthetic_refrigerated_route",
+            "operation": "evaluate_mobility",
+            "timestamp": "2026-08-26T20:08:23.893835+00:00"
+          },
+          {
+            "stage": "visualization",
+            "input_ref": "evaluation:synthetic_refrigerated_route",
+            "output_ref": "visualization:synthetic_refrigerated_route",
+            "operation": "deterministic_recommendation",
+            "timestamp": "2026-08-26T20:08:23.893835+00:00"
+          }
+        ],
+        "audit_events": [
+          {
+            "event_id": "45be5a9f-6b95-422a-b061-b64a46a2e4cd",
+            "timestamp": "2026-08-26T20:08:23.892835+00:00",
+            "actor": "demo-builder",
+            "operation": "dataset_ingestion",
+            "target": "synthetic_refrigerated_route",
+            "outcome": "started",
+            "correlation_id": "2d859a5a-d182-44c5-a15c-78c27f19ec37",
+            "details": {
+              "record_count": 6,
+              "source_format": "geojson"
+            }
+          },
+          {
+            "event_id": "c231b11c-9da6-48cd-b6cc-33f1b3040c71",
+            "timestamp": "2026-08-26T20:08:23.893835+00:00",
+            "actor": "demo-builder",
+            "operation": "quality_evaluation",
+            "target": "synthetic_refrigerated_route",
+            "outcome": "passed",
+            "correlation_id": "2d859a5a-d182-44c5-a15c-78c27f19ec37",
+            "details": {
+              "quality_score": 100.0,
+              "issue_count": 0
+            }
+          },
+          {
+            "event_id": "969ad2ba-48c2-451f-8cd8-496ba0e9677a",
+            "timestamp": "2026-08-26T20:08:23.893835+00:00",
+            "actor": "demo-builder",
+            "operation": "analysis_execution",
+            "target": "synthetic_refrigerated_route",
+            "outcome": "succeeded",
+            "correlation_id": "2d859a5a-d182-44c5-a15c-78c27f19ec37",
+            "details": {
+              "result_type": "mobility_analysis",
+              "metric_count": 4
+            }
+          },
+          {
+            "event_id": "e56e184f-1671-4685-bc74-1d68220c73b5",
+            "timestamp": "2026-08-26T20:08:23.893835+00:00",
+            "actor": "demo-builder",
+            "operation": "dataset_ingestion",
+            "target": "synthetic_refrigerated_route",
+            "outcome": "succeeded",
+            "correlation_id": "2d859a5a-d182-44c5-a15c-78c27f19ec37",
+            "details": {
+              "quality_status": "passed",
+              "analysis_result_type": "mobility_analysis",
+              "visualization_count": 8
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

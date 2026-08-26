@@ -1,0 +1,57 @@
+name: Validate platform
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m pytest -q
+      - run: python -m compileall -q data_pipeline.py verdatrace scripts
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - run: node --check frontend/app.js
+      - run: python -m json.tool frontend/data/platform_demo.json > /dev/null
+      - run: >-
+          python -c "import pathlib,yaml;
+          docs=list(yaml.safe_load_all(pathlib.Path('deployment.yaml').read_text()));
+          assert [doc['kind'] for doc in docs] == ['ServiceAccount', 'Deployment']"
+      - run: >-
+          python scripts/run_multimodal_flow.py
+          --input data/samples/open_meteo_cairo_2024-01-01_2024-01-03.json
+          --allowed-root data
+          --dataset-id open_meteo_cairo_historical
+          --task climate
+          --output /tmp/open_meteo_result.json
+
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.9.8"
+      - run: terraform fmt -check
+      - run: terraform init -backend=false
+      - run: terraform validate
+
+  containers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: docker build -t verdatrace-worker:test .
+      - run: docker build -t verdatrace-portal:test frontend

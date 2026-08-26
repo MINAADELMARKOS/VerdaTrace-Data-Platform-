@@ -1,7 +1,13 @@
+.env
+.venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
-.venv/
-.terraform/
-*.tfstate
-*.tfstate.*
+.coverage
+htmlcov/
+data/raw/*
+!data/raw/.gitkeep
+data/intermediate/*
+!data/intermediate/.gitkeep
+dist/
+node_modules/

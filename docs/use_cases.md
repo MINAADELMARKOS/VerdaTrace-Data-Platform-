@@ -1,119 +1,23 @@
-# VerdaTrace End-to-End Use Cases with Kaggle Data
+# End-to-end use cases
 
-The architecture serves technical scenarios where raw operational events must be ingested, governed, transformed, inspected for issues, and analysed. The examples below use huge public Kaggle datasets downloaded at runtime rather than committed to the repository.
-# EY End-to-End Use Cases with Real Data
+## Climate and environmental monitoring
 
-The architecture can serve many EY client scenarios where raw operational events must be ingested, governed, transformed, and analysed. The examples below use public datasets or public-data-shaped records so teams can run demonstrations without exposing client data.
+The committed Open-Meteo sample exercises JSON ingestion, timestamp/coordinate/weather semantics, WGS84 bounds, physical quality rules, descriptive and temporal statistics, suitability evaluation, point/proportional-symbol/animation recommendations, canvas trends, provenance, attribution, audit, and lineage.
 
-## 1. Mobility Expense Assurance
+## Refrigerated logistics route
 
-**Business problem:** Organisations reimburse employee travel and mobility costs, but finance teams need scalable controls to detect duplicate claims, inflated fares, and policy exceptions.
+The explicit synthetic GeoJSON fixture combines an ordered vehicle route with speed, distance, temperature, and humidity. The pipeline classifies logistics, mobility, sensor, environmental, temporal, numerical, event, and vector-geospatial categories. The portal shows points, route, bounds, tooltips, temporal filtering, and chart field selection.
 
-**Real data source:** Kaggle NYC yellow taxi trip data provides trip distance, fare, tip, tolls, timestamps, passenger counts, and location-zone IDs. These fields resemble the structure of corporate mobility or expense events.
+It is not presented as real operational data.
 
-**Detected issues:** `mobility_high_amount_per_mile`, `mobility_unusual_tip_ratio`, `negative_distance`, `possible_duplicate_event`.
-**Real data source:** NYC Taxi & Limousine Commission trip record data provides trip distance, fare, tip, tolls, timestamps, passenger counts, and location-zone IDs. These fields resemble the structure of corporate mobility or expense events.
+## Environmental sensor streaming
 
-**Architecture fit:**
+The selected Kaggle sensor source maps epoch timestamps, device IDs, Fahrenheit temperature, humidity, CO, LPG, smoke, light, and motion into Pub/Sub events. The source CSV is not committed. `scripts/kaggle_to_pubsub.py` waits for publish confirmation.
 
-1. Expense-management or mobility systems publish trip events to Pub/Sub.
-2. GKE workers validate amount, distance, and timestamp fields.
-3. Employee, vendor, or device identifiers are pseudonymised.
-4. BigQuery stores curated trips partitioned by ingestion date.
-5. Audit teams query anomalies, such as high fare-per-mile, weekend travel, duplicate transaction IDs, or missing receipt metadata.
+## Mobility expense assurance
 
-**Example analytics query:**
+NYC TLC trip records are retrieval-only and populate trip time, distance, fares, and zone identifiers. Compatibility flags detect negative distance, high amount per mile, unusual tips, and duplicates. A Parquet-capable batch loader remains a documented next step rather than a fake CSV implementation.
 
-```sql
-SELECT
-  event_id,
-  hashed_subject_id,
-  trip_distance_miles,
-  total_amount,
-  SAFE_DIVIDE(total_amount, NULLIF(trip_distance_miles, 0)) AS amount_per_mile
-FROM `PROJECT.verdatrace_data_engineering.processed_events`
-FROM `PROJECT.ey_data_engineering.processed_events`
-WHERE use_case = 'mobility_expense_assurance'
-  AND SAFE_DIVIDE(total_amount, NULLIF(trip_distance_miles, 0)) > 25
-ORDER BY amount_per_mile DESC;
-```
+## Privacy-safe retail events
 
-## 2. ESG Transport Emissions Reporting
-
-**Business problem:** Companies need transparent and repeatable emissions calculations for transport activity, especially where mobility, field service, and logistics data come from many systems.
-
-**Real data source:** Kaggle supply-chain/logistics datasets can be used to demonstrate distance-based Scope 3 transport estimation. Implementations can replace the demo feed with fleet, rail, air, or logistics-provider feeds.
-
-**Detected issues:** `esg_high_emissions`, `missing_category`, `possible_duplicate_event`.
-**Real data source:** NYC TLC trip distance and taxi-service metadata can be used to demonstrate distance-based Scope 3 transport estimation. Client implementations can replace the public event feed with fleet, rail, air, or logistics-provider feeds.
-
-**Architecture fit:**
-
-1. Transport events are published to Pub/Sub in near real time.
-2. The worker standardises distances and stores an estimated `co2e_kg` value.
-3. BigQuery partitions support monthly sustainability reporting and retention.
-4. Logs and metadata support assurance over calculation lineage.
-
-**Example analytics query:**
-
-```sql
-SELECT
-  DATE(event_timestamp) AS activity_date,
-  item_category AS service_type,
-  ROUND(SUM(co2e_kg), 2) AS estimated_co2e_kg
-FROM `PROJECT.verdatrace_data_engineering.processed_events`
-FROM `PROJECT.ey_data_engineering.processed_events`
-WHERE use_case = 'esg_transport_emissions'
-GROUP BY activity_date, service_type
-ORDER BY activity_date;
-```
-
-## 3. Privacy-Safe Retail Transaction Analytics
-
-**Business problem:** Retailers need customer, category, and basket analytics, but analytics platforms should avoid storing direct customer identifiers unless strictly necessary.
-
-**Real data source:** Kaggle multi-category ecommerce behaviour data and retail transaction datasets share a common event structure: customer ID, event time, category, and price.
-
-**Detected issues:** `privacy_direct_identifier_present`, `missing_category`, `negative_amount`, `missing_amount`.
-**Real data source:** Public retail basket datasets and POS exports share a common transaction structure: customer ID, transaction amount, timestamp, and category. This repository includes a minimal JSON event contract that mirrors that structure.
-
-**Architecture fit:**
-
-1. POS, ecommerce, or loyalty applications publish transaction events.
-2. The worker hashes `user_id`, drops raw identifiers, and keeps only category and monetary fields.
-3. BigQuery supports sales, demand, and anomaly analytics without exposing direct identifiers.
-4. Retention and audit logs support GDPR accountability obligations.
-
-**Example analytics query:**
-
-```sql
-SELECT
-  item_category,
-  COUNT(*) AS transactions,
-  ROUND(SUM(total_amount), 2) AS revenue
-FROM `PROJECT.verdatrace_data_engineering.processed_events`
-FROM `PROJECT.ey_data_engineering.processed_events`
-WHERE use_case = 'retail_transaction_privacy'
-GROUP BY item_category
-ORDER BY revenue DESC;
-```
-
-## Canonical processed event contract
-
-All use cases land in a shared BigQuery table using the following canonical fields:
-
-| Field | Type | Description |
-| --- | --- | --- |
-| `event_id` | STRING | Upstream event or transaction identifier. |
-| `use_case` | STRING | Use-case label used for downstream views and controls. |
-| `hashed_subject_id` | STRING | Salted SHA-256 hash of the person, vendor, or customer identifier. |
-| `event_timestamp` | TIMESTAMP | Business event timestamp. |
-| `ingestion_timestamp` | TIMESTAMP | Time the worker processed the message. |
-| `item_category` | STRING | Product, service, or activity category. |
-| `currency` | STRING | ISO currency code where monverdatrace is present. |
-| `currency` | STRING | ISO currency code where money is present. |
-| `total_amount` | FLOAT | Normalised transaction amount. |
-| `trip_distance_miles` | FLOAT | Distance field used for mobility and ESG calculations. |
-| `co2e_kg` | FLOAT | Estimated emissions when distance data is available. |
-| `source_system` | STRING | Name of the originating system or dataset. |
-| `quality_flags` | STRING | Comma-separated data-quality warnings. |
+The original retail flow remains compatible. Direct identifiers are not persisted in curated rows; subject IDs are salted and hashed, and direct email/phone presence produces a compatibility quality flag.
