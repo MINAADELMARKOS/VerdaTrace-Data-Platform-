@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: "24"
       - run: node --check frontend/app.js
+      - run: node --check frontend/dataset-utils.js
       - run: node tests/frontend_dataset_utils.test.js
       - run: python -m json.tool frontend/data/platform_demo.json > /dev/null
       - run: >-
