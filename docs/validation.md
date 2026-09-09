@@ -29,8 +29,8 @@ GitHub Actions runs the same test/compile/JSON flow, Terraform validation, and b
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Full pytest regression | Passed | 82 passed, 1 skipped, 1 Python 3.10 Google API warning |
-| Full supplied-pack golden quality comparison | Passed | 6 focused tests passed with `VERDATARACE_PACK_ROOT` set; all expected exact/approximate targets passed |
+| Full pytest regression | Passed | 84 passed, 1 skipped, 1 Python 3.10 Google API warning |
+| Full supplied-pack golden quality comparison | Passed | 7 focused tests passed with `VERDATARACE_PACK_ROOT` set; all expected exact/approximate targets passed |
 | Cohesive payload build | Passed | 12 pack datasets + 2 existing datasets; 60 Zone 360 rows; 5,000 sensor-health rows; 300-record preview cap |
 | Portal payload contract | Passed | `verdatrace_portal_payload_v2`; JSON parsed; platform rollups, lineage, RBAC/audit, and quality validation present |
 | Static portal HTTP smoke test | Passed | `GET /` and `GET /data/platform_demo.json` returned HTTP 200 from a local server |
