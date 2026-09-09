@@ -125,7 +125,9 @@ def _parse_time(value: Any) -> Optional[datetime]:
 
 def _normalize_xml_record(element: ET.Element) -> Dict[str, Any]:
     raw = {child.tag: child.text for child in element}
-    record: Dict[str, Any] = {"measurement_id": element.attrib.get("measurement_id"), **raw}
+    # Canonical lowercase aliases avoid duplicate case-insensitive keys in
+    # downstream JSON consumers while raw XML names remain traceable.
+    record: Dict[str, Any] = {"measurement_id": element.attrib.get("measurement_id"), "raw_fields": raw}
     aliases = {"SiteID": "site_id", "SensorID": "sensor_id", "Timestamp": "event_time", "Metric": "metric", "Unit": "unit", "Value": "value", "CalibrationDate": "calibration_date", "EquipmentState": "equipment_state"}
     for source, target in aliases.items():
         if source in raw:
