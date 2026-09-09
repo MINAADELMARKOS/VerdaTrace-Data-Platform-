@@ -1,0 +1,12 @@
+source_dataset,target_dataset,relationship
+zones,mobility_stream,zone_id enrich
+vehicles,mobility_stream,vehicle_id lookup
+sites,logistics_shipments,pickup/dropoff site lookup
+sensors,iot_sensor_telemetry,sensor schema/unit lookup
+sites,industrial_measurements,site/equipment context
+zones,climate_environment,spatial aggregation
+sites,spatial_assets,site geometry anchor
+mobility_stream,analytical_evaluation,mobility accessibility features
+climate_environment,analytical_evaluation,environmental score features
+iot_sensor_telemetry,analytical_evaluation,data quality/readiness features
+spatial_assets,analytical_evaluation,risk/intersection features

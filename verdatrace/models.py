@@ -170,6 +170,10 @@ class DatasetManifest:
     ingestion_timestamp: str
     processing_timestamp: str
     fixture: Optional[bool]
+    checksum_sha256: Optional[str] = None
+    source_system: Optional[str] = None
+    schema_version: Optional[str] = None
+    ingestion_status: Optional[str] = None
 
 
 @dataclass(frozen=True)

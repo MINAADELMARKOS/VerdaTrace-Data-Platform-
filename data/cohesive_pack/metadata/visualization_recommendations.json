@@ -1,0 +1,145 @@
+[
+  {
+    "dataset": "logistics_shipments",
+    "recommended_visuals": [
+      "KPI cards",
+      "delivery SLA trend",
+      "status funnel",
+      "route/OD map"
+    ],
+    "dimensions": [
+      "status",
+      "priority",
+      "pickup_site_id",
+      "dropoff_site_id"
+    ],
+    "measures": [
+      "distance_km",
+      "actual_duration_min",
+      "weight_kg"
+    ],
+    "interaction": [
+      "time filter",
+      "zone filter",
+      "shipment drill-through"
+    ],
+    "reason": "Operational delivery performance needs status, time, and route context."
+  },
+  {
+    "dataset": "mobility_stream",
+    "recommended_visuals": [
+      "live point map",
+      "trajectory map",
+      "speed time-series",
+      "congestion heatmap"
+    ],
+    "dimensions": [
+      "vehicle_id",
+      "zone_id"
+    ],
+    "measures": [
+      "speed_kph",
+      "heading_deg"
+    ],
+    "interaction": [
+      "vehicle selector",
+      "time playback",
+      "zone brushing"
+    ],
+    "reason": "High-frequency GPS data is best understood spatially and temporally."
+  },
+  {
+    "dataset": "iot_sensor_telemetry",
+    "recommended_visuals": [
+      "sensor time-series",
+      "anomaly scatter",
+      "site heatmap",
+      "quality KPI cards"
+    ],
+    "dimensions": [
+      "sensor_type",
+      "site_id",
+      "zone_id"
+    ],
+    "measures": [
+      "value",
+      "battery_pct"
+    ],
+    "interaction": [
+      "sensor/site selector",
+      "anomaly toggle",
+      "time zoom"
+    ],
+    "reason": "Telemetry requires trend, anomaly, and health monitoring."
+  },
+  {
+    "dataset": "climate_environment",
+    "recommended_visuals": [
+      "climate trend",
+      "PM2.5 map",
+      "weather matrix",
+      "threshold alerts"
+    ],
+    "dimensions": [
+      "zone_id"
+    ],
+    "measures": [
+      "temperature_c",
+      "humidity_pct",
+      "pm25_ugm3",
+      "precipitation_mm"
+    ],
+    "interaction": [
+      "date range",
+      "metric selector",
+      "zone filter"
+    ],
+    "reason": "Environmental exposure combines spatial distribution and time variation."
+  },
+  {
+    "dataset": "spatial_assets",
+    "recommended_visuals": [
+      "layered GIS map",
+      "risk polygons",
+      "site points",
+      "spatial selection"
+    ],
+    "dimensions": [
+      "asset_type",
+      "zone_id"
+    ],
+    "measures": [
+      "priority_score"
+    ],
+    "interaction": [
+      "layer toggle",
+      "map selection",
+      "linked filtering"
+    ],
+    "reason": "Geometry is the primary analytical structure."
+  },
+  {
+    "dataset": "analytical_evaluation",
+    "recommended_visuals": [
+      "executive KPI cards",
+      "suitability map",
+      "score decomposition",
+      "recommendation table"
+    ],
+    "dimensions": [
+      "zone_id",
+      "recommendation"
+    ],
+    "measures": [
+      "overall_suitability_score",
+      "risk_penalty",
+      "data_quality_score"
+    ],
+    "interaction": [
+      "zone drill-down",
+      "score explanation",
+      "recommendation filter"
+    ],
+    "reason": "Executives need explainable ranking and the drivers behind recommendations."
+  }
+]

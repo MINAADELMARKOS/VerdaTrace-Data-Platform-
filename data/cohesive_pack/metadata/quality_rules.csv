@@ -1,0 +1,12 @@
+dataset,field,rule_type,rule
+logistics_shipments,shipment_id,uniqueness,must be unique
+logistics_shipments,weight_kg,range,> 0
+logistics_shipments,status,domain,created|assigned|picked_up|delivered|cancelled
+mobility_stream,speed_kph,range,0..180
+mobility_stream,latitude/longitude,geometry,valid WGS84 coordinates
+iot_sensor_telemetry,sensor_id,referential,must exist in sensors.csv
+iot_sensor_telemetry,unit,semantic,must match sensor expected_unit
+industrial_measurements,CalibrationDate,completeness,required for controlled sensors
+climate_environment,humidity_pct,range,0..100
+climate_environment,precipitation_mm,range,>= 0
+spatial_assets,geometry,geometry,non-null and topologically valid

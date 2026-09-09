@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import xml.etree.ElementTree as ET
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -13,7 +14,7 @@ from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence
 
 from .errors import ExternalSourceError, InvalidSchemaError, UnsupportedCrsError, UnsupportedFormatError
 
-SUPPORTED_SUFFIXES = {".csv", ".json", ".ndjson", ".geojson", ".pbf", ".tif", ".tiff", ".cog", ".nc", ".nc4", ".netcdf", ".zarr"}
+SUPPORTED_SUFFIXES = {".csv", ".json", ".ndjson", ".jsonl", ".geojson", ".xml", ".pbf", ".tif", ".tiff", ".cog", ".nc", ".nc4", ".netcdf", ".zarr"}
 
 
 def validate_local_path(path: str | Path, allowed_roots: Sequence[str | Path]) -> Path:
@@ -108,7 +109,7 @@ def iter_records(
                     return
         return
 
-    if suffix == ".ndjson":
+    if suffix in {".ndjson", ".jsonl"}:
         with source.open("r", encoding="utf-8") as handle:
             for line_number, line in enumerate(handle, start=1):
                 if not line.strip():
@@ -162,6 +163,26 @@ def iter_records(
             yielded += 1
             if max_records and yielded >= max_records:
                 return
+        return
+
+    if suffix == ".xml":
+        # Generic XML ingestion intentionally flattens one repeating child level;
+        # provider-specific schemas can add a richer adapter without changing
+        # the approved-root and bounded-record contract.
+        for _, element in ET.iterparse(source, events=("end",)):
+            children = list(element)
+            if not children:
+                continue
+            record = {"record_id": element.attrib.get("id") or element.attrib.get("measurement_id")}
+            for child in children:
+                tag = child.tag.rsplit("}", 1)[-1]
+                record[tag] = child.text
+            if any(value not in (None, "") for value in record.values()):
+                yield record
+                yielded += 1
+                if max_records and yielded >= max_records:
+                    return
+            element.clear()
         return
 
     if source.name.lower().endswith(".osm.pbf"):

@@ -1,0 +1,9 @@
+dataset_name,structural_category,ingestion_mode,expected_records,expected_fields,contains_geometry,contains_event_time,business_domain,key_field,time_field
+logistics_shipments,tabular,batch,100000,12.0,False,True,logistics,shipment_id,created_at
+mobility_stream,semi-structured,stream,120000,9.0,True,True,mobility,event_id,event_time
+iot_sensor_telemetry,semi-structured,stream,150000,11.0,False,True,iot,telemetry_id,event_time
+industrial_measurements,hierarchical,batch,30000,8.0,False,True,industrial,measurement_id,Timestamp
+climate_environment,tabular,batch,80000,9.0,False,True,climate,observation_id,observed_at
+spatial_assets,geospatial,batch,8000,,True,False,geospatial,asset_id,
+analytical_evaluation,tabular,batch,20000,10.0,False,True,evaluation,evaluation_id,evaluation_time
+governance_access_audit,semi-structured,stream,20000,9.0,False,True,governance,audit_id,event_time

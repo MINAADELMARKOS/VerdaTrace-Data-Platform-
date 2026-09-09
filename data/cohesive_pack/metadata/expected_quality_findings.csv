@@ -1,0 +1,21 @@
+dataset,issue,expected_count,quality_dimension
+logistics_shipments,missing dropoff_site_id,1200,completeness
+logistics_shipments,negative weight_kg,800,range
+logistics_shipments,invalid status DELIVERD,500,domain
+logistics_shipments,zero actual_duration_min,300,range
+logistics_shipments,duplicate shipment_id injected,250,uniqueness
+mobility_stream,unrealistic speed > 180 kph,~121,range
+mobility_stream,coordinate swap anomalies,~78,geometry
+mobility_stream,missing vehicle_id,~92,completeness
+iot_sensor_telemetry,out-of-range sensor value,~185,range
+iot_sensor_telemetry,unit mismatch,~128,semantic
+iot_sensor_telemetry,null sensor value,~88,completeness
+iot_sensor_telemetry,unknown sensor_id,~76,referential
+industrial_measurements,unknown unit,~42,semantic
+industrial_measurements,extreme value,~49,range
+industrial_measurements,missing calibration date,~34,completeness
+climate_environment,humidity > 100,800,range
+climate_environment,missing temperature_c,600,completeness
+climate_environment,negative precipitation,300,range
+spatial_assets,null geometry,~7,geometry
+spatial_assets,self-intersecting polygons,~6,geometry

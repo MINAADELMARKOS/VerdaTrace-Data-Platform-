@@ -15,6 +15,7 @@ if str(ROOT) not in sys.path:
 
 from verdatrace.registered import run_registered_dataset
 from verdatrace.registry import DatasetRegistry
+from verdatrace.cohesive import build_cohesive_payload
 
 DEFAULT_OUTPUT = ROOT / "frontend" / "data" / "platform_demo.json"
 
@@ -25,6 +26,7 @@ def build_demo_payload(
     registry_directory: Optional[str | Path] = None,
     actor: str = "demo-builder",
     preview_limit: int | None = 5000,
+    pack_root: Optional[str | Path] = None,
 ) -> Dict[str, Any]:
     """Build one normalized entry per enabled registry definition.
 
@@ -44,11 +46,25 @@ def build_demo_payload(
         for config in registry
         if config.enabled
     ]
-    return {
+    payload: Dict[str, Any] = {
         "schema_version": "verdatrace_portal_payload_v1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "datasets": datasets,
     }
+    # The cohesive pack is optional so existing registry-only deployments remain
+    # backward compatible.  Raw files are intentionally supplied at build time.
+    resolved_pack = Path(pack_root).resolve() if pack_root is not None else None
+    if resolved_pack is None and root == ROOT:
+        import os
+
+        configured = os.environ.get("VERDATARACE_PACK_ROOT")
+        resolved_pack = Path(configured).resolve() if configured else None
+    if resolved_pack is not None:
+        cohesive = build_cohesive_payload(resolved_pack, preview_limit=min(preview_limit or 300, 500))
+        payload["schema_version"] = "verdatrace_portal_payload_v2"
+        payload["datasets"].extend(cohesive["datasets"])
+        payload["platform"] = cohesive["platform"]
+    return payload
 
 
 def write_demo_payload(payload: Dict[str, Any], output: str | Path) -> Path:
@@ -66,6 +82,11 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--actor", default="demo-builder")
     parser.add_argument(
+        "--pack-root",
+        type=Path,
+        help="path to the extracted VerdaTrace Cohesive Data Pack (raw/ and metadata/)",
+    )
+    parser.add_argument(
         "--preview-limit",
         type=int,
         default=5000,
@@ -81,6 +102,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         registry_directory=args.registry,
         actor=args.actor,
         preview_limit=args.preview_limit,
+        pack_root=args.pack_root,
     )
     output = write_demo_payload(payload, args.output)
     print(f"wrote {len(payload['datasets'])} normalized datasets to {output}")

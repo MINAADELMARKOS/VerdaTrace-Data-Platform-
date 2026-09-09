@@ -17,3 +17,13 @@ For larger or operational sources:
 - expose actual input bytes, records/features, pixels, duration, memory, and output size from instrumentation when measured.
 
 The frontend payload is a preview contract. Its `manifest.record_count` describes the processed payload input, and the UI must not imply that a bounded map represents an entire production dataset when sampling is active.
+
+## Cohesive pack run
+
+The supplied synthetic pack was executed locally through the cohesive runner.
+The pack README declares 12 files and 537,160 records in total; the generated
+payload stores a 300-record head preview per dataset and full-data aggregate
+rollups. Runtime and exact byte counts are emitted in `platform.processing` and
+each dataset manifest when the builder is run; no throughput or memory benchmark
+is claimed here because those measurements depend on the host and are not part
+of the pack's contract.

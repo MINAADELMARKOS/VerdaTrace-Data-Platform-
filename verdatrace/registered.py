@@ -17,6 +17,8 @@ _DISPLAY_FORMATS = {
     "csv": "CSV",
     "json": "JSON",
     "ndjson": "NDJSON",
+    "jsonl": "JSONL",
+    "xml": "XML",
     "geojson": "GeoJSON",
     "osm_pbf": "OSM PBF",
     "tif": "GeoTIFF",

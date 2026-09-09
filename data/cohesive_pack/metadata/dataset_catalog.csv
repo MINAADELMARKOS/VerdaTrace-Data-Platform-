@@ -1,0 +1,9 @@
+dataset_name,format,domain,description,primary_key,event_time_field,classification,semantic_tags,evidence_source,catalog_confidence
+logistics_shipments,CSV,logistics,shipment-level movement and SLA tracking,shipment_id,created_at,restricted,"shipment,delivery,SLA,route",synthetic_generator_v1 + schema/rule validation,0.99
+mobility_stream,JSONL stream,mobility,vehicle GPS events,event_id,event_time,restricted,"vehicle,GPS,movement,traffic",synthetic_generator_v1 + schema/rule validation,0.98
+iot_sensor_telemetry,JSONL stream,iot,environmental and industrial telemetry,telemetry_id,event_time,internal,"sensor,telemetry,environment,industrial",synthetic_generator_v1 + schema/rule validation,0.99
+industrial_measurements,XML,industrial,equipment measurements and maintenance state,measurement_id,Timestamp,internal,"equipment,maintenance,measurement,calibration",synthetic_generator_v1 + schema/rule validation,0.96
+climate_environment,CSV,climate,weather and air-quality observations,observation_id,observed_at,internal,"weather,air-quality,environment,time-series",synthetic_generator_v1 + schema/rule validation,0.98
+spatial_assets,GeoJSON,geospatial,"sites, service areas, and risk/catchment polygons",asset_id,,internal,"GIS,geometry,service-area,risk-zone",synthetic_generator_v1 + schema/rule validation,0.97
+analytical_evaluation,CSV,evaluation,zone suitability and readiness scoring,evaluation_id,evaluation_time,confidential,"suitability,readiness,risk,recommendation",synthetic_generator_v1 + schema/rule validation,0.95
+governance_access_audit,JSONL,governance,access decisions and audit events,audit_id,event_time,confidential,"audit,RBAC,access,lineage-control",synthetic_generator_v1 + schema/rule validation,0.99

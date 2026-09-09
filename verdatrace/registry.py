@@ -14,7 +14,7 @@ from .errors import InvalidSchemaError, UnsupportedFormatError
 from .models import DatasetConfig, DatasetGovernanceConfig, DatasetQualityConfig, DatasetSourceConfig
 
 SCHEMA_VERSION = "verdatrace_dataset_config_v1"
-SUPPORTED_SOURCE_FORMATS = {"csv", "json", "ndjson", "geojson", "osm_pbf", "tif", "tiff", "cog", "netcdf", "zarr"}
+SUPPORTED_SOURCE_FORMATS = {"csv", "json", "ndjson", "jsonl", "xml", "geojson", "osm_pbf", "tif", "tiff", "cog", "netcdf", "zarr"}
 SUPPORTED_DATASET_TYPES = {"tabular", "vector", "raster", "streaming"}
 SUPPORTED_TASKS = {
     "auto",
@@ -66,6 +66,8 @@ _FORMAT_SUFFIXES = {
     "csv": {".csv"},
     "json": {".json"},
     "ndjson": {".ndjson"},
+    "jsonl": {".jsonl"},
+    "xml": {".xml"},
     "geojson": {".geojson"},
     "osm_pbf": {".pbf"},
     "tif": {".tif"},

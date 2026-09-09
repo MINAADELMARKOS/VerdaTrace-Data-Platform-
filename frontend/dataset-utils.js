@@ -182,6 +182,10 @@
       ["License", manifest.license ?? governance.license ?? attribution.license],
       ["Ingested", manifest.ingestion_timestamp ?? governance.ingestion_timestamp],
       ["Processed", manifest.processing_timestamp],
+      ["Checksum", manifest.checksum_sha256],
+      ["Source system", manifest.source_system],
+      ["Schema version", manifest.schema_version],
+      ["Ingestion status", manifest.ingestion_status],
       ["Fixture", manifest.fixture ?? dataset?.fixture, "boolean"],
     ];
     return values

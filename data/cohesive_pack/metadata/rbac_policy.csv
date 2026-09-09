@@ -1,0 +1,10 @@
+role,resource_pattern,actions,allowed
+data_engineer,raw/*,READ|WRITE|PROFILE|QUALITY_CHECK,True
+data_steward,raw/*,READ|PROFILE|QUALITY_CHECK|CATALOG_UPDATE,True
+analyst,curated/*,READ|EXPORT,True
+executive_viewer,serving/analytical_evaluation,READ,True
+executive_viewer,raw/*,READ,False
+executive_viewer,*,WRITE|DELETE_REQUEST|CATALOG_UPDATE,False
+service_account_ingest,raw/*,WRITE,True
+service_account_ingest,curated/*,READ|EXPORT,False
+platform_admin,*,READ|WRITE|PROFILE|QUALITY_CHECK|CATALOG_UPDATE,True

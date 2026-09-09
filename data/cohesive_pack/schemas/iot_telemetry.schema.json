@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IoT Sensor Telemetry",
+  "type": "object",
+  "required": [
+    "telemetry_id",
+    "event_time",
+    "sensor_id",
+    "site_id",
+    "sensor_type",
+    "value",
+    "unit"
+  ],
+  "properties": {
+    "telemetry_id": {
+      "type": "string"
+    },
+    "event_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sensor_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "site_id": {
+      "type": "string"
+    },
+    "zone_id": {
+      "type": "string"
+    },
+    "sensor_type": {
+      "type": "string"
+    },
+    "value": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "unit": {
+      "type": "string"
+    },
+    "battery_pct": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    }
+  }
+}

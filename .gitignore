@@ -9,5 +9,8 @@ data/raw/*
 !data/raw/.gitkeep
 data/intermediate/*
 !data/intermediate/.gitkeep
+data/cohesive_pack/raw/*
+!data/cohesive_pack/raw/.gitkeep
+*.zip
 dist/
 node_modules/

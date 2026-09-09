@@ -563,14 +563,17 @@ function renderQuality() {
   }
   issues.forEach((issue) => {
     const card = element("div", "quality-issue " + issue.severity);
+    const issueLabel = issue.code || issue.issue || "quality_issue";
+    const issueCount = Array.isArray(issue.row_indexes) ? issue.row_indexes.length : issue.count;
+    const issueMessage = issue.message || issue.reason || issue.expected_condition || "Quality rule was triggered.";
     card.append(
       element(
         "strong",
         "",
-        titleCase(issue.code) + (Array.isArray(issue.row_indexes) ? " · " + issue.row_indexes.length + " rows" : "")
+        titleCase(issueLabel) + (DatasetUtils.hasValue(issueCount) ? " · " + formatNumber(issueCount) + " rows" : "")
       )
     );
-    card.append(element("span", "", issue.message));
+    card.append(element("span", "", issueMessage));
     container.append(card);
   });
 }
@@ -700,6 +703,23 @@ function renderManifest() {
   });
 }
 
+function renderAnalysisSummary() {
+  const panel = byId("analysis-summary-panel");
+  const container = byId("analysis-summary");
+  if (!panel || !container) return;
+  clear(container);
+  const values = state.dataset?.outcome?.analysis?.computed_values || {};
+  const entries = Object.entries(values).filter(([key, value]) => key !== "source_sha256" && DatasetUtils.hasValue(value));
+  panel.classList.toggle("hidden", entries.length === 0);
+  entries.slice(0, 12).forEach(([key, value]) => {
+    const card = element("div", "analysis-metric");
+    card.append(element("span", "", titleCase(key)));
+    const display = typeof value === "number" ? formatNumber(value, 2) : typeof value === "object" ? JSON.stringify(value) : String(value);
+    card.append(element("strong", "", display));
+    container.append(card);
+  });
+}
+
 function renderExecutiveKpis() {
   const panel = byId("executive-kpi-panel");
   const container = byId("executive-kpis");
@@ -724,6 +744,132 @@ function renderExecutiveKpis() {
     if (provenance.length) card.append(element("small", "executive-kpi-provenance", provenance.join(" · ")));
     container.append(card);
   });
+}
+
+function renderPlatformOverview(platform) {
+  const overview = byId("platform-overview");
+  if (!overview) return;
+  if (!platform || typeof platform !== "object") {
+    overview.classList.add("hidden");
+    return;
+  }
+  overview.classList.remove("hidden");
+  const source = platform.source_pack || {};
+  byId("pack-status").textContent = source.fixture === true ? "Synthetic pack · derived" : "Pack loaded";
+  const kpiContainer = byId("platform-kpis");
+  clear(kpiContainer);
+  asArray(platform.executive_kpis).forEach((kpi) => {
+    const card = element("article", "executive-kpi");
+    const value = kpi.value === null || kpi.value === undefined ? "—" : isFiniteValue(kpi.value) ? formatNumber(kpi.value, 2) : String(kpi.value);
+    card.append(element("span", "executive-kpi-label", kpi.label || kpi.id || "KPI"));
+    card.append(element("strong", "executive-kpi-value", value + (kpi.unit ? " " + kpi.unit : "")));
+    if (kpi.description) card.append(element("p", "executive-kpi-description", kpi.description));
+    if (kpi.source_metric) card.append(element("small", "executive-kpi-provenance", "Source: " + kpi.source_metric));
+    kpiContainer.append(card);
+  });
+  if (!kpiContainer.childElementCount) kpiContainer.append(element("p", "panel-empty", "No executive KPIs were produced."));
+
+  const zones = asArray(platform.zone_360);
+  const zoneSelect = byId("zone-select");
+  clear(zoneSelect);
+  zones.forEach((zone) => {
+    const option = element("option", "", zone.zone_id + (zone.city ? " · " + zone.city : ""));
+    option.value = zone.zone_id;
+    zoneSelect.append(option);
+  });
+  const requestedZone = zones[0]?.zone_id;
+  const renderZone = (zoneId) => {
+    const zone = zones.find((item) => item.zone_id === zoneId) || zones[0];
+    if (!zone) {
+      byId("zone-detail").textContent = "No zone rollup is available.";
+      return;
+    }
+    zoneSelect.value = zone.zone_id;
+    const detail = byId("zone-detail");
+    clear(detail);
+    const heading = element("div", "zone-detail-heading");
+    heading.append(element("strong", "", zone.zone_id + (zone.zone_name ? " · " + zone.zone_name : "")));
+    heading.append(element("span", "status-pill " + (zone.recommendation === "recommended" ? "passed" : zone.recommendation === "avoid" ? "failed" : "warning"), titleCase(zone.recommendation || "not evaluated")));
+    detail.append(heading);
+    const cells = [
+      ["Suitability", zone.scores?.suitability, "%"], ["Data quality", zone.scores?.data_quality, "%"],
+      ["Environmental risk", zone.environment?.environmental_risk_score, "%"], ["Shipments", zone.logistics?.shipment_count, ""],
+      ["Mobility events", zone.mobility?.event_count, ""], ["Sensor anomalies", zone.sensors?.anomaly_pct, "%"],
+      ["PM2.5", zone.environment?.average_pm25_ugm3, " µg/m³"], ["GIS features", zone.gis?.asset_count, ""],
+    ];
+    const grid = element("div", "zone-detail-grid");
+    cells.forEach(([label, value, unit]) => {
+      const cell = element("div", "zone-detail-cell");
+      cell.append(element("span", "", label));
+      cell.append(element("strong", "", isFiniteValue(value) ? formatNumber(value, 2) + unit : "—"));
+      grid.append(cell);
+    });
+    detail.append(grid);
+    const explanation = zone.explanation || {};
+    if (asArray(explanation.positive_drivers).length || asArray(explanation.negative_drivers).length) {
+      detail.append(element("p", "zone-explanation", "Positive: " + (asArray(explanation.positive_drivers).join(", ") || "none") + " · Watch: " + (asArray(explanation.negative_drivers).join(", ") || "none")));
+    }
+  };
+  zoneSelect.addEventListener("change", () => renderZone(zoneSelect.value));
+  renderZone(requestedZone);
+
+  const recommendations = byId("zone-recommendations");
+  clear(recommendations);
+  asArray(platform.recommendations).forEach((zone) => {
+    const row = document.createElement("tr");
+    row.append(element("td", "", zone.zone_id));
+    row.append(element("td", "", isFiniteValue(zone.scores?.suitability) ? formatNumber(zone.scores.suitability, 1) + "%" : "—"));
+    row.append(element("td", "", isFiniteValue(zone.environment?.environmental_risk_score) ? formatNumber(zone.environment.environmental_risk_score, 1) + "%" : "—"));
+    row.append(element("td", "", titleCase(zone.recommendation || "not evaluated")));
+    const evidence = zone.explanation?.evidence || {};
+    row.append(element("td", "", [evidence.shipments ? formatNumber(evidence.shipments) + " shipments" : null, evidence.mobility_events ? formatNumber(evidence.mobility_events) + " GPS" : null].filter(Boolean).join(" · ") || "—"));
+    row.addEventListener("click", () => { zoneSelect.value = zone.zone_id; renderZone(zone.zone_id); });
+    recommendations.append(row);
+  });
+
+  const quality = platform.quality_summary || {};
+  const qualityPill = byId("pack-quality-pill");
+  qualityPill.textContent = isFiniteValue(quality.overall_score) ? formatNumber(quality.overall_score, 1) + "%" : "—";
+  qualityPill.className = "status-pill " + (quality.overall_score >= 80 ? "passed" : quality.overall_score >= 60 ? "warning" : "failed");
+  const qualityContainer = byId("pack-quality-summary");
+  clear(qualityContainer);
+  const qualityRows = Object.entries(quality.datasets || {});
+  qualityRows.forEach(([id, result]) => {
+    const row = element("div", "pack-quality-row");
+    row.append(element("strong", "", titleCase(id)));
+    row.append(element("span", "", (isFiniteValue(result.score) ? formatNumber(result.score, 1) + "%" : "—") + " · " + titleCase(result.status || "not evaluated")));
+    qualityContainer.append(row);
+  });
+  const comparisons = asArray(quality.expected_findings_validation);
+  const reviewCount = comparisons.filter((item) => item.validation_status !== "passed").length;
+  qualityContainer.append(element("p", "chart-summary", comparisons.length + " golden quality targets checked · " + reviewCount + " require review"));
+
+  const lineage = byId("platform-lineage");
+  clear(lineage);
+  asArray(platform.lineage?.edges).forEach((edge) => {
+    const item = element("div", "lineage-edge");
+    item.append(element("strong", "", (edge.source_dataset || "source") + " → " + (edge.target_dataset || "target")));
+    item.append(element("small", "", edge.relationship || "derived relationship"));
+    lineage.append(item);
+  });
+  if (!lineage.childElementCount) lineage.append(element("p", "panel-empty", "No cross-domain lineage edges are available."));
+
+  const audit = platform.governance?.audit_summary || {};
+  const auditContainer = byId("platform-audit");
+  clear(auditContainer);
+  [["Audit records", audit.records], ["Allowed", audit.allowed], ["Denied", audit.denied], ["Roles observed", Object.keys(audit.by_role || {}).length]].forEach(([label, value]) => {
+    const row = element("div", "audit-metric");
+    row.append(element("span", "", label));
+    row.append(element("strong", "", formatNumber(value)));
+    auditContainer.append(row);
+  });
+  asArray(audit.sample).slice(0, 5).forEach((event) => {
+    const row = element("div", "audit-event");
+    row.append(element("strong", "", (event.principal_id || "principal") + " · " + (event.action || "action")));
+    row.append(element("small", "", [event.role, event.dataset, event.decision, event.reason].filter(Boolean).join(" · ") || "audit detail unavailable"));
+    auditContainer.append(row);
+  });
+  auditContainer.append(element("p", "chart-summary", platform.governance?.least_privilege || "Least-privilege policy metadata was not provided."));
 }
 
 function renderEmptyWorkspace(title, detail) {
@@ -752,6 +898,7 @@ function renderEmptyWorkspace(title, detail) {
   clear(byId("governance-list"));
   byId("audit-summary").textContent = "No governance or audit records are available.";
   renderManifest();
+  renderAnalysisSummary();
   renderProcessing();
   renderExecutiveKpis();
 }
@@ -785,6 +932,7 @@ function selectDataset(datasetId, options = {}) {
   renderLineage();
   renderGovernance();
   renderManifest();
+  renderAnalysisSummary();
   renderExecutiveKpis();
   if (options.updateUrl) updateDatasetUrl(selected.id);
   return selected;
@@ -856,6 +1004,7 @@ async function start() {
     const payload = await response.json();
     if (!payload || !Array.isArray(payload.datasets)) throw new Error("Payload must contain a datasets array");
     state.payload = { ...payload, datasets: DatasetUtils.datasetsFromPayload(payload) };
+    renderPlatformOverview(payload.platform);
     initMap();
     bindControls();
     renderCatalogFilters();

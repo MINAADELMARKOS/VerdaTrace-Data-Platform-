@@ -12,6 +12,14 @@ Adding a supported dataset should normally require a source and one YAML definit
 6. Run `python scripts/build_demo.py`. The registry is discovered in filename order; every enabled definition runs through ingestion → profile → quality → analytics → evaluation → visualization → lineage → governance and becomes one payload entry.
 7. Run `python -m pytest -q`, `node --check frontend/app.js`, and `node tests/frontend_dataset_utils.test.js` before publishing.
 
+For an uploaded CSV, JSON/JSONL, XML, or GeoJSON file that does not yet have a
+domain adapter, call `verdatrace.cohesive.ingest_and_profile_file(...)`. It
+detects the existing safe reader, counts the full stream, emits checksum and
+bounded-preview metadata, and returns next steps for applying configured
+quality rules and registering the result. Existing registry definitions remain
+the preferred governed execution path; the hook does not bypass path or URL
+validation.
+
 ## Minimal definition
 
 ```yaml

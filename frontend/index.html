@@ -31,7 +31,9 @@
       <span><strong>VerdaTrace</strong><small>Multimodal data platform</small></span>
     </a>
     <nav aria-label="Primary navigation">
+      <a href="#platform-overview">Executive</a>
       <a href="#workspace">Workspace</a>
+      <a href="#platform-overview">Cross-domain</a>
       <a href="#lineage">Lineage</a>
       <a href="#governance">Governance</a>
       <a href="https://github.com/MINAADELMARKOS/VerdaTrace-Data-Platform-" target="_blank" rel="noopener noreferrer">Source</a>
@@ -62,6 +64,22 @@
     <div><span>04</span><strong>Analyze</strong><small>Time · mobility · spatial</small></div><i aria-hidden="true">→</i>
     <div><span>05</span><strong>Evaluate</strong><small>Suitability · readiness</small></div><i aria-hidden="true">→</i>
     <div><span>06</span><strong>Visualize</strong><small>Explainable recommendations</small></div>
+  </section>
+
+  <section class="platform-overview hidden" id="platform-overview" aria-label="Cohesive platform overview">
+    <div class="overview-heading"><div><span class="section-kicker">Cohesive operating view</span><h2>One platform · many governed signals</h2><p>Cross-domain rollups are computed from the supplied pack; browser tables are bounded previews.</p></div><span class="overview-badge" id="pack-status">Pack unavailable</span></div>
+    <div class="overview-grid">
+      <article class="panel overview-kpi-panel"><div class="panel-heading"><div><span class="section-kicker">Executive signal</span><h3>Decision KPIs</h3></div></div><div id="platform-kpis" class="executive-kpis"></div></article>
+      <article class="panel overview-recommendations"><div class="panel-heading"><div><span class="section-kicker">Evaluation</span><h3>Top zone recommendations</h3></div></div><div class="table-scroll"><table><thead><tr><th>Zone</th><th>Suitability</th><th>Risk</th><th>Decision</th><th>Evidence</th></tr></thead><tbody id="zone-recommendations"></tbody></table></div></article>
+    </div>
+    <div class="overview-grid lower">
+      <article class="panel cross-domain-panel"><div class="panel-heading"><div><span class="section-kicker">Cross-domain explorer</span><h3>Zone 360</h3></div><label class="field-picker" for="zone-select">Zone<select id="zone-select"></select></label></div><div id="zone-detail" class="zone-detail"></div></article>
+      <article class="panel quality-summary-panel"><div class="panel-heading"><div><span class="section-kicker">Quality observability</span><h3>Pack validation</h3></div><span class="status-pill" id="pack-quality-pill">—</span></div><div id="pack-quality-summary"></div></article>
+    </div>
+    <div class="overview-grid lower">
+      <article class="panel lineage-graph-panel"><div class="panel-heading"><div><span class="section-kicker">Traceability</span><h3>Cross-domain lineage</h3></div></div><div id="platform-lineage" class="platform-lineage"></div></article>
+      <article class="panel audit-panel"><div class="panel-heading"><div><span class="section-kicker">Control plane</span><h3>RBAC & audit</h3></div></div><div id="platform-audit" class="platform-audit"></div></article>
+    </div>
   </section>
 
   <main class="workspace" id="workspace">
@@ -112,6 +130,10 @@
         <div class="panel-heading"><div><span class="section-kicker">Dataset manifest</span><h3>Source and processing metadata</h3></div></div>
         <dl id="manifest-list" class="manifest-list"></dl>
         <p id="manifest-empty" class="panel-empty hidden">No manifest metadata is available.</p>
+      </article>
+      <article class="panel analysis-summary-panel hidden" id="analysis-summary-panel">
+        <div class="panel-heading"><div><span class="section-kicker">Computed analysis</span><h3>Source-backed metrics</h3></div><span class="rule-badge">Full input</span></div>
+        <div id="analysis-summary" class="analysis-summary"></div>
       </article>
       <p class="preview-note" id="preview-note">Browser maps and charts render the records in this portal payload; full-dataset analytics remain in the VerdaTrace pipeline.</p>
 
