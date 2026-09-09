@@ -13,7 +13,7 @@ from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence
 
 from .errors import ExternalSourceError, InvalidSchemaError, UnsupportedCrsError, UnsupportedFormatError
 
-SUPPORTED_SUFFIXES = {".csv", ".json", ".ndjson", ".geojson", ".tif", ".tiff", ".cog", ".nc", ".nc4", ".netcdf", ".zarr"}
+SUPPORTED_SUFFIXES = {".csv", ".json", ".ndjson", ".geojson", ".pbf", ".tif", ".tiff", ".cog", ".nc", ".nc4", ".netcdf", ".zarr"}
 
 
 def validate_local_path(path: str | Path, allowed_roots: Sequence[str | Path]) -> Path:
@@ -25,7 +25,8 @@ def validate_local_path(path: str | Path, allowed_roots: Sequence[str | Path]) -
             corrective_action="Move the file into an approved landing directory.",
             details={"path": str(candidate)},
         )
-    if candidate.suffix.lower() not in SUPPORTED_SUFFIXES:
+    is_osm_pbf = candidate.name.lower().endswith(".osm.pbf")
+    if candidate.suffix.lower() not in SUPPORTED_SUFFIXES or (candidate.suffix.lower() == ".pbf" and not is_osm_pbf):
         raise UnsupportedFormatError(
             f"unsupported file extension: {candidate.suffix or '<none>'}",
             corrective_action=f"Use one of: {', '.join(sorted(SUPPORTED_SUFFIXES))}.",
@@ -161,6 +162,12 @@ def iter_records(
             yielded += 1
             if max_records and yielded >= max_records:
                 return
+        return
+
+    if source.name.lower().endswith(".osm.pbf"):
+        from .osm import OSMAdapter
+
+        yield from OSMAdapter().iter_records(source, allowed_roots=allowed_roots, max_records=max_records)
         return
 
     raise UnsupportedFormatError(

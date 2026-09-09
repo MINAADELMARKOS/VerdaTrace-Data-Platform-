@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import uuid
+from time import perf_counter
 from dataclasses import dataclass, field, replace
 from datetime import timedelta
-from typing import Any, Dict, Iterable, List, Optional, Sequence
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence
 
 from .analytics import analyze_dataset
 from .catalog import profile_dataset
@@ -17,12 +18,14 @@ from .models import (
     DatasetProfile,
     ExecutiveKPI,
     EvaluationReport,
+    ProcessingMetrics,
     Provenance,
     QualityReport,
+    QuarantineRecord,
     VisualizationRecommendation,
     to_dict,
 )
-from .quality import evaluate_quality
+from .quality import evaluate_quality, route_quality_outcomes
 from .security import AuditEvent, AuditRecorder, authorize
 from .visualization import recommend_visualizations
 
@@ -40,6 +43,8 @@ class PipelineOutcome:
     # Appended optional fields preserve the original positional outcome contract.
     manifest: Optional[DatasetManifest] = None
     executive_kpis: List[ExecutiveKPI] = field(default_factory=list)
+    processing: ProcessingMetrics = field(default_factory=ProcessingMetrics)
+    quarantine: List[QuarantineRecord] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         return to_dict(self)
@@ -75,10 +80,13 @@ class MultimodalPipeline:
         fixture: Optional[bool] = None,
         declared_crs: Optional[str] = None,
         executive_kpis: Optional[Sequence[ExecutiveKPI]] = None,
+        executive_kpi_provider: Optional[Callable[[AnalysisResult], Sequence[ExecutiveKPI]]] = None,
+        output_bytes: Optional[int] = None,
     ) -> PipelineOutcome:
         authorize(self.role, "dataset:ingest")
         authorize(self.role, "quality:evaluate")
         authorize(self.role, "analysis:execute")
+        started_at = perf_counter()
         correlation_id = str(uuid.uuid4())
         rows = list(records)
         lineage = LineageTracker()
@@ -144,6 +152,8 @@ class MultimodalPipeline:
             "deterministic_recommendation",
         )
         kpis = list(executive_kpis or [])
+        if executive_kpi_provider is not None:
+            kpis.extend(list(executive_kpi_provider(analysis)))
         if kpis:
             lineage.add(
                 "executive_kpis",
@@ -196,6 +206,44 @@ class MultimodalPipeline:
                 "visualization_count": len(visualization.recommended_visualizations),
             },
         )
+        statuses, quarantine = route_quality_outcomes(
+            rows,
+            quality,
+            processing_timestamp=finished_event.timestamp,
+        )
+        status_counts = {status: statuses.count(status) for status in ("VALID", "REPAIRABLE", "QUARANTINED", "REJECTED")}
+        quality = replace(
+            quality,
+            metrics={**quality.metrics, "record_status_counts": status_counts},
+        )
+        if any(status != "VALID" for status in statuses):
+            lineage.add(
+                "quality_routing",
+                f"quality:{dataset_id}",
+                f"routing:{dataset_id}",
+                "deterministic_record_outcomes",
+            )
+            self.audit.record(
+                actor=self.actor,
+                operation="quality_routing",
+                target=dataset_id,
+                outcome="completed",
+                correlation_id=correlation_id,
+                details={"status_counts": status_counts},
+            )
+        analysis = replace(analysis, lineage=lineage.as_list())
+        duration = round(max(0.0, perf_counter() - started_at), 6)
+        processing = ProcessingMetrics(
+            input_bytes=input_size,
+            output_bytes=output_bytes,
+            records_processed=len(rows),
+            records_valid=status_counts["VALID"],
+            records_repaired=0,
+            records_quarantined=status_counts["QUARANTINED"],
+            records_rejected=status_counts["REJECTED"],
+            duration_seconds=duration,
+            throughput_records_per_second=round(len(rows) / duration, 6) if duration > 0 else None,
+        )
         geometry_types = sorted(
             {
                 str(geometry["type"])
@@ -242,4 +290,6 @@ class MultimodalPipeline:
             # Keep an outcome scoped to this execution even when a recorder is reused.
             audit_events=[event for event in self.audit.events if event.correlation_id == correlation_id],
             executive_kpis=kpis,
+            processing=processing,
+            quarantine=quarantine,
         )

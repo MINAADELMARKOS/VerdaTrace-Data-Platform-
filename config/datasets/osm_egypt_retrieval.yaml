@@ -1,0 +1,39 @@
+schema_version: verdatrace_dataset_config_v1
+id: osm_egypt
+name: OpenStreetMap Egypt extract
+domain: geoinformatics
+enabled: false
+task: spatial
+required_fields: []
+source:
+  path: data/raw/egypt-latest.osm.pbf
+  format: osm_pbf
+  dataset_type: vector
+  dataset_name: Geofabrik Egypt latest OpenStreetMap PBF extract
+  fixture: false
+  provider: Geofabrik / OpenStreetMap contributors
+  original_url: https://download.geofabrik.de/africa/egypt-latest.osm.pbf
+  retrieved_at: not_retrieved
+  license: OpenStreetMap ODbL 1.0; attribution required
+  geographic_coverage: Egypt extract as published by Geofabrik
+  temporal_coverage: latest extract date selected at retrieval
+  crs: EPSG:4326
+  original_schema:
+    node: OSM node identifier, location, and tags
+    way: OSM way identifier, ordered nodes, and tags
+    relation: OSM relation identifier, members, and tags
+  transformations:
+    - normalize nodes, ways, and relations into the VerdaTrace OSM feature contract
+    - preserve common classification tags and source metadata
+    - derive WGS84 GeoJSON line or polygon geometry where node locations are available
+  limitations:
+    - The current Geofabrik extract is intentionally not committed to source control because it is a large binary download.
+    - Enable only after installing a vetted pyosmium worker and retrieving the source into data/raw.
+    - Relation geometry may be unavailable when the streaming parser cannot assemble all members.
+  attribution_label: © OpenStreetMap contributors / Geofabrik
+  attribution_url: https://download.geofabrik.de/africa/egypt.html
+quality: {}
+governance:
+  owner: not_provided
+  sensitivity: public_source_pending_retrieval
+  retention_policy: not_provided

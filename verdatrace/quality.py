@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import math
+import json
 import statistics
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 from .catalog import parse_datetime
-from .models import DatasetProfile, QualityIssue, QualityReport, SemanticType
+from .models import DatasetProfile, QualityIssue, QualityReport, QuarantineRecord, SemanticType
 
 
 def _number(value: Any) -> Optional[float]:
@@ -31,6 +32,23 @@ def _segments_intersect(a: Sequence[float], b: Sequence[float], c: Sequence[floa
     return ((o1 > 0 > o2) or (o2 > 0 > o1)) and ((o3 > 0 > o4) or (o4 > 0 > o3))
 
 
+def _position_is_valid(point: Any) -> bool:
+    if not isinstance(point, (list, tuple)) or len(point) < 2:
+        return False
+    lon, lat = _number(point[0]), _number(point[1])
+    return lon is not None and lat is not None and -180 <= lon <= 180 and -90 <= lat <= 90
+
+
+def _ring_area(ring: Sequence[Sequence[float]]) -> float:
+    return abs(
+        sum(
+            (float(left[0]) * float(right[1])) - (float(right[0]) * float(left[1]))
+            for left, right in zip(ring, ring[1:])
+        )
+        / 2
+    )
+
+
 def validate_geometry(geometry: Any) -> Optional[str]:
     """Return a stable validation error, or None for a supported valid geometry."""
 
@@ -39,21 +57,16 @@ def validate_geometry(geometry: Any) -> Optional[str]:
     kind = geometry.get("type")
     coordinates = geometry.get("coordinates")
     if kind == "Point":
-        if not isinstance(coordinates, list) or len(coordinates) < 2:
+        if not _position_is_valid(coordinates):
             return "Point must contain longitude and latitude"
-        lon, lat = _number(coordinates[0]), _number(coordinates[1])
-        if lon is None or lat is None or not (-180 <= lon <= 180 and -90 <= lat <= 90):
-            return "Point coordinates are outside WGS84 bounds"
         return None
     if kind == "LineString":
         if not isinstance(coordinates, list) or len(coordinates) < 2:
             return "LineString requires at least two positions"
-        for point in coordinates:
-            if not isinstance(point, list) or len(point) < 2:
-                return "LineString contains an invalid position"
-            lon, lat = _number(point[0]), _number(point[1])
-            if lon is None or lat is None or not (-180 <= lon <= 180 and -90 <= lat <= 90):
-                return "LineString contains coordinates outside WGS84 bounds"
+        if not all(_position_is_valid(point) for point in coordinates):
+            return "LineString contains coordinates outside WGS84 bounds or an invalid position"
+        if all(point[:2] == coordinates[0][:2] for point in coordinates[1:]):
+            return "LineString has zero length"
         return None
     if kind == "Polygon":
         if not isinstance(coordinates, list) or not coordinates:
@@ -63,12 +76,8 @@ def validate_geometry(geometry: Any) -> Optional[str]:
                 return "Polygon ring requires at least four positions"
             if ring[0] != ring[-1]:
                 return "Polygon ring is not closed"
-            for point in ring:
-                if not isinstance(point, list) or len(point) < 2:
-                    return "Polygon ring contains an invalid position"
-                lon, lat = _number(point[0]), _number(point[1])
-                if lon is None or lat is None or not (-180 <= lon <= 180 and -90 <= lat <= 90):
-                    return "Polygon contains coordinates outside WGS84 bounds"
+            if not all(_position_is_valid(point) for point in ring):
+                return "Polygon contains coordinates outside WGS84 bounds or an invalid position"
             segments = list(zip(ring[:-1], ring[1:]))
             for left_index, (a, b) in enumerate(segments):
                 for right_index, (c, d) in enumerate(segments):
@@ -78,12 +87,35 @@ def validate_geometry(geometry: Any) -> Optional[str]:
                         continue
                     if _segments_intersect(a, b, c, d):
                         return "Polygon ring self-intersects"
+            if _ring_area(ring) == 0:
+                return "Polygon ring has zero area"
+        return None
+    if kind == "MultiPoint":
+        if not isinstance(coordinates, list) or not coordinates:
+            return "MultiPoint requires at least one position"
+        return None if all(_position_is_valid(point) for point in coordinates) else "MultiPoint contains an invalid position"
+    if kind == "MultiLineString":
+        if not isinstance(coordinates, list) or not coordinates:
+            return "MultiLineString requires at least one line"
+        for line in coordinates:
+            error = validate_geometry({"type": "LineString", "coordinates": line})
+            if error:
+                return error
         return None
     if kind == "MultiPolygon":
         if not isinstance(coordinates, list) or not coordinates:
             return "MultiPolygon requires polygon coordinates"
         for polygon in coordinates:
             error = validate_geometry({"type": "Polygon", "coordinates": polygon})
+            if error:
+                return error
+        return None
+    if kind == "GeometryCollection":
+        geometries = geometry.get("geometries")
+        if not isinstance(geometries, list) or not geometries:
+            return "GeometryCollection requires at least one geometry"
+        for child in geometries:
+            error = validate_geometry(child)
             if error:
                 return error
         return None
@@ -266,6 +298,201 @@ def evaluate_quality(
                 rule="valid supported GeoJSON geometry",
             )
 
+    latitude_fields = [field.name for field in profile.fields if field.semantic_type == SemanticType.LATITUDE.value]
+    longitude_fields = [field.name for field in profile.fields if field.semantic_type == SemanticType.LONGITUDE.value]
+    latitude_field = latitude_fields[0] if latitude_fields else None
+    longitude_field = longitude_fields[0] if longitude_fields else None
+    if latitude_field and longitude_field:
+        missing_coordinates = [
+            index
+            for index, row in enumerate(materialized)
+            if row.get(latitude_field) in (None, "") or row.get(longitude_field) in (None, "")
+        ]
+        _add_grouped_issue(
+            issues,
+            code="missing_coordinates",
+            severity="warning",
+            message="one or both coordinate fields are missing",
+            field=f"{latitude_field},{longitude_field}",
+            indexes=missing_coordinates,
+            rule="latitude and longitude should be present together",
+        )
+        swapped = [
+            index
+            for index, row in enumerate(materialized)
+            if (_number(row.get(latitude_field)) is not None and _number(row.get(longitude_field)) is not None)
+            and abs(_number(row.get(latitude_field)) or 0) > 90
+            and abs(_number(row.get(longitude_field)) or 0) <= 90
+        ]
+        _add_grouped_issue(
+            issues,
+            code="suspected_swapped_coordinates",
+            severity="warning",
+            message="coordinate magnitudes suggest latitude and longitude may be swapped",
+            field=f"{latitude_field},{longitude_field}",
+            indexes=swapped,
+            observed=[(materialized[index].get(latitude_field), materialized[index].get(longitude_field)) for index in swapped[:5]],
+            rule="review coordinate axis order; warning only",
+        )
+
+    geometry_fields = [field.name for field in profile.fields if field.semantic_type == SemanticType.GEOMETRY.value]
+    for geometry_field in geometry_fields:
+        geometry_values = [row.get(geometry_field) for row in materialized]
+        empty_geometry = [
+            index for index, value in enumerate(geometry_values)
+            if value in (None, "") or value == {}
+        ]
+        _add_grouped_issue(
+            issues,
+            code="empty_geometry",
+            severity="warning",
+            message=f"'{geometry_field}' is empty for one or more records",
+            field=geometry_field,
+            indexes=empty_geometry,
+            rule="geometry should be present when a spatial layer is expected",
+        )
+        signatures: Dict[str, int] = {}
+        duplicate_geometry: List[int] = []
+        for index, value in enumerate(geometry_values):
+            if value in (None, "") or value == {}:
+                continue
+            try:
+                signature = json.dumps(value, sort_keys=True, separators=(",", ":"))
+            except (TypeError, ValueError):
+                continue
+            if signature in signatures:
+                duplicate_geometry.append(index)
+            else:
+                signatures[signature] = index
+        _add_grouped_issue(
+            issues,
+            code="duplicate_geometry",
+            severity="warning",
+            message=f"duplicate '{geometry_field}' geometries were detected",
+            field=geometry_field,
+            indexes=duplicate_geometry,
+            rule="geometry signature should be unique where feature identity requires it",
+        )
+
+    geometry_observed = any(row.get("geometry") not in (None, "") for row in materialized)
+    crs_fields = [field.name for field in profile.fields if field.semantic_type == SemanticType.CRS.value]
+    crs_field = crs_fields[0] if crs_fields else "crs"
+    crs_values = {
+        str(row.get(crs_field)).strip().upper()
+        for row in materialized
+        if row.get(crs_field) not in (None, "")
+    }
+    if geometry_observed and not crs_values:
+        _add_grouped_issue(
+            issues,
+            code="missing_crs",
+            severity="warning",
+            message="geometry is present but CRS metadata is missing",
+            field=crs_field,
+            indexes=list(range(len(materialized))),
+            rule="declare a supported CRS before spatial analysis",
+        )
+    assumed_crs = [
+        index for index, row in enumerate(materialized)
+        if str(row.get("crs_source", "")).lower() in {"assumed", "assumed_default"}
+    ]
+    _add_grouped_issue(
+        issues,
+        code="crs_assumed",
+        severity="warning",
+        message="CRS was defaulted by the ingestion adapter because the source did not declare it",
+        field=crs_field,
+        indexes=assumed_crs,
+        rule="prefer explicit CRS metadata",
+    )
+    if len(crs_values) > 1:
+        _add_grouped_issue(
+            issues,
+            code="inconsistent_crs",
+            severity="error",
+            message="records declare more than one CRS",
+            field=crs_field,
+            indexes=[index for index, row in enumerate(materialized) if row.get(crs_field) not in (None, "")],
+            observed=sorted(crs_values),
+            rule="one supported CRS per normalized dataset",
+        )
+    unsupported_crs = [
+        index
+        for index, row in enumerate(materialized)
+        if row.get(crs_field) not in (None, "")
+        and str(row.get(crs_field)).strip().upper() not in {"EPSG:4326", "CRS84", "OGC:CRS84", "URN:OGC:DEF:CRS:OGC:1.3:CRS84"}
+    ]
+    _add_grouped_issue(
+        issues,
+        code="unsupported_crs",
+        severity="error",
+        message="records declare a CRS outside the supported WGS84 boundary",
+        field=crs_field,
+        indexes=unsupported_crs,
+        rule="EPSG:4326 or CRS84 required unless an explicit reprojection adapter is configured",
+    )
+
+    if any("osm_id" in row or "feature_type" in row for row in materialized):
+        missing_geometry = [
+            index for index, row in enumerate(materialized)
+            if row.get("geometry") in (None, "") or row.get("geometry") == {}
+        ]
+        _add_grouped_issue(
+            issues,
+            code="osm_missing_geometry",
+            severity="warning",
+            message="OSM feature has no geometry",
+            field="geometry",
+            indexes=missing_geometry,
+            rule="source geometry should be retained for spatial analysis",
+        )
+        empty_tags = [
+            index for index, row in enumerate(materialized)
+            if not isinstance(row.get("tags"), dict) or not row.get("tags")
+        ]
+        _add_grouped_issue(
+            issues,
+            code="osm_empty_tags",
+            severity="warning",
+            message="OSM feature has no source tags",
+            field="tags",
+            indexes=empty_tags,
+            rule="empty tags are incomplete metadata, not necessarily source corruption",
+        )
+        missing_classification = [
+            index for index, row in enumerate(materialized)
+            if not any(row.get(key) not in (None, "") for key in ("highway", "building", "amenity", "landuse"))
+        ]
+        _add_grouped_issue(
+            issues,
+            code="osm_missing_classification",
+            severity="warning",
+            message="OSM feature has no common classification tag",
+            field="tags",
+            indexes=missing_classification,
+            rule="classification completeness is warning-level",
+        )
+        seen_osm: Dict[str, int] = {}
+        duplicate_osm: List[int] = []
+        for index, row in enumerate(materialized):
+            osm_id = row.get("osm_id")
+            if osm_id in (None, ""):
+                continue
+            key = str(osm_id)
+            if key in seen_osm:
+                duplicate_osm.append(index)
+            else:
+                seen_osm[key] = index
+        _add_grouped_issue(
+            issues,
+            code="duplicate_osm_id",
+            severity="error",
+            message="duplicate OSM identifiers were detected",
+            field="osm_id",
+            indexes=duplicate_osm,
+            rule="osm_id must be unique within the normalized extract",
+        )
+
     for field, (minimum, maximum) in (domain_constraints or {}).items():
         invalid: List[int] = []
         for index, row in enumerate(materialized):
@@ -411,3 +638,82 @@ def evaluate_quality(
         issues=issues,
         metrics=metrics,
     )
+
+
+_REPAIRABLE_QUALITY_CODES = {
+    "missing_value",
+    "missing_coordinates",
+    "empty_geometry",
+    "duplicate_geometry",
+    "statistical_outlier",
+    "sensor_gap",
+    "stale_telemetry",
+    "crs_assumed",
+    "suspected_swapped_coordinates",
+    "osm_missing_geometry",
+    "osm_empty_tags",
+    "osm_missing_classification",
+}
+_REJECTED_QUALITY_CODES = {"missing_required_value", "invalid_timestamp", "unsupported_crs"}
+
+
+def _safe_observed_value(value: Any) -> Any:
+    """Keep quarantine context useful without copying large or sensitive payloads."""
+
+    if value is None or isinstance(value, (int, float, bool)):
+        return value
+    if isinstance(value, str):
+        return value[:256] + ("…" if len(value) > 256 else "")
+    if isinstance(value, dict):
+        return {"type": value.get("type")} if value.get("type") else "[object]"
+    if isinstance(value, (list, tuple)):
+        return f"[{len(value)} items]"
+    return str(value)[:256]
+
+
+def route_quality_outcomes(
+    rows: Sequence[Dict[str, Any]],
+    quality: QualityReport,
+    *,
+    processing_timestamp: Optional[str] = None,
+) -> Tuple[List[str], List[QuarantineRecord]]:
+    """Route records using deterministic quality findings; no automatic repair occurs."""
+
+    timestamp = processing_timestamp or datetime.now(timezone.utc).isoformat()
+    issues_by_row: Dict[int, List[QualityIssue]] = {}
+    for issue in quality.issues:
+        for index in issue.row_indexes:
+            issues_by_row.setdefault(index, []).append(issue)
+    statuses: List[str] = []
+    quarantine: List[QuarantineRecord] = []
+    for index, row in enumerate(rows):
+        row_issues = issues_by_row.get(index, [])
+        if not row_issues:
+            statuses.append("VALID")
+            continue
+        errors = [issue for issue in row_issues if issue.severity == "error"]
+        if not errors:
+            statuses.append(
+                "REPAIRABLE"
+                if any(issue.code in _REPAIRABLE_QUALITY_CODES or issue.severity == "warning" for issue in row_issues)
+                else "VALID"
+            )
+            continue
+        selected = next((issue for issue in errors if issue.code in _REJECTED_QUALITY_CODES), errors[0])
+        status = "REJECTED" if selected.code in _REJECTED_QUALITY_CODES else "QUARANTINED"
+        statuses.append(status)
+        raw_id = row.get("record_id") or row.get("event_id") or row.get("feature_id") or row.get("osm_id") or index
+        observed = row.get(selected.field) if selected.field else selected.observed
+        quarantine.append(
+            QuarantineRecord(
+                dataset_id=quality.dataset_id,
+                record_id=str(raw_id),
+                issue_code=selected.code,
+                severity=selected.severity,
+                field=selected.field,
+                observed_value=_safe_observed_value(observed),
+                reason=selected.message,
+                processing_timestamp=timestamp,
+            )
+        )
+    return statuses, quarantine

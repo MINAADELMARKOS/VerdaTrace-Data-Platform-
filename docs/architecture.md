@@ -24,9 +24,9 @@ The checked-out repository head also contained merge corruption: duplicated Pyth
 | --- | --- | --- |
 | Dataset registry/onboarding | Versioned repository-local configuration and deterministic discovery | `verdatrace/registry.py`, `config/datasets/*.yaml` |
 | Registered execution | Thin adapter to existing ingestion and pipeline layers | `verdatrace/registered.py` |
-| Ingestion | Pub/Sub worker and Kaggle CSV publisher | `verdatrace/ingestion.py`, `scripts/kaggle_to_pubsub.py` |
+| Ingestion | Pub/Sub worker, Kaggle CSV publisher, and streaming OSM PBF adapter | `verdatrace/ingestion.py`, `verdatrace/osm.py`, `scripts/kaggle_to_pubsub.py` |
 | Schema discovery/catalog | New pure layer adjacent to transformations | `verdatrace/catalog.py` |
-| Quality | Existing row flags generalized to dataset reports | `verdatrace/quality.py` and compatible flags in `data_pipeline.py` |
+| Quality | Existing row flags generalized to dataset reports, spatial checks, routing, and quarantine | `verdatrace/quality.py` and compatible flags in `data_pipeline.py` |
 | Analysis | New pure layer | `verdatrace/analytics.py` |
 | Evaluation | New pure layer | `verdatrace/evaluation.py` |
 | Normalized results | Typed dataclasses | `verdatrace/models.py` |
@@ -50,6 +50,8 @@ raw ingestion
 catalog / classification
   ↓ deterministic checks
 quality report
+  ↓ record routing
+valid / repairable / quarantined / rejected outcomes
   ↓ typed analytics
 analysis result
   ↓ task readiness
@@ -59,6 +61,9 @@ visualization recommendation
   ↓ normalized portal payload
 interactive visualization
 ```
+
+processing metrics and quarantine summaries are attached to the result; governance,
+lineage, audit, and least-privilege authorization cross-cut every stage.
 
 Each layer accepts plain records and typed results, and can be unit-tested without GCP. `MultimodalPipeline` composes the layers and adds audit/lineage events. `run_registered_dataset` prepares validated source, provenance, quality, governance, and manifest inputs and delegates to that existing pipeline. The portal payload is built by `scripts/build_demo.py` by iterating registry definitions rather than naming a fixed number of datasets.
 
@@ -85,6 +90,7 @@ Typed Python contracts include:
 - `FieldProfile` and `DatasetProfile`;
 - `DatasetManifest`;
 - `QualityIssue` and `QualityReport`;
+- `ProcessingMetrics` and bounded `QuarantineRecord`;
 - `AnalysisResult`;
 - `ExecutiveKPI`;
 - `EvaluationReport`;
@@ -97,7 +103,7 @@ No downstream UI depends on pandas, BigQuery row objects, Leaflet objects, or an
 
 ## Processing metadata and portal contract
 
-Every `PipelineOutcome` contains `manifest`, `profile`, `quality`, `analysis`, `evaluation`, `visualization`, `governance`, `lineage`, `audit_events`, and an optional `executive_kpis` list. The manifest normalizes:
+Every `PipelineOutcome` contains `manifest`, `profile`, `quality`, `analysis`, `evaluation`, `visualization`, `governance`, `lineage`, `audit_events`, measured `processing` counters, bounded `quarantine` records, and an optional `executive_kpis` list. The manifest normalizes:
 
 - dataset ID and display name;
 - provider, source format, and dataset type;
@@ -114,6 +120,8 @@ The portal treats `payload.datasets` as an arbitrary-length collection. It suppo
 
 Executive KPI cards are rendered only when a result contains typed `ExecutiveKPI` values. Each KPI can expose a source metric, analysis stage, fields used, and calculation description; an absent KPI list hides the section.
 
+Processing counters are facts measured by the run. Input bytes come from the registered source when available; output bytes remain `null` unless an output writer reports them. Quality routing never auto-repairs records: warning-only findings are `REPAIRABLE`, configured fatal findings are `REJECTED`, and other quality errors are `QUARANTINED`. Quarantine records contain only a bounded identifier, issue code, field, safe observed-value summary, reason, and processing timestamp.
+
 ## Spatial choices
 
 No server-side GIS stack existed. Adding PostGIS, GeoServer, or a distributed raster engine would have created a parallel platform. The implementation therefore uses:
@@ -127,7 +135,7 @@ No server-side GIS stack existed. Adding PostGIS, GeoServer, or a distributed ra
 
 For high-volume spatial workloads, extend BigQuery with `GEOGRAPHY` columns, use server-side filters/aggregates, and publish vector/raster tiles. Do not send full operational datasets to the portal.
 
-The current vector path supports bounded GeoJSON and lightweight point/route rendering. Polygon ingestion can be profiled and recommended, but production polygon visualization still needs capability-specific frontend layers, simplification, and server-side tiling for scale. Raster definitions support an explicit `enabled: false` retrieval-plan state for COG, NetCDF, Zarr, and unmaterialized GeoTIFF sources; the `verdatrace.raster` module provides the common profile/quality/chunked-statistics boundary and metadata-only STAC extraction. Pixel-backed raster decoding, reprojection, and browser rendering require a separate GDAL/rasterio/xarray worker and object-storage delivery design. Registry execution currently materializes records and the static payload embeds them, so large datasets need streaming/pagination, query pushdown, aggregation, or tile adapters before onboarding.
+The current vector path supports bounded GeoJSON, OSM PBF normalization, and lightweight point/line/polygon rendering. Polygon ingestion can be profiled and recommended, but production polygon visualization still needs capability-specific frontend layers, simplification, and server-side tiling for scale. Raster definitions support an explicit `enabled: false` retrieval-plan state for COG, NetCDF, Zarr, and unmaterialized GeoTIFF sources; the `verdatrace.raster` module provides the common profile/quality/chunked-statistics boundary and metadata-only STAC extraction. Pixel-backed raster decoding, reprojection, and browser rendering require a separate GDAL/rasterio/xarray worker and object-storage delivery design. The OSM adapter is streaming and queue-bounded, but the shared pipeline currently materializes its normalized snapshot to preserve existing multi-pass contracts; large extracts therefore need persisted snapshots, aggregation, or tile adapters before onboarding.
 
 ## Cross-cutting controls
 

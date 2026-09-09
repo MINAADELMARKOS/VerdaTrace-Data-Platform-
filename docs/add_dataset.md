@@ -8,7 +8,7 @@ Adding a supported dataset should normally require a source and one YAML definit
 2. Record verified provenance, license/redistribution status, coverage, original schema, transformations, and limitations. Use `unknown`, `not_provided`, or `null` when a fact is unavailable.
 3. Add `config/datasets/<stable-id>.yaml` with `schema_version: verdatrace_dataset_config_v1`.
 4. Set `source.format`, `source.dataset_type`, task, required fields, quality rules, and governance values. The enabled source must exist and remain inside the project root.
-5. Select an existing adapter: CSV/JSON/NDJSON/GeoJSON record ingestion, or the raster adapter boundary for GeoTIFF/COG/NetCDF/Zarr.
+5. Select an existing adapter: CSV/JSON/NDJSON/GeoJSON/OSM PBF record ingestion, or the raster adapter boundary for GeoTIFF/COG/NetCDF/Zarr.
 6. Run `python scripts/build_demo.py`. The registry is discovered in filename order; every enabled definition runs through ingestion → profile → quality → analytics → evaluation → visualization → lineage → governance and becomes one payload entry.
 7. Run `python -m pytest -q`, `node --check frontend/app.js`, and `node tests/frontend_dataset_utils.test.js` before publishing.
 
@@ -44,4 +44,4 @@ The parser rejects unknown keys, duplicate IDs, missing enabled sources, path tr
 
 ## Source-specific adapters
 
-Keep provider-specific mapping in a connector. For example, Open-Meteo retrieval stays in `scripts/fetch_open_meteo.py`; its YAML points at the resulting attributed envelope. For a new file format, first implement a `RasterAdapter` or record adapter and its tests, then add the registry entry. Do not bypass the approved-root and allow-list checks.
+Keep provider-specific mapping in a connector. For example, Open-Meteo retrieval stays in `scripts/fetch_open_meteo.py`; its YAML points at the resulting attributed envelope. OSM PBF uses the optional `pyosmium` worker and a bounded callback queue; keep large extracts outside Git and leave the registry disabled until the source and dependency are verified. For a new file format, first implement a `RasterAdapter` or record adapter and its tests, then add the registry entry. Do not bypass the approved-root and allow-list checks.

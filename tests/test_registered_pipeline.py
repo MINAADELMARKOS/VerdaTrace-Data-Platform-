@@ -118,6 +118,14 @@ def test_disabled_registry_definition_cannot_be_executed():
         raise AssertionError("disabled dataset execution unexpectedly succeeded")
 
 
+def test_osm_egypt_is_discoverable_as_a_verified_retrieval_plan():
+    osm = _repository_registry().get("osm_egypt")
+    assert osm.enabled is False
+    assert osm.source.format == "osm_pbf"
+    assert osm.source.dataset_type == "vector"
+    assert osm.source.original_url.endswith("egypt-latest.osm.pbf")
+
+
 def test_executive_kpis_are_optional_typed_and_traceable():
     records = [{"event_id": "one", "metric": 4}, {"event_id": "two", "metric": 6}, {"event_id": "three", "metric": 8}]
     outcome = MultimodalPipeline(actor="kpi-test", role="steward").run(

@@ -10,6 +10,7 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple
 from .catalog import parse_datetime
 from .errors import InsufficientDataError
 from .models import AnalysisResult, DatasetProfile, Provenance, QualityReport, SemanticType, to_dict
+from .osm import analyze_osm_records
 
 
 def _number(value: Any) -> Optional[float]:
@@ -179,6 +180,13 @@ def analyze_dataset(
         computed["correlations"] = {
             f"{left}__{right}": pearson_correlation((row.get(left), row.get(right)) for row in materialized)
         }
+
+    # OSM PBF rows use the same normalized record contract as other spatial
+    # records, so the adapter-specific summary is an additive analytics
+    # result rather than a parallel pipeline.
+    if profile.source_format.lower() in {"osm_pbf", "osm.pbf"} or any("osm_id" in row for row in materialized):
+        computed["osm_summary"] = analyze_osm_records(materialized)
+        metrics.append("osm_summary")
 
     group_field = next(
         (

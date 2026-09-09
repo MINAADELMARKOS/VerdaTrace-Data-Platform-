@@ -173,6 +173,35 @@ class DatasetManifest:
 
 
 @dataclass(frozen=True)
+class ProcessingMetrics:
+    """Measured processing facts; unavailable values remain null."""
+
+    input_bytes: Optional[int] = None
+    output_bytes: Optional[int] = None
+    records_processed: int = 0
+    records_valid: int = 0
+    records_repaired: int = 0
+    records_quarantined: int = 0
+    records_rejected: int = 0
+    duration_seconds: Optional[float] = None
+    throughput_records_per_second: Optional[float] = None
+
+
+@dataclass(frozen=True)
+class QuarantineRecord:
+    """Bounded, non-sensitive description of one routed record problem."""
+
+    dataset_id: str
+    record_id: str
+    issue_code: str
+    severity: str
+    field: Optional[str]
+    observed_value: Any
+    reason: str
+    processing_timestamp: str
+
+
+@dataclass(frozen=True)
 class RasterProfile:
     """Format-neutral raster metadata; values remain nullable until decoded."""
 

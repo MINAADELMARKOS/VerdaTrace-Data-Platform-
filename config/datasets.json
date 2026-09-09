@@ -97,6 +97,35 @@
       "commit_policy": "Retrieval-only connector documentation."
     },
     {
+      "id": "osm_egypt",
+      "dataset_name": "OpenStreetMap Egypt extract",
+      "provider": "Geofabrik / OpenStreetMap contributors",
+      "original_url": "https://download.geofabrik.de/africa/egypt.html",
+      "retrieved_at": "not_retrieved",
+      "license": "OpenStreetMap ODbL 1.0; attribution required",
+      "geographic_coverage": "Egypt extract as published by Geofabrik",
+      "temporal_coverage": "latest extract date selected at retrieval",
+      "source_format": "OSM PBF",
+      "original_schema": {
+        "node": "OSM node identifier, location, and tags",
+        "way": "OSM way identifier, ordered nodes, and tags",
+        "relation": "OSM relation identifier, members, and tags"
+      },
+      "transformations": [
+        "stream nodes, ways, and relations through the VerdaTrace OSM adapter",
+        "derive WGS84 GeoJSON geometry where node locations are available",
+        "preserve common classification tags and source metadata"
+      ],
+      "target_schema": "verdatrace_multimodal_v1",
+      "limitations": [
+        "The current extract is intentionally not committed because it is a large binary.",
+        "Retrieval and pyosmium worker approval are required before enabling execution.",
+        "Relation geometry may be unavailable when all members cannot be assembled."
+      ],
+      "commit_policy": "Retrieval-only; preserve ODbL attribution and exact extract date.",
+      "registry_definition": "config/datasets/osm_egypt_retrieval.yaml"
+    },
+    {
       "id": "natural_earth_admin0",
       "dataset_name": "Natural Earth Admin 0 Countries",
       "provider": "Natural Earth",

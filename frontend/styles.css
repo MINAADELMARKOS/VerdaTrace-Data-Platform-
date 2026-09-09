@@ -87,6 +87,13 @@ a { color: inherit; }
 .executive-kpi-status { color: var(--green); font-weight: 850; text-transform: uppercase; letter-spacing: .06em; }
 .executive-kpi-description { margin: 8px 0 0; color: var(--ink); font-size: 11px; }
 .executive-kpi-provenance { margin-top: 10px; overflow-wrap: anywhere; }
+.processing-panel { margin-bottom: 16px; }
+.processing-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 10px; padding: 16px; }
+.processing-metric { padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: #fbfdfb; }
+.processing-metric span, .processing-metric small { display: block; color: var(--muted); font-size: 10px; }
+.processing-metric strong { display: block; margin: 3px 0; color: var(--green-dark); font-size: 22px; }
+.quarantine-summary { margin: 0 16px 16px; padding: 11px 13px; border: 1px solid #f1d9b2; border-radius: 10px; background: #fff8eb; color: #754711; font-size: 11px; }
+.quarantine-summary strong { display: block; margin-bottom: 5px; }
 .manifest-panel { margin-bottom: 16px; }
 .preview-note { margin: -4px 0 16px; color: var(--muted); font-size: 11px; }
 .manifest-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 0; }

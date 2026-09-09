@@ -79,3 +79,39 @@ def test_climate_points_are_not_misidentified_as_routes():
     assert "line_chart" in types
     assert "point_map" in types
     assert "route_map" not in types
+
+
+def test_osm_lines_and_geometry_categories_get_safe_spatial_recommendations():
+    rows = [
+        {
+            "osm_id": "1",
+            "feature_type": "way",
+            "geometry_type": "LineString",
+            "geometry": {"type": "LineString", "coordinates": [[31.2, 30.1], [31.3, 30.2]]},
+            "highway": "primary",
+            "tags": {"highway": "primary"},
+        },
+        {
+            "osm_id": "2",
+            "feature_type": "node",
+            "geometry_type": "Point",
+            "geometry": {"type": "Point", "coordinates": [31.2, 30.1]},
+            "amenity": "cafe",
+            "tags": {"amenity": "cafe"},
+        },
+    ]
+    profile = profile_dataset(rows, dataset_id="osm", source_format="osm_pbf")
+    quality = evaluate_quality(rows, profile)
+    analysis = analyze_dataset(rows, profile, quality, _provenance("OSM PBF"), task="spatial")
+    evaluation = evaluate_suitability(profile, quality, analysis, task="spatial")
+    recommendation = recommend_visualizations(profile, evaluation)
+    types = {item.type for item in recommendation.recommended_visualizations}
+
+    assert profile.geographic_bounds == {
+        "min_latitude": 30.1,
+        "max_latitude": 30.2,
+        "min_longitude": 31.2,
+        "max_longitude": 31.3,
+    }
+    assert {"line_map", "geometry_distribution"} <= types
+    assert analysis.computed_values["osm_summary"]["road_count"] == 1

@@ -197,6 +197,30 @@ governance: {}
     assert definition.source.path == "data/raw/scene.tif"
 
 
+def test_osm_pbf_registry_format_requires_osm_filename(tmp_path):
+    _write_source(tmp_path, "data/egypt.osm.pbf")
+    config = _write_config(
+        tmp_path,
+        "osm.yaml",
+        _definition(source_path="data/egypt.osm.pbf", source_format="osm_pbf", task="spatial").replace(
+            "dataset_type: tabular", "dataset_type: vector"
+        ),
+    )
+    definition = load_dataset_config(config, project_root=tmp_path)
+    assert definition.source.format == "osm_pbf"
+
+    _write_source(tmp_path, "data/egypt.pbf")
+    invalid = _write_config(
+        tmp_path,
+        "invalid_osm.yaml",
+        _definition(source_path="data/egypt.pbf", source_format="osm_pbf", task="spatial").replace(
+            "dataset_type: tabular", "dataset_type: vector"
+        ),
+    )
+    with pytest.raises(InvalidSchemaError, match="extension"):
+        load_dataset_config(invalid, project_root=tmp_path)
+
+
 def test_registry_rejects_non_https_frontend_attribution(tmp_path):
     _write_source(tmp_path)
     config = _write_config(

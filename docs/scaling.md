@@ -4,6 +4,8 @@ The tested repository sample is a bounded 72-record Open-Meteo JSON envelope and
 
 CSV and NDJSON readers iterate records and expose `iter_batches`. GeoJSON parsing currently materializes a standards-compliant JSON document, and `MultimodalPipeline` materializes its input so profiling, quality, and analytics can share a deterministic snapshot. The registered demo runner therefore intentionally targets bounded files.
 
+The OSM PBF adapter itself uses a bounded producer/consumer queue and emits normalized nodes, ways, and relations incrementally. The shared pipeline currently materializes that normalized snapshot to preserve its existing multi-pass contracts; enabling a production-scale OSM extract therefore requires a worker-side persisted snapshot or pre-aggregation before calling the shared stages. This limitation is explicit rather than presenting a full-extract benchmark that has not been measured.
+
 For larger or operational sources:
 
 - keep raw downloads in object storage and use a bounded retrieval window;

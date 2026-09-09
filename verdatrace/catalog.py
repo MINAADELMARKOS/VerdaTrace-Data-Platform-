@@ -12,7 +12,7 @@ from .models import DatasetCategory, DatasetProfile, FieldProfile, SemanticType
 NORMALIZE = re.compile(r"[^a-z0-9]+")
 
 ALIASES: Dict[SemanticType, set[str]] = {
-    SemanticType.IDENTIFIER: {"id", "event_id", "transaction_id", "trip_id", "shipment_id", "order_id"},
+    SemanticType.IDENTIFIER: {"id", "event_id", "transaction_id", "trip_id", "shipment_id", "order_id", "osm_id"},
     SemanticType.LATITUDE: {"lat", "latitude", "pickup_latitude", "dropoff_latitude", "y"},
     SemanticType.LONGITUDE: {"lon", "lng", "long", "longitude", "pickup_longitude", "dropoff_longitude", "x"},
     SemanticType.GEOMETRY: {"geometry", "geom", "the_geom", "wkt"},
@@ -149,7 +149,10 @@ def _semantic(name: str, values: Sequence[Any], data_type: str) -> Tuple[Semanti
             confidence = 0.96 if ratio >= 0.9 else 0.6
         elif matched == SemanticType.GEOMETRY:
             valid_shapes = sum(
-                isinstance(value, dict) and value.get("type") in {"Point", "LineString", "Polygon", "MultiPolygon"}
+                isinstance(value, dict) and value.get("type") in {
+                    "Point", "LineString", "Polygon", "MultiPolygon",
+                    "MultiPoint", "MultiLineString", "GeometryCollection",
+                }
                 for value in non_null
             )
             if valid_shapes:
@@ -180,10 +183,39 @@ def _semantic(name: str, values: Sequence[Any], data_type: str) -> Tuple[Semanti
 def _bounds(rows: Sequence[Dict[str, Any]], fields: Sequence[FieldProfile]) -> Optional[Dict[str, float]]:
     lat_name = next((field.name for field in fields if field.semantic_type == SemanticType.LATITUDE.value), None)
     lon_name = next((field.name for field in fields if field.semantic_type == SemanticType.LONGITUDE.value), None)
-    if not lat_name or not lon_name:
-        return None
-    pairs = [(_numeric(row.get(lat_name)), _numeric(row.get(lon_name))) for row in rows]
-    valid = [(lat, lon) for lat, lon in pairs if lat is not None and lon is not None and -90 <= lat <= 90 and -180 <= lon <= 180]
+    pairs = []
+    if lat_name and lon_name:
+        pairs = [(_numeric(row.get(lat_name)), _numeric(row.get(lon_name))) for row in rows]
+    valid = [
+        (lat, lon)
+        for lat, lon in pairs
+        if lat is not None and lon is not None and -90 <= lat <= 90 and -180 <= lon <= 180
+    ]
+    # OSM and GeoJSON vector adapters retain geometry rather than duplicating
+    # coordinate columns. Derive bounds from GeoJSON positions when present.
+    if not valid:
+        geometry_names = [field.name for field in fields if field.semantic_type == SemanticType.GEOMETRY.value]
+
+        def positions(value: Any):
+            if not isinstance(value, dict):
+                return
+            if value.get("type") == "GeometryCollection":
+                for child in value.get("geometries", []) or []:
+                    yield from positions(child)
+                return
+            coordinates = value.get("coordinates")
+            if isinstance(coordinates, (list, tuple)) and len(coordinates) >= 2:
+                if all(_numeric(item) is not None for item in coordinates[:2]):
+                    yield (_numeric(coordinates[1]), _numeric(coordinates[0]))
+                    return
+                for child in coordinates:
+                    yield from positions({"coordinates": child})
+
+        for row in rows:
+            for geometry_name in geometry_names:
+                for lat, lon in positions(row.get(geometry_name)):
+                    if lat is not None and lon is not None and -90 <= lat <= 90 and -180 <= lon <= 180:
+                        valid.append((lat, lon))
     if not valid:
         return None
     return {
@@ -246,6 +278,8 @@ def profile_dataset(
 
     if source_format.lower() in {"csv", "json", "ndjson", "geojson"}:
         add(DatasetCategory.TABULAR, 0.94, [f"records were ingested from {source_format.upper()}"])
+    if source_format.lower() in {"osm_pbf", "osm.pbf"}:
+        add(DatasetCategory.GEOSPATIAL_VECTOR, 0.99, ["OpenStreetMap PBF vector source format detected"])
     if source_format.lower() in {"geotiff", "tiff", "tif"}:
         add(DatasetCategory.GEOSPATIAL_RASTER, 0.99, ["GeoTIFF/TIFF source format detected"])
     if SemanticType.GEOMETRY in semantics or {SemanticType.LATITUDE, SemanticType.LONGITUDE} <= semantics:

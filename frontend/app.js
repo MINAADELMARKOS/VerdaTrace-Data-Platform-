@@ -22,6 +22,7 @@ const formatNumber = (value, digits = 0) => {
 };
 const titleCase = (value) =>
   String(value || "").replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+const MAP_FEATURE_LIMIT = 1500;
 
 function clear(node) {
   while (node.firstChild) node.removeChild(node.firstChild);
@@ -123,6 +124,67 @@ function updateActiveDatasetCard(datasetId) {
   });
 }
 
+function renderProcessing() {
+  const panel = byId("processing-panel");
+  const container = byId("processing-metrics");
+  const summary = byId("quarantine-summary");
+  clear(container);
+  clear(summary);
+  const processing = state.dataset?.outcome?.processing;
+  if (!processing || typeof processing !== "object") {
+    panel.classList.add("hidden");
+    summary.classList.add("hidden");
+    return;
+  }
+  const formatBytes = (value) => {
+    if (!isFiniteValue(value)) return "—";
+    const bytes = Number(value);
+    if (bytes < 1024) return bytes.toLocaleString() + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  };
+  const definitions = [
+    ["records_processed", "Processed records", (value) => formatNumber(value)],
+    ["records_valid", "Valid", (value) => formatNumber(value)],
+    ["records_repaired", "Repaired", (value) => formatNumber(value)],
+    ["records_quarantined", "Quarantined", (value) => formatNumber(value)],
+    ["records_rejected", "Rejected", (value) => formatNumber(value)],
+    ["duration_seconds", "Duration", (value) => formatNumber(value, 3) + " s"],
+    ["throughput_records_per_second", "Throughput", (value) => formatNumber(value, 2) + " records/s"],
+    ["input_bytes", "Input size", formatBytes],
+    ["output_bytes", "Output size", formatBytes],
+  ];
+  definitions
+    .filter(([key]) => DatasetUtils.hasValue(processing[key]))
+    .forEach(([key, label, formatter]) => {
+      const card = element("article", "processing-metric");
+      card.append(element("span", "", label));
+      card.append(element("strong", "", formatter(processing[key])));
+      container.append(card);
+    });
+  const quarantine = asArray(state.dataset?.outcome?.quarantine);
+  const statusCounts = state.dataset?.outcome?.quality?.metrics?.record_status_counts;
+  if (statusCounts && typeof statusCounts === "object" && Number(statusCounts.REPAIRABLE || 0) > 0) {
+    summary.append(element("strong", "", "Record routing: "+ ["VALID", "REPAIRABLE", "QUARANTINED", "REJECTED"]
+      .filter((status) => DatasetUtils.hasValue(statusCounts[status]))
+      .map((status) => titleCase(status) + ": " + statusCounts[status]).join(" · ")));
+    summary.classList.remove("hidden");
+  }
+  if (quarantine.length) {
+    const breakdown = {};
+    quarantine.forEach((item) => {
+      const code = item.issue_code || "quality_issue";
+      breakdown[code] = (breakdown[code] || 0) + 1;
+    });
+    summary.append(element("strong", "", quarantine.length + " records routed out of the clean path"));
+    summary.append(document.createTextNode(
+      Object.entries(breakdown).map(([code, count]) => titleCase(code) + ": " + count).join(" · ")
+    ));
+    summary.classList.remove("hidden");
+  }
+  panel.classList.toggle("hidden", !container.childElementCount && !quarantine.length);
+}
+
 function renderHeader(dataset) {
   const outcome = dataset.outcome || {};
   const profile = outcome.profile || {};
@@ -176,6 +238,7 @@ function initMap() {
     attribution: "&copy; OpenStreetMap contributors",
   }).addTo(state.map);
   state.layers.points = L.layerGroup().addTo(state.map);
+  state.layers.geometry = L.featureGroup().addTo(state.map);
   state.layers.route = L.layerGroup().addTo(state.map);
   state.layers.bounds = L.layerGroup().addTo(state.map);
 }
@@ -211,16 +274,35 @@ function renderMapRecords(records, fit = false) {
   const capabilities = DatasetUtils.profileCapabilities(state.dataset);
   const spatialControls = ["toggle-points", "toggle-route", "toggle-bounds", "filter-bounds", "reset-map"];
   spatialControls.forEach((id) => {
-    byId(id).disabled = !capabilities.pointRecords;
+    byId(id).disabled = !capabilities.spatial;
   });
   if (!state.map) {
     setMapStatus(capabilities.spatial ? "Spatial metadata is available, but the interactive map could not be loaded." : "This dataset has no spatial fields.");
     return;
   }
   Object.values(state.layers).forEach((layer) => layer.clearLayers());
-  const located = records
+  const mapRecords = records.slice(0, MAP_FEATURE_LIMIT);
+  const mapTruncated = records.length > mapRecords.length;
+  const located = mapRecords
     .map((record) => ({ record: record, point: coordinate(record) }))
     .filter((item) => item.point);
+  const geometries = mapRecords.filter(
+    (record) => record?.geometry && typeof record.geometry === "object" && typeof record.geometry.type === "string"
+  );
+  let renderedGeometries = 0;
+  geometries.forEach((record) => {
+    try {
+      L.geoJSON(record.geometry, {
+        style: { color: "#276a87", weight: 2, fillColor: "#9dc4d4", fillOpacity: 0.28 },
+        pointToLayer: (_feature, latlng) => L.circleMarker(latlng, {
+          radius: 5, color: "#276a87", weight: 2, fillColor: "#9dc4d4", fillOpacity: 0.85,
+        }),
+      }).bindTooltip(tooltipText(record), { direction: "top" }).addTo(state.layers.geometry);
+      renderedGeometries += 1;
+    } catch (error) {
+      console.warn("Skipping an invalid preview geometry", error);
+    }
+  });
   located.forEach(({ record, point }) => {
     L.circleMarker(point, {
       radius: 6,
@@ -241,8 +323,9 @@ function renderMapRecords(records, fit = false) {
       { color: "#0d785c", weight: 4, opacity: 0.85 }
     ).addTo(state.layers.route);
   }
-  if (located.length) {
-    const bounds = L.latLngBounds(located.map((item) => item.point));
+  const geometryBounds = renderedGeometries ? state.layers.geometry.getBounds() : null;
+  if (located.length || (geometryBounds && geometryBounds.isValid())) {
+    const bounds = located.length ? L.latLngBounds(located.map((item) => item.point)) : geometryBounds;
     L.rectangle(bounds.pad(0.08), {
       color: "#276a87",
       weight: 1,
@@ -251,11 +334,13 @@ function renderMapRecords(records, fit = false) {
     }).addTo(state.layers.bounds);
     if (fit) state.map.fitBounds(bounds.pad(0.25), { maxZoom: 12 });
   }
-  if (located.length) setMapStatus("");
+  if (mapTruncated) {
+    setMapStatus("Map displays a bounded preview of the first " + MAP_FEATURE_LIMIT.toLocaleString() + " records; analytics reflect the complete processed dataset.");
+  } else if (located.length || geometries.length) setMapStatus("");
   else if (capabilities.spatial) {
-    setMapStatus("Spatial metadata is available; this preview currently renders canonical point observations.");
+    setMapStatus("Spatial metadata is available, but this preview contains no renderable geometries.");
   } else setMapStatus("This dataset has no spatial fields, so map controls are not applicable.");
-  byId("visible-count").textContent = located.length + " visible";
+  byId("visible-count").textContent = (located.length + geometries.length) + " visible";
   syncLayerVisibility();
 }
 
@@ -667,6 +752,7 @@ function renderEmptyWorkspace(title, detail) {
   clear(byId("governance-list"));
   byId("audit-summary").textContent = "No governance or audit records are available.";
   renderManifest();
+  renderProcessing();
   renderExecutiveKpis();
 }
 
@@ -689,6 +775,7 @@ function selectDataset(datasetId, options = {}) {
   state.dataset = selected;
   state.currentRecords = recordsForDataset(selected).slice();
   renderHeader(state.dataset);
+  renderProcessing();
   configureTemporalFilter(state.currentRecords);
   renderMapRecords(state.currentRecords, true);
   renderMetricOptions();

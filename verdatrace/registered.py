@@ -9,6 +9,7 @@ from typing import Any, Dict, List
 from .ingestion import iter_records
 from .errors import InvalidSchemaError
 from .models import DatasetConfig, Provenance
+from .osm import osm_executive_kpis
 from .pipeline import MultimodalPipeline, PipelineOutcome
 
 
@@ -17,6 +18,7 @@ _DISPLAY_FORMATS = {
     "json": "JSON",
     "ndjson": "NDJSON",
     "geojson": "GeoJSON",
+    "osm_pbf": "OSM PBF",
     "tif": "GeoTIFF",
     "tiff": "GeoTIFF",
 }
@@ -113,5 +115,6 @@ def run_registered_dataset(
         input_size=source_path.stat().st_size,
         fixture=config.source.fixture,
         declared_crs=config.source.crs,
+        executive_kpi_provider=osm_executive_kpis if config.source.format == "osm_pbf" else None,
     )
     return RegisteredDatasetResult(config=config, records=records, outcome=outcome)

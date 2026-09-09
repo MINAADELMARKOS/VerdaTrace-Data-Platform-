@@ -13,6 +13,8 @@ Three additional YAML definitions are intentionally disabled retrieval plans: Se
 
 The existing `config/datasets.json` remains a provenance and source-selection catalog for evaluated retrieval-only candidates. Its Environmental Sensor Telemetry, NYC TLC, and Natural Earth records are not executable registrations and do not imply that source files were downloaded. They require compatible local/object-storage sources or source adapters plus validated YAML definitions before they can appear in the portal.
 
+`osm_egypt_retrieval.yaml` is a disabled, reproducible OpenStreetMap Egypt PBF plan. It records the Geofabrik source page/download, ODbL attribution requirement, WGS84 target schema, known limitations, and the optional pyosmium dependency. The current extract is intentionally not committed because it is a large binary; retrieve it into `data/raw/egypt-latest.osm.pbf`, verify the exact extract date, and enable the definition only after the worker environment is approved. See [osm.md](osm.md).
+
 Registry validation requires unique IDs, existing repository-relative paths, matching supported formats, valid task/type values, and well-formed required-field, quality, and governance sections. Unknown facts stay `unknown`, `not_provided`, or `null` downstream; registration must not invent provider facts, license terms, source sizes, coverage, measurements, or KPIs. The complete schema and execution contract are documented in [architecture.md](architecture.md#executable-dataset-registry).
 
 ## Included real sample

@@ -147,6 +147,17 @@ def recommend_visualizations(
             for value in geometry_profile.sample_values
             if isinstance(value, dict) and value.get("type")
         }
+        line_geometry = bool(geometry_types & {"LineString", "MultiLineString"})
+        if line_geometry:
+            specs.append(
+                VisualizationSpec(
+                    type="line_map",
+                    fields=[geometry_field],
+                    confidence=0.91,
+                    reason="Line geometries were detected and can be rendered as a spatial network preview.",
+                    config={"crs": "EPSG:4326", "simplify": True},
+                )
+            )
         polygon_geometry = bool(geometry_types & {"Polygon", "MultiPolygon"})
         normalized = (
             next(
@@ -180,6 +191,26 @@ def recommend_visualizations(
             )
             if numeric_fields:
                 warnings.append("A choropleth was not recommended because no normalized polygon metric was detected.")
+
+        distribution_field = next(
+            (
+                field.name
+                for field in profile.fields
+                if field.name in {"geometry_type", "feature_type"}
+                or (field.semantic_type == SemanticType.CATEGORICAL.value and field.name.lower() in {"geometry_type", "feature_type"})
+            ),
+            None,
+        )
+        if distribution_field:
+            specs.append(
+                VisualizationSpec(
+                    type="geometry_distribution",
+                    fields=[distribution_field],
+                    confidence=0.86,
+                    reason="A bounded geometry or feature category field supports an aggregated distribution view.",
+                    config={"aggregate": "count"},
+                )
+            )
 
     if "geospatial_raster" in profile.categories:
         specs.append(

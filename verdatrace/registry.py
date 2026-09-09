@@ -14,7 +14,7 @@ from .errors import InvalidSchemaError, UnsupportedFormatError
 from .models import DatasetConfig, DatasetGovernanceConfig, DatasetQualityConfig, DatasetSourceConfig
 
 SCHEMA_VERSION = "verdatrace_dataset_config_v1"
-SUPPORTED_SOURCE_FORMATS = {"csv", "json", "ndjson", "geojson", "tif", "tiff", "cog", "netcdf", "zarr"}
+SUPPORTED_SOURCE_FORMATS = {"csv", "json", "ndjson", "geojson", "osm_pbf", "tif", "tiff", "cog", "netcdf", "zarr"}
 SUPPORTED_DATASET_TYPES = {"tabular", "vector", "raster", "streaming"}
 SUPPORTED_TASKS = {
     "auto",
@@ -67,6 +67,7 @@ _FORMAT_SUFFIXES = {
     "json": {".json"},
     "ndjson": {".ndjson"},
     "geojson": {".geojson"},
+    "osm_pbf": {".pbf"},
     "tif": {".tif"},
     "tiff": {".tiff"},
     "cog": {".cog", ".tif", ".tiff"},
@@ -187,7 +188,10 @@ def _parse_source(
             corrective_action=f"Use one of: {', '.join(sorted(SUPPORTED_SOURCE_FORMATS))}.",
             details={"config_path": str(config_path), "source_path": raw_path},
         )
-    if resolved_path.suffix.lower() not in _FORMAT_SUFFIXES[source_format]:
+    suffix_matches = resolved_path.suffix.lower() in _FORMAT_SUFFIXES[source_format]
+    if source_format == "osm_pbf":
+        suffix_matches = resolved_path.name.lower().endswith(".osm.pbf")
+    if not suffix_matches:
         raise _invalid(
             "'source.format' does not match the source file extension",
             config_path,
