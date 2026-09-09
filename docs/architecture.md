@@ -22,6 +22,8 @@ The checked-out repository head also contained merge corruption: duplicated Pyth
 
 | Requested layer/capability | Existing component extended | Module |
 | --- | --- | --- |
+| Dataset registry/onboarding | Versioned repository-local configuration and deterministic discovery | `verdatrace/registry.py`, `config/datasets/*.yaml` |
+| Registered execution | Thin adapter to existing ingestion and pipeline layers | `verdatrace/registered.py` |
 | Ingestion | Pub/Sub worker and Kaggle CSV publisher | `verdatrace/ingestion.py`, `scripts/kaggle_to_pubsub.py` |
 | Schema discovery/catalog | New pure layer adjacent to transformations | `verdatrace/catalog.py` |
 | Quality | Existing row flags generalized to dataset reports | `verdatrace/quality.py` and compatible flags in `data_pipeline.py` |
@@ -39,8 +41,10 @@ The checked-out repository head also contained merge corruption: duplicated Pyth
 ## Layered flow
 
 ```
+validated YAML registry definition
+  ↓ registered source/provenance resolution
 source
-  ↓ provenance registration
+  ↓ bounded ingestion
 raw ingestion
   ↓ schema discovery
 catalog / classification
@@ -56,7 +60,19 @@ visualization recommendation
 interactive visualization
 ```
 
-Each layer accepts plain records and typed results, and can be unit-tested without GCP. `MultimodalPipeline` composes the layers and adds audit/lineage events. The portal payload is built by `scripts/build_demo.py` from pipeline outcomes.
+Each layer accepts plain records and typed results, and can be unit-tested without GCP. `MultimodalPipeline` composes the layers and adds audit/lineage events. `run_registered_dataset` prepares validated source, provenance, quality, governance, and manifest inputs and delegates to that existing pipeline. The portal payload is built by `scripts/build_demo.py` by iterating registry definitions rather than naming a fixed number of datasets.
+
+## Executable dataset registry
+
+`DatasetRegistry.discover` reads `*.yaml` files from `config/datasets/` in filename order. Each `verdatrace_dataset_config_v1` definition has top-level identity (`id`, `name`, `domain`), `task`, `required_fields`, `source`, optional `quality`, and optional `governance` sections. `source` carries a repository-relative path, format, dataset type, fixture flag, provenance, optional CRS, and optional presentation attribution. The quality section supports per-field numeric ranges and an optional positive telemetry maximum age. Governance carries owner, sensitivity, and retention policy.
+
+Validation is fail-closed: files must be valid YAML; unknown keys are rejected; IDs must be unique across the discovered set; an enabled source must be an existing regular file inside the project root; its declared format must be supported and match the suffix; tasks and dataset types must use the supported enumerations; required fields must be a unique string list; numeric ranges must be finite and ordered; and attribution URLs, when supplied, must be HTTPS. A disabled retrieval plan may point at a not-yet-materialized source, but cannot execute or enter the portal payload.
+
+The executable YAML registry is intentionally separate from the legacy `config/datasets.json` provenance catalog. The JSON catalog records evaluated retrieval-only candidates such as NYC TLC, Natural Earth, and the larger Kaggle sensor source. An entry there does not become executable until a compatible bounded source or adapter and a validated YAML definition exist.
+
+`run_registered_dataset(config, project_root, actor, role)` in `verdatrace/registered.py` resolves the already-validated source, uses the existing `iter_records` ingestion path, constructs `Provenance`, and calls `MultimodalPipeline.run`. It passes task, required fields, quality constraints, freshness, governance, dataset type, actual file byte size, fixture status, and declared CRS; it does not duplicate profiling, quality, analytics, evaluation, visualization, lineage, or audit logic.
+
+`scripts/build_demo.py` exposes `--project-root`, `--registry`, `--output`, `--actor`, and `--preview-limit`. By default it discovers `config/datasets/*.yaml` and writes `frontend/data/platform_demo.json`. Each registered result is converted to the existing v1 portal entry (`id`, `title`, `domain`, `dataset_type`, `fixture`, `attribution`, `records`, `preview`, and `outcome`), preserving static-site compatibility. The preview limit applies only to serialized browser records; the pipeline's source snapshot remains the basis for full-dataset analytics.
 
 ## Canonical model
 
@@ -65,14 +81,38 @@ The original BigQuery columns remain. Nullable multimodal columns add dataset id
 Typed Python contracts include:
 
 - `Provenance`;
+- `DatasetSourceConfig`, `DatasetQualityConfig`, `DatasetGovernanceConfig`, and `DatasetConfig`;
 - `FieldProfile` and `DatasetProfile`;
+- `DatasetManifest`;
 - `QualityIssue` and `QualityReport`;
 - `AnalysisResult`;
+- `ExecutiveKPI`;
 - `EvaluationReport`;
 - `VisualizationSpec` and `VisualizationRecommendation`;
 - `PipelineOutcome`.
 
+Raster-specific adapters use `RasterProfile`, `RasterQualityReport`, `RasterBandStatistics`, and `RasterAnalysisResult` without forcing pixel data into the record-oriented contracts.
+
 No downstream UI depends on pandas, BigQuery row objects, Leaflet objects, or another implementation-specific analytical object.
+
+## Processing metadata and portal contract
+
+Every `PipelineOutcome` contains `manifest`, `profile`, `quality`, `analysis`, `evaluation`, `visualization`, `governance`, `lineage`, `audit_events`, and an optional `executive_kpis` list. The manifest normalizes:
+
+- dataset ID and display name;
+- provider, source format, and dataset type;
+- input byte size and record count;
+- observed geometry types, declared/observed CRS, and computed bounding box;
+- geographic and computed temporal coverage;
+- license;
+- ingestion and processing timestamps;
+- fixture status.
+
+Values are derived from validated configuration, file metadata, the source provenance, observed records, and audit timestamps. Unknown provider, coverage, and license markers become `null` in the manifest, and non-applicable fields such as geometry types, CRS, or bounding box remain empty or `null`. The platform does not estimate dataset sizes, coverage, benchmarks, or business KPIs. `input_size` is the actual registered source file size in bytes; `record_count`, geometry types, bounds, and temporal coverage are computed from the processed records.
+
+The portal treats `payload.datasets` as an arbitrary-length collection. It supports catalog search by name/ID/domain, metadata-generated domain and type filters, an empty-catalog state, safe fallback for an unknown `?dataset=<id>` parameter, URL updates on selection, capability-aware map/trend controls, and a manifest panel that renders only known values.
+
+Executive KPI cards are rendered only when a result contains typed `ExecutiveKPI` values. Each KPI can expose a source metric, analysis stage, fields used, and calculation description; an absent KPI list hides the section.
 
 ## Spatial choices
 
@@ -86,6 +126,8 @@ No server-side GIS stack existed. Adding PostGIS, GeoServer, or a distributed ra
 - a GeoTIFF signature/metadata boundary that fails explicitly when rasterio/GDAL is required.
 
 For high-volume spatial workloads, extend BigQuery with `GEOGRAPHY` columns, use server-side filters/aggregates, and publish vector/raster tiles. Do not send full operational datasets to the portal.
+
+The current vector path supports bounded GeoJSON and lightweight point/route rendering. Polygon ingestion can be profiled and recommended, but production polygon visualization still needs capability-specific frontend layers, simplification, and server-side tiling for scale. Raster definitions support an explicit `enabled: false` retrieval-plan state for COG, NetCDF, Zarr, and unmaterialized GeoTIFF sources; the `verdatrace.raster` module provides the common profile/quality/chunked-statistics boundary and metadata-only STAC extraction. Pixel-backed raster decoding, reprojection, and browser rendering require a separate GDAL/rasterio/xarray worker and object-storage delivery design. Registry execution currently materializes records and the static payload embeds them, so large datasets need streaming/pagination, query pushdown, aggregation, or tile adapters before onboarding.
 
 ## Cross-cutting controls
 

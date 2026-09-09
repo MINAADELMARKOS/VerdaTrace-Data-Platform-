@@ -1,5 +1,20 @@
 # Dataset sources, provenance, and selection
 
+## Executable registry and candidate catalog
+
+The static portal is built from validated `config/datasets/*.yaml` definitions. The executable registry currently contains:
+
+- `open_meteo_cairo_historical.yaml`, pointing to the bounded attributed Cairo JSON sample;
+- `synthetic_refrigerated_route.yaml`, pointing to the clearly labeled GeoJSON fixture.
+
+These definitions preserve source path, source type/format, pipeline task, required fields, provenance, fixture status, attribution, quality options, and governance. Running `python scripts/build_demo.py` discovers all validated YAML entries and produces one normalized portal entry for each; no dataset count is hard-coded.
+
+Three additional YAML definitions are intentionally disabled retrieval plans: Sentinel-2 Greater Cairo, ERA5-Land Cairo, and GHSL population 2015. They are validated as registry metadata but are not run or published until the referenced source file/credentials and product-specific semantics are supplied. See [raster.md](raster.md).
+
+The existing `config/datasets.json` remains a provenance and source-selection catalog for evaluated retrieval-only candidates. Its Environmental Sensor Telemetry, NYC TLC, and Natural Earth records are not executable registrations and do not imply that source files were downloaded. They require compatible local/object-storage sources or source adapters plus validated YAML definitions before they can appear in the portal.
+
+Registry validation requires unique IDs, existing repository-relative paths, matching supported formats, valid task/type values, and well-formed required-field, quality, and governance sections. Unknown facts stay `unknown`, `not_provided`, or `null` downstream; registration must not invent provider facts, license terms, source sizes, coverage, measurements, or KPIs. The complete schema and execution contract are documented in [architecture.md](architecture.md#executable-dataset-registry).
+
 ## Included real sample
 
 ### Open-Meteo Historical Weather API — Cairo
@@ -26,6 +41,8 @@ python scripts/fetch_open_meteo.py
 python scripts/build_demo.py
 ```
 
+Direct local/static access after building is available at `?dataset=open_meteo_cairo_historical`. The catalog can also find it by name, ID, or domain and filter it by available domain/type metadata.
+
 ## Included fixtures
 
 | Fixture | Purpose | Status |
@@ -35,6 +52,8 @@ python scripts/build_demo.py
 | `broken_polygon.geojson` | Self-intersecting polygon failure path | Explicitly synthetic negative test |
 
 Fixtures do not claim a real provider, license, or measurement history.
+
+The refrigerated route is registered as `synthetic_refrigerated_route`, remains visibly marked as a fixture, and is directly addressable with `?dataset=synthetic_refrigerated_route`.
 
 ## Connected retrieval-only sources
 
@@ -100,3 +119,5 @@ frontend/data/      generated normalized public-demo payload
 ```
 
 Large real datasets belong in GCS/object storage with lifecycle rules, not the source repository. Git LFS was not introduced because this repository did not already use it.
+
+The current registered runner and static portal are intentionally bounded-sample paths. Large vectors need conversion/simplification, spatial query pushdown, and vector tiles or bounded GeoJSON delivery. Full rasters need GDAL/rasterio decoding and validation, reprojection, derived statistics, object-storage tiling/pyramids, and a compatible browser raster layer. Streaming sources need a connector and paginated or aggregated result contract rather than embedding an unbounded record array in the generated payload.

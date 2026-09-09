@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: "24"
       - run: node --check frontend/app.js
+      - run: node tests/frontend_dataset_utils.test.js
       - run: python -m json.tool frontend/data/platform_demo.json > /dev/null
       - run: >-
           python -c "import pathlib,yaml;
@@ -37,6 +38,7 @@ jobs:
           --dataset-id open_meteo_cairo_historical
           --task climate
           --output /tmp/open_meteo_result.json
+      - run: python scripts/build_demo.py --output /tmp/platform_demo_registry.json
 
   terraform:
     runs-on: ubuntu-latest

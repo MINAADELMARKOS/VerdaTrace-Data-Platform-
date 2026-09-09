@@ -84,3 +84,20 @@ def test_pipeline_enforces_role_boundary():
                 retrieved_at="not_applicable",
             ),
         )
+
+
+def test_pipeline_audit_events_are_scoped_to_one_execution():
+    recorder = AuditRecorder()
+    pipeline = MultimodalPipeline(actor="scope-test", role="steward", audit=recorder)
+    provenance = Provenance(
+        dataset_name="scope",
+        provider="test",
+        original_url="repository://scope",
+        retrieved_at="not_applicable",
+    )
+    first = pipeline.run([{"event_id": "first-row", "value": 1}], dataset_id="first", dataset_name="first", source_format="json", provenance=provenance)
+    second = pipeline.run([{"event_id": "second-row", "value": 2}], dataset_id="second", dataset_name="second", source_format="json", provenance=provenance)
+    assert first.audit_events
+    assert second.audit_events
+    assert {event.target for event in first.audit_events} == {"first"}
+    assert {event.target for event in second.audit_events} == {"second"}

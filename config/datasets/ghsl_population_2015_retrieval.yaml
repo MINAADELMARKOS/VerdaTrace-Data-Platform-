@@ -1,0 +1,35 @@
+schema_version: verdatrace_dataset_config_v1
+id: ghsl_population_2015_retrieval
+name: GHSL population grid 2015 retrieval definition
+domain: population
+enabled: false
+task: spatial
+required_fields: []
+source:
+  path: data/raw/ghsl_population_2015.tif
+  format: tif
+  dataset_type: raster
+  dataset_name: GHSL population grid 2015 retrieval definition
+  fixture: false
+  provider: European Commission Joint Research Centre GHSL
+  original_url: https://ghsl.jrc.ec.europa.eu/documents/GHSL_data_access.pdf
+  retrieved_at: not_retrieved
+  license: open_and_free_reuse_with_source_acknowledgement
+  geographic_coverage: global product; bounded region to be selected at retrieval
+  temporal_coverage: 2015 product epoch
+  crs: null
+  original_schema:
+    population: provider GHSL population raster band
+    epoch: "2015"
+    resolution: provider product metadata
+  transformations: []
+  limitations:
+    - Retrieval is intentionally disabled until a bounded product file is selected and verified.
+    - Population totals and density metrics require product-specific cell-area semantics.
+  attribution_label: European Commission Joint Research Centre GHSL
+  attribution_url: https://ghsl.jrc.ec.europa.eu/
+quality: {}
+governance:
+  owner: not_provided
+  sensitivity: public_source_pending_retrieval
+  retention_policy: not_provided

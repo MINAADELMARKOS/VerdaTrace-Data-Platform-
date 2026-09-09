@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="./styles.css">
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script defer src="./dataset-utils.js"></script>
   <script defer src="./app.js"></script>
 </head>
 <body>
@@ -66,6 +67,15 @@
   <main class="workspace" id="workspace">
     <aside class="dataset-rail" aria-labelledby="dataset-heading">
       <div class="rail-heading"><span class="section-kicker">Catalog</span><h2 id="dataset-heading">Datasets</h2><span class="count" id="dataset-count">—</span></div>
+      <div class="catalog-tools">
+        <label for="dataset-search">Search datasets</label>
+        <input id="dataset-search" type="search" placeholder="Name, ID, or domain" autocomplete="off">
+        <div class="catalog-filter-grid">
+          <label for="domain-filter">Domain<select id="domain-filter"><option value="all">All domains</option></select></label>
+          <label for="type-filter">Type<select id="type-filter"><option value="all">All types</option></select></label>
+        </div>
+        <p id="catalog-status" role="status">Loading catalog…</p>
+      </div>
       <div id="dataset-list" class="dataset-list" role="list"></div>
       <div class="source-note"><strong>Source policy</strong><p>Real sources retain attribution. Generated records are always marked as fixtures.</p></div>
     </aside>
@@ -87,6 +97,18 @@
         <article><span>Visualizations</span><strong id="metric-visuals">—</strong><small>safe deterministic options</small></article>
       </div>
 
+      <article class="panel executive-kpi-panel hidden" id="executive-kpi-panel">
+        <div class="panel-heading"><div><span class="section-kicker">Executive signal</span><h3>Optional business KPIs</h3></div><span class="rule-badge">Source-backed</span></div>
+        <div id="executive-kpis" class="executive-kpis"></div>
+      </article>
+
+      <article class="panel manifest-panel">
+        <div class="panel-heading"><div><span class="section-kicker">Dataset manifest</span><h3>Source and processing metadata</h3></div></div>
+        <dl id="manifest-list" class="manifest-list"></dl>
+        <p id="manifest-empty" class="panel-empty hidden">No manifest metadata is available.</p>
+      </article>
+      <p class="preview-note" id="preview-note">Browser maps and charts render the records in this portal payload; full-dataset analytics remain in the VerdaTrace pipeline.</p>
+
       <div class="stage-grid">
         <article class="panel map-panel">
           <div class="panel-heading">
@@ -99,8 +121,11 @@
             <label><input type="checkbox" id="toggle-bounds" checked> Bounds</label>
             <span id="visible-count">— visible</span>
           </div>
-          <div id="map" role="application" aria-label="Interactive spatial data map"></div>
-          <div class="time-control">
+          <div class="map-shell">
+            <div id="map" role="application" aria-label="Interactive spatial data map"></div>
+            <p id="map-status" class="map-status hidden" role="status"></p>
+          </div>
+          <div class="time-control" id="time-control">
             <label for="time-filter"><span>Temporal window</span><output id="time-label">All observations</output></label>
             <input type="range" id="time-filter" min="1" max="1" value="1">
           </div>

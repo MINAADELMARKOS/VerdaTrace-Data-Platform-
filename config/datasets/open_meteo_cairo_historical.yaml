@@ -1,0 +1,43 @@
+schema_version: verdatrace_dataset_config_v1
+id: open_meteo_cairo_historical
+name: Cairo historical weather
+domain: climate_environmental
+task: climate
+required_fields:
+  - event_id
+  - event_timestamp
+  - latitude
+  - longitude
+source:
+  path: data/samples/open_meteo_cairo_2024-01-01_2024-01-03.json
+  format: json
+  dataset_type: tabular
+  dataset_name: Open-Meteo Historical Weather API — Cairo sample
+  fixture: false
+  provider: Open-Meteo
+  original_url: "https://archive-api.open-meteo.com/v1/archive?latitude=30.0444&longitude=31.2357&start_date=2024-01-01&end_date=2024-01-03&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m&timezone=UTC"
+  retrieved_at: "2026-08-26T13:06:50.722273+00:00"
+  license: CC BY 4.0
+  geographic_coverage: "point sample near 30.052723, 31.190199"
+  temporal_coverage: "2024-01-01T00:00:00Z to 2024-01-03T23:00:00Z"
+  crs: EPSG:4326
+  original_schema:
+    hourly.time: ISO-8601
+    hourly.temperature_2m: degC
+    hourly.relative_humidity_2m: percent
+    hourly.precipitation: mm
+    hourly.wind_speed_10m: km/h
+  transformations:
+    - zipped hourly arrays
+    - attached WGS84 query coordinates
+    - renamed fields to VerdaTrace canonical semantics
+  limitations:
+    - Point sample is not representative of all Cairo microclimates.
+    - Values inherit upstream weather-model and reanalysis limitations.
+  attribution_label: Weather data by Open-Meteo.com
+  attribution_url: https://open-meteo.com/
+quality: {}
+governance:
+  owner: not_provided
+  sensitivity: public
+  retention_policy: sample retained in source control; refresh reproducibly

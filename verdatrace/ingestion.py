@@ -13,7 +13,7 @@ from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence
 
 from .errors import ExternalSourceError, InvalidSchemaError, UnsupportedCrsError, UnsupportedFormatError
 
-SUPPORTED_SUFFIXES = {".csv", ".json", ".ndjson", ".geojson", ".tif", ".tiff"}
+SUPPORTED_SUFFIXES = {".csv", ".json", ".ndjson", ".geojson", ".tif", ".tiff", ".cog", ".nc", ".nc4", ".netcdf", ".zarr"}
 
 
 def validate_local_path(path: str | Path, allowed_roots: Sequence[str | Path]) -> Path:
@@ -164,8 +164,8 @@ def iter_records(
         return
 
     raise UnsupportedFormatError(
-        "GeoTIFF is recognized but requires a raster-aware execution path",
-        corrective_action="Use probe_geotiff for metadata or configure a rasterio/GDAL processing worker.",
+        f"{suffix.lstrip('.').upper()} is recognized but requires a raster-aware execution path",
+        corrective_action="Use a raster adapter for metadata or configure a rasterio/GDAL/xarray processing worker.",
     )
 
 

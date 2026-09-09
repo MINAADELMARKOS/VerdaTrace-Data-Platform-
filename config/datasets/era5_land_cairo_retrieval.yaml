@@ -1,0 +1,35 @@
+schema_version: verdatrace_dataset_config_v1
+id: era5_land_cairo_retrieval
+name: ERA5-Land Cairo retrieval definition
+domain: climate_environmental
+enabled: false
+task: climate
+required_fields: []
+source:
+  path: data/raw/era5_land_cairo.zarr
+  format: zarr
+  dataset_type: raster
+  dataset_name: ERA5-Land Cairo retrieval definition
+  fixture: false
+  provider: Copernicus Climate Data Store
+  original_url: https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land
+  retrieved_at: not_retrieved
+  license: not_provided
+  geographic_coverage: Cairo bounding box to be supplied at retrieval
+  temporal_coverage: select a bounded ERA5-Land period at retrieval
+  crs: null
+  original_schema:
+    variables: provider-selected ERA5-Land variables
+    grid_dimensions: provider analysis-ready metadata
+    timestamps: hourly UTC timestamps
+  transformations: []
+  limitations:
+    - Retrieval requires Copernicus Data Store credentials and a bounded request.
+    - No values, units, or grid metadata are committed before retrieval.
+  attribution_label: Copernicus ERA5-Land
+  attribution_url: https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land
+quality: {}
+governance:
+  owner: not_provided
+  sensitivity: public_source_pending_retrieval
+  retention_policy: not_provided

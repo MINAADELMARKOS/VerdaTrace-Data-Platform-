@@ -1,11 +1,12 @@
 {
   "schema_version": "verdatrace_portal_payload_v1",
-  "generated_at": "2026-08-26T20:08:23.893835+00:00",
+  "generated_at": "2026-09-09T08:41:08.980058+00:00",
   "datasets": [
     {
       "id": "open_meteo_cairo_historical",
       "title": "Cairo historical weather",
       "domain": "climate_environmental",
+      "dataset_type": "tabular",
       "fixture": false,
       "attribution": {
         "label": "Weather data by Open-Meteo.com",
@@ -878,6 +879,12 @@
           "source_system": "open_meteo_historical_api"
         }
       ],
+      "preview": {
+        "is_sample": false,
+        "records_shown": 72,
+        "record_count": 72,
+        "strategy": "complete"
+      },
       "outcome": {
         "profile": {
           "dataset_id": "open_meteo_cairo_historical",
@@ -1273,7 +1280,9 @@
             "task": "climate",
             "method": "deterministic_descriptive_v1",
             "input_rows": 72,
-            "quality_score": 100.0
+            "quality_score": 100.0,
+            "dataset_id": "open_meteo_cairo_historical",
+            "source_format": "json"
           },
           "lineage": [
             {
@@ -1281,42 +1290,42 @@
               "input_ref": "https://archive-api.open-meteo.com/v1/archive?latitude=30.0444&longitude=31.2357&start_date=2024-01-01&end_date=2024-01-03&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m&timezone=UTC",
               "output_ref": "raw:open_meteo_cairo_historical",
               "operation": "ingest_json",
-              "timestamp": "2026-08-26T20:08:23.886912+00:00"
+              "timestamp": "2026-09-09T08:41:08.969709+00:00"
             },
             {
               "stage": "schema_discovery",
               "input_ref": "raw:open_meteo_cairo_historical",
               "output_ref": "catalog:open_meteo_cairo_historical",
               "operation": "profile_and_classify",
-              "timestamp": "2026-08-26T20:08:23.888752+00:00"
+              "timestamp": "2026-09-09T08:41:08.971712+00:00"
             },
             {
               "stage": "quality_checks",
               "input_ref": "raw:open_meteo_cairo_historical",
               "output_ref": "quality:open_meteo_cairo_historical",
               "operation": "deterministic_quality_rules",
-              "timestamp": "2026-08-26T20:08:23.889834+00:00"
+              "timestamp": "2026-09-09T08:41:08.973716+00:00"
             },
             {
               "stage": "analysis",
               "input_ref": "quality:open_meteo_cairo_historical",
               "output_ref": "analysis:open_meteo_cairo_historical",
               "operation": "climate_analysis",
-              "timestamp": "2026-08-26T20:08:23.891834+00:00"
+              "timestamp": "2026-09-09T08:41:08.975460+00:00"
             },
             {
               "stage": "evaluation",
               "input_ref": "analysis:open_meteo_cairo_historical",
               "output_ref": "evaluation:open_meteo_cairo_historical",
               "operation": "evaluate_climate",
-              "timestamp": "2026-08-26T20:08:23.891834+00:00"
+              "timestamp": "2026-09-09T08:41:08.975460+00:00"
             },
             {
               "stage": "visualization",
               "input_ref": "evaluation:open_meteo_cairo_historical",
               "output_ref": "visualization:open_meteo_cairo_historical",
               "operation": "deterministic_recommendation",
-              "timestamp": "2026-08-26T20:08:23.891834+00:00"
+              "timestamp": "2026-09-09T08:41:08.975460+00:00"
             }
           ]
         },
@@ -1447,7 +1456,7 @@
           ],
           "sensitivity": "public",
           "retention_policy": "sample retained in source control; refresh reproducibly",
-          "ingestion_timestamp": "2026-08-26T20:08:23.886912+00:00",
+          "ingestion_timestamp": "2026-09-09T08:41:08.969709+00:00",
           "transformation_history": [
             "zipped hourly arrays",
             "attached WGS84 query coordinates",
@@ -1464,105 +1473,133 @@
             "input_ref": "https://archive-api.open-meteo.com/v1/archive?latitude=30.0444&longitude=31.2357&start_date=2024-01-01&end_date=2024-01-03&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m&timezone=UTC",
             "output_ref": "raw:open_meteo_cairo_historical",
             "operation": "ingest_json",
-            "timestamp": "2026-08-26T20:08:23.886912+00:00"
+            "timestamp": "2026-09-09T08:41:08.969709+00:00"
           },
           {
             "stage": "schema_discovery",
             "input_ref": "raw:open_meteo_cairo_historical",
             "output_ref": "catalog:open_meteo_cairo_historical",
             "operation": "profile_and_classify",
-            "timestamp": "2026-08-26T20:08:23.888752+00:00"
+            "timestamp": "2026-09-09T08:41:08.971712+00:00"
           },
           {
             "stage": "quality_checks",
             "input_ref": "raw:open_meteo_cairo_historical",
             "output_ref": "quality:open_meteo_cairo_historical",
             "operation": "deterministic_quality_rules",
-            "timestamp": "2026-08-26T20:08:23.889834+00:00"
+            "timestamp": "2026-09-09T08:41:08.973716+00:00"
           },
           {
             "stage": "analysis",
             "input_ref": "quality:open_meteo_cairo_historical",
             "output_ref": "analysis:open_meteo_cairo_historical",
             "operation": "climate_analysis",
-            "timestamp": "2026-08-26T20:08:23.891834+00:00"
+            "timestamp": "2026-09-09T08:41:08.975460+00:00"
           },
           {
             "stage": "evaluation",
             "input_ref": "analysis:open_meteo_cairo_historical",
             "output_ref": "evaluation:open_meteo_cairo_historical",
             "operation": "evaluate_climate",
-            "timestamp": "2026-08-26T20:08:23.891834+00:00"
+            "timestamp": "2026-09-09T08:41:08.975460+00:00"
           },
           {
             "stage": "visualization",
             "input_ref": "evaluation:open_meteo_cairo_historical",
             "output_ref": "visualization:open_meteo_cairo_historical",
             "operation": "deterministic_recommendation",
-            "timestamp": "2026-08-26T20:08:23.891834+00:00"
+            "timestamp": "2026-09-09T08:41:08.975460+00:00"
           }
         ],
         "audit_events": [
           {
-            "event_id": "31b00947-1a43-4c27-a205-44f836abc84a",
-            "timestamp": "2026-08-26T20:08:23.886912+00:00",
+            "event_id": "5497e83b-0f9a-416e-b893-2cb885c8865e",
+            "timestamp": "2026-09-09T08:41:08.969709+00:00",
             "actor": "demo-builder",
             "operation": "dataset_ingestion",
             "target": "open_meteo_cairo_historical",
             "outcome": "started",
-            "correlation_id": "3be7c7af-05e6-41da-b9d9-99dc98cfb2a4",
+            "correlation_id": "3125e735-1962-42cb-bae0-0a1caaf81f5c",
             "details": {
               "record_count": 72,
               "source_format": "json"
             }
           },
           {
-            "event_id": "266f2dda-a842-4a8e-bd13-d4b392a89267",
-            "timestamp": "2026-08-26T20:08:23.889834+00:00",
+            "event_id": "7492e0f3-3d0c-4a2a-930f-75b7f7655089",
+            "timestamp": "2026-09-09T08:41:08.973716+00:00",
             "actor": "demo-builder",
             "operation": "quality_evaluation",
             "target": "open_meteo_cairo_historical",
             "outcome": "passed",
-            "correlation_id": "3be7c7af-05e6-41da-b9d9-99dc98cfb2a4",
+            "correlation_id": "3125e735-1962-42cb-bae0-0a1caaf81f5c",
             "details": {
               "quality_score": 100.0,
               "issue_count": 0
             }
           },
           {
-            "event_id": "67e5abe6-aa37-4fa9-ac16-973d7d355f00",
-            "timestamp": "2026-08-26T20:08:23.891834+00:00",
+            "event_id": "0517992f-1d42-4b25-b55b-223ec40cd120",
+            "timestamp": "2026-09-09T08:41:08.975460+00:00",
             "actor": "demo-builder",
             "operation": "analysis_execution",
             "target": "open_meteo_cairo_historical",
             "outcome": "succeeded",
-            "correlation_id": "3be7c7af-05e6-41da-b9d9-99dc98cfb2a4",
+            "correlation_id": "3125e735-1962-42cb-bae0-0a1caaf81f5c",
             "details": {
               "result_type": "climate_analysis",
               "metric_count": 4
             }
           },
           {
-            "event_id": "8c215d8f-9bc4-4e94-8fdf-a0753f4d12b2",
-            "timestamp": "2026-08-26T20:08:23.891834+00:00",
+            "event_id": "143a2ee8-40b7-4369-888f-a7cb8e6d7851",
+            "timestamp": "2026-09-09T08:41:08.975460+00:00",
             "actor": "demo-builder",
             "operation": "dataset_ingestion",
             "target": "open_meteo_cairo_historical",
             "outcome": "succeeded",
-            "correlation_id": "3be7c7af-05e6-41da-b9d9-99dc98cfb2a4",
+            "correlation_id": "3125e735-1962-42cb-bae0-0a1caaf81f5c",
             "details": {
               "quality_status": "passed",
               "analysis_result_type": "climate_analysis",
               "visualization_count": 7
             }
           }
-        ]
+        ],
+        "manifest": {
+          "dataset_id": "open_meteo_cairo_historical",
+          "dataset_name": "Cairo historical weather",
+          "provider": "Open-Meteo",
+          "source_format": "json",
+          "dataset_type": "tabular",
+          "input_size": 29520,
+          "record_count": 72,
+          "geometry_types": [],
+          "crs": "EPSG:4326",
+          "bounding_box": {
+            "min_latitude": 30.052723,
+            "max_latitude": 30.052723,
+            "min_longitude": 31.190199,
+            "max_longitude": 31.190199
+          },
+          "geographic_coverage": "point sample near 30.052723, 31.190199",
+          "temporal_coverage": {
+            "start": "2024-01-01T00:00:00+00:00",
+            "end": "2024-01-03T23:00:00+00:00"
+          },
+          "license": "CC BY 4.0",
+          "ingestion_timestamp": "2026-09-09T08:41:08.969709+00:00",
+          "processing_timestamp": "2026-09-09T08:41:08.975460+00:00",
+          "fixture": false
+        },
+        "executive_kpis": []
       }
     },
     {
       "id": "synthetic_refrigerated_route",
       "title": "Synthetic refrigerated shipment route",
       "domain": "logistics_mobility_sensor",
+      "dataset_type": "vector",
       "fixture": true,
       "attribution": {
         "label": "Clearly labeled generated test fixture",
@@ -1709,6 +1746,12 @@
           "latitude": 31.107
         }
       ],
+      "preview": {
+        "is_sample": false,
+        "records_shown": 6,
+        "record_count": 6,
+        "strategy": "complete"
+      },
       "outcome": {
         "profile": {
           "dataset_id": "synthetic_refrigerated_route",
@@ -2245,7 +2288,9 @@
             "task": "mobility",
             "method": "deterministic_descriptive_v1",
             "input_rows": 6,
-            "quality_score": 100.0
+            "quality_score": 100.0,
+            "dataset_id": "synthetic_refrigerated_route",
+            "source_format": "geojson"
           },
           "lineage": [
             {
@@ -2253,42 +2298,42 @@
               "input_ref": "repository://tests/fixtures/synthetic_mobility_route.geojson",
               "output_ref": "raw:synthetic_refrigerated_route",
               "operation": "ingest_geojson",
-              "timestamp": "2026-08-26T20:08:23.892835+00:00"
+              "timestamp": "2026-09-09T08:41:08.977982+00:00"
             },
             {
               "stage": "schema_discovery",
               "input_ref": "raw:synthetic_refrigerated_route",
               "output_ref": "catalog:synthetic_refrigerated_route",
               "operation": "profile_and_classify",
-              "timestamp": "2026-08-26T20:08:23.892835+00:00"
+              "timestamp": "2026-09-09T08:41:08.977982+00:00"
             },
             {
               "stage": "quality_checks",
               "input_ref": "raw:synthetic_refrigerated_route",
               "output_ref": "quality:synthetic_refrigerated_route",
               "operation": "deterministic_quality_rules",
-              "timestamp": "2026-08-26T20:08:23.893835+00:00"
+              "timestamp": "2026-09-09T08:41:08.977982+00:00"
             },
             {
               "stage": "analysis",
               "input_ref": "quality:synthetic_refrigerated_route",
               "output_ref": "analysis:synthetic_refrigerated_route",
               "operation": "mobility_analysis",
-              "timestamp": "2026-08-26T20:08:23.893835+00:00"
+              "timestamp": "2026-09-09T08:41:08.977982+00:00"
             },
             {
               "stage": "evaluation",
               "input_ref": "analysis:synthetic_refrigerated_route",
               "output_ref": "evaluation:synthetic_refrigerated_route",
               "operation": "evaluate_mobility",
-              "timestamp": "2026-08-26T20:08:23.893835+00:00"
+              "timestamp": "2026-09-09T08:41:08.977982+00:00"
             },
             {
               "stage": "visualization",
               "input_ref": "evaluation:synthetic_refrigerated_route",
               "output_ref": "visualization:synthetic_refrigerated_route",
               "operation": "deterministic_recommendation",
-              "timestamp": "2026-08-26T20:08:23.893835+00:00"
+              "timestamp": "2026-09-09T08:41:08.980058+00:00"
             }
           ]
         },
@@ -2435,7 +2480,7 @@
           ],
           "sensitivity": "public_fixture",
           "retention_policy": "repository test fixture",
-          "ingestion_timestamp": "2026-08-26T20:08:23.892835+00:00",
+          "ingestion_timestamp": "2026-09-09T08:41:08.977982+00:00",
           "transformation_history": [
             "flattened GeoJSON properties",
             "derived latitude and longitude from Point geometry"
@@ -2451,99 +2496,128 @@
             "input_ref": "repository://tests/fixtures/synthetic_mobility_route.geojson",
             "output_ref": "raw:synthetic_refrigerated_route",
             "operation": "ingest_geojson",
-            "timestamp": "2026-08-26T20:08:23.892835+00:00"
+            "timestamp": "2026-09-09T08:41:08.977982+00:00"
           },
           {
             "stage": "schema_discovery",
             "input_ref": "raw:synthetic_refrigerated_route",
             "output_ref": "catalog:synthetic_refrigerated_route",
             "operation": "profile_and_classify",
-            "timestamp": "2026-08-26T20:08:23.892835+00:00"
+            "timestamp": "2026-09-09T08:41:08.977982+00:00"
           },
           {
             "stage": "quality_checks",
             "input_ref": "raw:synthetic_refrigerated_route",
             "output_ref": "quality:synthetic_refrigerated_route",
             "operation": "deterministic_quality_rules",
-            "timestamp": "2026-08-26T20:08:23.893835+00:00"
+            "timestamp": "2026-09-09T08:41:08.977982+00:00"
           },
           {
             "stage": "analysis",
             "input_ref": "quality:synthetic_refrigerated_route",
             "output_ref": "analysis:synthetic_refrigerated_route",
             "operation": "mobility_analysis",
-            "timestamp": "2026-08-26T20:08:23.893835+00:00"
+            "timestamp": "2026-09-09T08:41:08.977982+00:00"
           },
           {
             "stage": "evaluation",
             "input_ref": "analysis:synthetic_refrigerated_route",
             "output_ref": "evaluation:synthetic_refrigerated_route",
             "operation": "evaluate_mobility",
-            "timestamp": "2026-08-26T20:08:23.893835+00:00"
+            "timestamp": "2026-09-09T08:41:08.977982+00:00"
           },
           {
             "stage": "visualization",
             "input_ref": "evaluation:synthetic_refrigerated_route",
             "output_ref": "visualization:synthetic_refrigerated_route",
             "operation": "deterministic_recommendation",
-            "timestamp": "2026-08-26T20:08:23.893835+00:00"
+            "timestamp": "2026-09-09T08:41:08.980058+00:00"
           }
         ],
         "audit_events": [
           {
-            "event_id": "45be5a9f-6b95-422a-b061-b64a46a2e4cd",
-            "timestamp": "2026-08-26T20:08:23.892835+00:00",
+            "event_id": "863d1a0e-6649-4b0c-b249-6af9a7ceebcc",
+            "timestamp": "2026-09-09T08:41:08.977982+00:00",
             "actor": "demo-builder",
             "operation": "dataset_ingestion",
             "target": "synthetic_refrigerated_route",
             "outcome": "started",
-            "correlation_id": "2d859a5a-d182-44c5-a15c-78c27f19ec37",
+            "correlation_id": "70e689e2-0677-4541-9544-a82aaa8164f0",
             "details": {
               "record_count": 6,
               "source_format": "geojson"
             }
           },
           {
-            "event_id": "c231b11c-9da6-48cd-b6cc-33f1b3040c71",
-            "timestamp": "2026-08-26T20:08:23.893835+00:00",
+            "event_id": "f2b6d389-d9bf-4faf-ad2a-4b28a5e45601",
+            "timestamp": "2026-09-09T08:41:08.977982+00:00",
             "actor": "demo-builder",
             "operation": "quality_evaluation",
             "target": "synthetic_refrigerated_route",
             "outcome": "passed",
-            "correlation_id": "2d859a5a-d182-44c5-a15c-78c27f19ec37",
+            "correlation_id": "70e689e2-0677-4541-9544-a82aaa8164f0",
             "details": {
               "quality_score": 100.0,
               "issue_count": 0
             }
           },
           {
-            "event_id": "969ad2ba-48c2-451f-8cd8-496ba0e9677a",
-            "timestamp": "2026-08-26T20:08:23.893835+00:00",
+            "event_id": "0f17cb2b-afe0-417d-b3ec-952de7f31d83",
+            "timestamp": "2026-09-09T08:41:08.977982+00:00",
             "actor": "demo-builder",
             "operation": "analysis_execution",
             "target": "synthetic_refrigerated_route",
             "outcome": "succeeded",
-            "correlation_id": "2d859a5a-d182-44c5-a15c-78c27f19ec37",
+            "correlation_id": "70e689e2-0677-4541-9544-a82aaa8164f0",
             "details": {
               "result_type": "mobility_analysis",
               "metric_count": 4
             }
           },
           {
-            "event_id": "e56e184f-1671-4685-bc74-1d68220c73b5",
-            "timestamp": "2026-08-26T20:08:23.893835+00:00",
+            "event_id": "ca2d31d4-6d1c-4487-9281-e095e2b06320",
+            "timestamp": "2026-09-09T08:41:08.980058+00:00",
             "actor": "demo-builder",
             "operation": "dataset_ingestion",
             "target": "synthetic_refrigerated_route",
             "outcome": "succeeded",
-            "correlation_id": "2d859a5a-d182-44c5-a15c-78c27f19ec37",
+            "correlation_id": "70e689e2-0677-4541-9544-a82aaa8164f0",
             "details": {
               "quality_status": "passed",
               "analysis_result_type": "mobility_analysis",
               "visualization_count": 8
             }
           }
-        ]
+        ],
+        "manifest": {
+          "dataset_id": "synthetic_refrigerated_route",
+          "dataset_name": "Synthetic refrigerated shipment route",
+          "provider": "VerdaTrace test suite",
+          "source_format": "geojson",
+          "dataset_type": "vector",
+          "input_size": 2651,
+          "record_count": 6,
+          "geometry_types": [
+            "Point"
+          ],
+          "crs": "EPSG:4326",
+          "bounding_box": {
+            "min_latitude": 31.107,
+            "max_latitude": 31.1901,
+            "min_longitude": 29.8752,
+            "max_longitude": 30.091
+          },
+          "geographic_coverage": "Synthetic route near Alexandria, Egypt; not operational data",
+          "temporal_coverage": {
+            "start": "2024-02-10T08:00:00+00:00",
+            "end": "2024-02-10T08:44:00+00:00"
+          },
+          "license": "not_applicable_test_fixture",
+          "ingestion_timestamp": "2026-09-09T08:41:08.977982+00:00",
+          "processing_timestamp": "2026-09-09T08:41:08.980058+00:00",
+          "fixture": true
+        },
+        "executive_kpis": []
       }
     }
   ]

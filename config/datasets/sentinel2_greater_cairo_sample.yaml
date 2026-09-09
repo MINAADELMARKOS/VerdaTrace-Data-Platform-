@@ -1,0 +1,37 @@
+schema_version: verdatrace_dataset_config_v1
+id: sentinel2_greater_cairo_sample
+name: Sentinel-2 Level-2A Greater Cairo sample
+domain: remote_sensing
+enabled: false
+task: spatial
+required_fields: []
+source:
+  path: data/raw/sentinel2_greater_cairo_sample.tif
+  format: cog
+  dataset_type: raster
+  dataset_name: Sentinel-2 Level-2A Greater Cairo sample
+  fixture: false
+  provider: Copernicus Data Space Ecosystem
+  original_url: https://stac.dataspace.copernicus.eu/v1/search
+  retrieved_at: not_retrieved
+  license: not_provided
+  geographic_coverage: Greater Cairo AOI selected for a reproducible STAC search
+  temporal_coverage: select an observed scene date from the STAC response
+  crs: null
+  original_schema:
+    scene: provider STAC item identifier
+    date: provider STAC datetime
+    bands: Sentinel-2 L2A assets
+    cloud_cover: provider eo:cloud_cover metadata
+    bounds: provider STAC geometry/bbox
+  transformations: []
+  limitations:
+    - Retrieval is intentionally disabled until a Copernicus Data Space account and a bounded scene are supplied.
+    - No scene measurements or license interpretation are committed without source verification.
+  attribution_label: Copernicus Data Space Ecosystem Sentinel-2
+  attribution_url: https://dataspace.copernicus.eu/
+quality: {}
+governance:
+  owner: not_provided
+  sensitivity: public_source_pending_retrieval
+  retention_policy: not_provided
