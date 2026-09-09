@@ -51,6 +51,7 @@ def test_osm_adapter_streams_and_normalizes_without_materializing_pbf(tmp_path: 
 
     limited = list(OSMAdapter(parser=parser).iter_records(source, allowed_roots=[tmp_path], max_records=2))
     assert len(limited) == 2
+    assert list(OSMAdapter(parser=parser).iter_records(source, allowed_roots=[tmp_path], max_records=0)) == []
 
 
 def test_default_osm_adapter_fails_explicitly_when_worker_dependency_is_unavailable(tmp_path: Path):

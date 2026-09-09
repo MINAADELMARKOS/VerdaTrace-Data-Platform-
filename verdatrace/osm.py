@@ -180,6 +180,8 @@ class OSMAdapter:
                 "OSM adapter accepts only .osm.pbf sources",
                 corrective_action="Provide a file named with the .osm.pbf extension.",
             )
+        if max_records is not None and max_records <= 0:
+            return
         queue: Queue[Any] = Queue(maxsize=256)
         stopped = Event()
         failure: List[BaseException] = []
