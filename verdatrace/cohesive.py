@@ -286,6 +286,49 @@ def _polygon_self_intersects(geometry: Mapping[str, Any]) -> bool:
     return False
 
 
+def point_in_polygon(longitude: float, latitude: float, ring: Sequence[Sequence[float]]) -> bool:
+    """Pure-Python WGS84 point-in-ring test for small spatial joins."""
+
+    inside = False
+    if len(ring) < 3:
+        return False
+    j = len(ring) - 1
+    for i, current in enumerate(ring):
+        previous = ring[j]
+        if len(current) < 2 or len(previous) < 2:
+            j = i
+            continue
+        current_lon, current_lat = float(current[0]), float(current[1])
+        previous_lon, previous_lat = float(previous[0]), float(previous[1])
+        intersects = ((current_lat > latitude) != (previous_lat > latitude)) and (longitude < (previous_lon - current_lon) * (latitude - current_lat) / ((previous_lat - current_lat) or 1e-12) + current_lon)
+        if intersects:
+            inside = not inside
+        j = i
+    return inside
+
+
+def geometry_contains_point(geometry: Mapping[str, Any], longitude: float, latitude: float) -> bool:
+    """Containment helper for Point/Polygon/MultiPolygon GeoJSON geometries."""
+
+    geometry_type = geometry.get("type")
+    coordinates = geometry.get("coordinates")
+    if geometry_type == "Polygon" and isinstance(coordinates, list) and coordinates:
+        return point_in_polygon(longitude, latitude, coordinates[0]) and not any(point_in_polygon(longitude, latitude, hole) for hole in coordinates[1:])
+    if geometry_type == "MultiPolygon" and isinstance(coordinates, list):
+        return any(geometry_contains_point({"type": "Polygon", "coordinates": polygon}, longitude, latitude) for polygon in coordinates)
+    return False
+
+
+def haversine_distance_km(latitude_a: float, longitude_a: float, latitude_b: float, longitude_b: float) -> float:
+    """Return great-circle distance for proximity analytics without GIS dependencies."""
+
+    radius = 6371.0088
+    lat_a, lat_b = math.radians(latitude_a), math.radians(latitude_b)
+    delta_lat, delta_lon = lat_b - lat_a, math.radians(longitude_b - longitude_a)
+    value = math.sin(delta_lat / 2) ** 2 + math.cos(lat_a) * math.cos(lat_b) * math.sin(delta_lon / 2) ** 2
+    return radius * 2 * math.atan2(math.sqrt(value), math.sqrt(max(0.0, 1 - value)))
+
+
 def _finding(issue: str, count: int, dimension: str, field: Optional[str], rule: str, severity: str = "error") -> Dict[str, Any]:
     return {
         "issue": issue,
@@ -669,7 +712,7 @@ def build_cohesive_payload(root: str | Path, *, preview_limit: int = 300) -> Dic
             target_recommendations[str(row.get("recommendation"))] += 1
     aligned = [abs(statistics.mean(values) - next(zone["scores"]["suitability"] for zone in zone_rows if zone["zone_id"] == zone_id)) for zone_id, values in target_scores.items() if values and any(zone["zone_id"] == zone_id for zone in zone_rows)]
     evaluation_alignment = {"target_record_count": sum(len(values) for values in target_scores.values()), "target_recommendation_counts": dict(target_recommendations), "zone_mean_absolute_error": round(statistics.mean(aligned), 2) if aligned else None, "method": "mean supplied analytical_evaluation score per zone compared with independently derived Zone 360 suitability"}
-    platform = {"schema_version": "verdatrace_cohesive_platform_v1", "source_pack": {"name": "VerdaTrace Cohesive Data Pack", "fixture": True, "license": "not_provided", "raw_data_policy": "Raw pack files are not committed; point --pack-root at the supplied retrieval directory.", "manifest": [dict(row) for row in csv.DictReader((pack / "manifest.csv").open("r", encoding="utf-8-sig"))] if (pack / "manifest.csv").is_file() else []}, "zone_360": aggregates["zone_360"], "site_360": aggregates["site_360"], "vehicle_360": aggregates["vehicle_360"], "sensor_health": aggregates["sensor_health"], "executive_kpis": _executive_kpis(aggregates, {"overall_score": quality_overall}), "quality_summary": {"overall_score": quality_overall, "datasets": detected_quality, "expected_findings_validation": expected_comparison}, "evaluation_alignment": evaluation_alignment, "lineage": {"edges": lineage_edges, "stage_sequence": ["raw_ingestion", "quality", "catalog", "analysis", "evaluation", "visualization", "governance"]}, "governance": {"rbac_policy": rbac, "audit_summary": _audit_summary(pack), "least_privilege": "Read-only executive access is separated from raw write and catalog mutation permissions."}, "recommendations": sorted(aggregates["zone_360"], key=lambda row: row["scores"]["suitability"], reverse=True)[:10], "processing": {"duration_seconds": round(time.perf_counter() - started, 3), "datasets_processed": len(dataset_entries), "raw_records_processed": sum(item["outcome"]["manifest"]["record_count"] for item in dataset_entries), "preview_strategy": f"head sample capped at {preview_limit} records per dataset"}}
+    platform = {"schema_version": "verdatrace_cohesive_platform_v1", "source_pack": {"name": "VerdaTrace Cohesive Data Pack", "fixture": True, "license": "not_provided", "raw_data_policy": "Raw pack files are not committed; point --pack-root at the supplied retrieval directory.", "manifest": [dict(row) for row in csv.DictReader((pack / "manifest.csv").open("r", encoding="utf-8-sig"))] if (pack / "manifest.csv").is_file() else []}, "zone_360": aggregates["zone_360"], "site_360": aggregates["site_360"], "vehicle_360": aggregates["vehicle_360"], "sensor_health": aggregates["sensor_health"], "executive_kpis": _executive_kpis(aggregates, {"overall_score": quality_overall}), "quality_summary": {"overall_score": quality_overall, "datasets": detected_quality, "expected_findings_validation": expected_comparison}, "evaluation_alignment": evaluation_alignment, "spatial": {"containment": "WGS84 point-in-polygon helper available for explicit joins", "proximity": "haversine distance helper available", "zone_aggregation": "aggregates keyed by supplied zone_id relationships", "geometry_dependency": "optional; no heavyweight GIS dependency required for the demo"}, "lineage": {"edges": lineage_edges, "stage_sequence": ["raw_ingestion", "quality", "catalog", "analysis", "evaluation", "visualization", "governance"]}, "governance": {"rbac_policy": rbac, "audit_summary": _audit_summary(pack), "least_privilege": "Read-only executive access is separated from raw write and catalog mutation permissions."}, "recommendations": sorted(aggregates["zone_360"], key=lambda row: row["scores"]["suitability"], reverse=True)[:10], "processing": {"duration_seconds": round(time.perf_counter() - started, 3), "datasets_processed": len(dataset_entries), "raw_records_processed": sum(item["outcome"]["manifest"]["record_count"] for item in dataset_entries), "preview_strategy": f"head sample capped at {preview_limit} records per dataset"}}
     return {"schema_version": "verdatrace_portal_payload_v2", "generated_at": datetime.now(timezone.utc).isoformat(), "datasets": dataset_entries, "platform": platform}
 
 

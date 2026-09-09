@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from verdatrace.cohesive import build_cohesive_payload, compare_expected_findings, ingest_and_profile_file, iter_pack_records, rbac_allows
+from verdatrace.cohesive import build_cohesive_payload, compare_expected_findings, geometry_contains_point, haversine_distance_km, ingest_and_profile_file, iter_pack_records, point_in_polygon, rbac_allows
 
 
 def _write_csv(path: Path, rows):
@@ -94,6 +94,14 @@ def test_pack_rbac_does_not_grant_raw_access_to_executives():
     assert rbac_allows(policy, role="executive_viewer", resource="serving/analytical_evaluation", action="READ")
     assert not rbac_allows(policy, role="executive_viewer", resource="raw/logistics_shipments", action="READ")
     assert not rbac_allows(policy, role="executive_viewer", resource="raw/logistics_shipments", action="WRITE")
+
+
+def test_spatial_helpers_support_containment_and_proximity():
+    ring = [[31.0, 30.0], [31.3, 30.0], [31.3, 30.3], [31.0, 30.3], [31.0, 30.0]]
+    assert point_in_polygon(31.1, 30.1, ring)
+    assert geometry_contains_point({"type": "Polygon", "coordinates": [ring]}, 31.1, 30.1)
+    assert not geometry_contains_point({"type": "Polygon", "coordinates": [ring]}, 32.0, 30.1)
+    assert 10 < haversine_distance_km(30.0, 31.0, 30.1, 31.0) < 12
 
 
 @pytest.mark.skipif(not os.environ.get("VERDATARACE_PACK_ROOT"), reason="full supplied pack is external to the repository; set VERDATARACE_PACK_ROOT to run the full golden comparison")

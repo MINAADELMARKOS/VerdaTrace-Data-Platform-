@@ -81,6 +81,11 @@ not copied into the recommendation logic. The payload reports its record count,
 recommendation distribution, and zone-level mean absolute error against the
 independently derived Zone 360 score under `platform.evaluation_alignment`.
 
+The spatial foundation exposes WGS84 point-in-polygon and haversine proximity
+helpers without forcing a heavyweight GIS dependency. Pack rollups primarily
+use the supplied `zone_id` relationships; production-scale polygon joins
+should move to a spatially indexed warehouse/vector-tile worker.
+
 ## Scaling boundary
 
 JSONL and XML records are streamed. Master/reference files are small and are
