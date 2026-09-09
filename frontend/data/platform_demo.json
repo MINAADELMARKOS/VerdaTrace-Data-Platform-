@@ -1,6 +1,6 @@
 {
   "schema_version": "verdatrace_portal_payload_v2",
-  "generated_at": "2026-09-09T10:20:58.061392+00:00",
+  "generated_at": "2026-09-09T10:25:39.257548+00:00",
   "datasets": [
     {
       "id": "open_meteo_cairo_historical",
@@ -1296,42 +1296,42 @@
               "input_ref": "https://archive-api.open-meteo.com/v1/archive?latitude=30.0444&longitude=31.2357&start_date=2024-01-01&end_date=2024-01-03&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m&timezone=UTC",
               "output_ref": "raw:open_meteo_cairo_historical",
               "operation": "ingest_json",
-              "timestamp": "2026-09-09T10:20:58.049778+00:00"
+              "timestamp": "2026-09-09T10:25:39.225575+00:00"
             },
             {
               "stage": "schema_discovery",
               "input_ref": "raw:open_meteo_cairo_historical",
               "output_ref": "catalog:open_meteo_cairo_historical",
               "operation": "profile_and_classify",
-              "timestamp": "2026-09-09T10:20:58.051827+00:00"
+              "timestamp": "2026-09-09T10:25:39.232296+00:00"
             },
             {
               "stage": "quality_checks",
               "input_ref": "raw:open_meteo_cairo_historical",
               "output_ref": "quality:open_meteo_cairo_historical",
               "operation": "deterministic_quality_rules",
-              "timestamp": "2026-09-09T10:20:58.051827+00:00"
+              "timestamp": "2026-09-09T10:25:39.233033+00:00"
             },
             {
               "stage": "analysis",
               "input_ref": "quality:open_meteo_cairo_historical",
               "output_ref": "analysis:open_meteo_cairo_historical",
               "operation": "climate_analysis",
-              "timestamp": "2026-09-09T10:20:58.054385+00:00"
+              "timestamp": "2026-09-09T10:25:39.233033+00:00"
             },
             {
               "stage": "evaluation",
               "input_ref": "analysis:open_meteo_cairo_historical",
               "output_ref": "evaluation:open_meteo_cairo_historical",
               "operation": "evaluate_climate",
-              "timestamp": "2026-09-09T10:20:58.054385+00:00"
+              "timestamp": "2026-09-09T10:25:39.233033+00:00"
             },
             {
               "stage": "visualization",
               "input_ref": "evaluation:open_meteo_cairo_historical",
               "output_ref": "visualization:open_meteo_cairo_historical",
               "operation": "deterministic_recommendation",
-              "timestamp": "2026-09-09T10:20:58.054385+00:00"
+              "timestamp": "2026-09-09T10:25:39.233033+00:00"
             }
           ]
         },
@@ -1462,7 +1462,7 @@
           ],
           "sensitivity": "public",
           "retention_policy": "sample retained in source control; refresh reproducibly",
-          "ingestion_timestamp": "2026-09-09T10:20:58.049778+00:00",
+          "ingestion_timestamp": "2026-09-09T10:25:39.225575+00:00",
           "transformation_history": [
             "zipped hourly arrays",
             "attached WGS84 query coordinates",
@@ -1479,92 +1479,92 @@
             "input_ref": "https://archive-api.open-meteo.com/v1/archive?latitude=30.0444&longitude=31.2357&start_date=2024-01-01&end_date=2024-01-03&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m&timezone=UTC",
             "output_ref": "raw:open_meteo_cairo_historical",
             "operation": "ingest_json",
-            "timestamp": "2026-09-09T10:20:58.049778+00:00"
+            "timestamp": "2026-09-09T10:25:39.225575+00:00"
           },
           {
             "stage": "schema_discovery",
             "input_ref": "raw:open_meteo_cairo_historical",
             "output_ref": "catalog:open_meteo_cairo_historical",
             "operation": "profile_and_classify",
-            "timestamp": "2026-09-09T10:20:58.051827+00:00"
+            "timestamp": "2026-09-09T10:25:39.232296+00:00"
           },
           {
             "stage": "quality_checks",
             "input_ref": "raw:open_meteo_cairo_historical",
             "output_ref": "quality:open_meteo_cairo_historical",
             "operation": "deterministic_quality_rules",
-            "timestamp": "2026-09-09T10:20:58.051827+00:00"
+            "timestamp": "2026-09-09T10:25:39.233033+00:00"
           },
           {
             "stage": "analysis",
             "input_ref": "quality:open_meteo_cairo_historical",
             "output_ref": "analysis:open_meteo_cairo_historical",
             "operation": "climate_analysis",
-            "timestamp": "2026-09-09T10:20:58.054385+00:00"
+            "timestamp": "2026-09-09T10:25:39.233033+00:00"
           },
           {
             "stage": "evaluation",
             "input_ref": "analysis:open_meteo_cairo_historical",
             "output_ref": "evaluation:open_meteo_cairo_historical",
             "operation": "evaluate_climate",
-            "timestamp": "2026-09-09T10:20:58.054385+00:00"
+            "timestamp": "2026-09-09T10:25:39.233033+00:00"
           },
           {
             "stage": "visualization",
             "input_ref": "evaluation:open_meteo_cairo_historical",
             "output_ref": "visualization:open_meteo_cairo_historical",
             "operation": "deterministic_recommendation",
-            "timestamp": "2026-09-09T10:20:58.054385+00:00"
+            "timestamp": "2026-09-09T10:25:39.233033+00:00"
           }
         ],
         "audit_events": [
           {
-            "event_id": "700cf3b2-a45a-4a7f-8c29-53ac66bd3256",
-            "timestamp": "2026-09-09T10:20:58.049778+00:00",
+            "event_id": "38b647d7-a738-4141-830e-be01831059dd",
+            "timestamp": "2026-09-09T10:25:39.225575+00:00",
             "actor": "demo-builder",
             "operation": "dataset_ingestion",
             "target": "open_meteo_cairo_historical",
             "outcome": "started",
-            "correlation_id": "0fd57043-1481-447b-b533-85520bad7530",
+            "correlation_id": "1c4feb20-0f0f-4380-b68f-9f98e82d35d1",
             "details": {
               "record_count": 72,
               "source_format": "json"
             }
           },
           {
-            "event_id": "799ef17d-9795-4e67-9d59-68538c845f0d",
-            "timestamp": "2026-09-09T10:20:58.051827+00:00",
+            "event_id": "9aee22e9-b51a-4b39-a79d-63bb96fe3b9c",
+            "timestamp": "2026-09-09T10:25:39.233033+00:00",
             "actor": "demo-builder",
             "operation": "quality_evaluation",
             "target": "open_meteo_cairo_historical",
             "outcome": "passed",
-            "correlation_id": "0fd57043-1481-447b-b533-85520bad7530",
+            "correlation_id": "1c4feb20-0f0f-4380-b68f-9f98e82d35d1",
             "details": {
               "quality_score": 100.0,
               "issue_count": 0
             }
           },
           {
-            "event_id": "1d1b5196-0f09-45ae-8f78-2b15ec857022",
-            "timestamp": "2026-09-09T10:20:58.054385+00:00",
+            "event_id": "82b1b1e2-621c-4e5a-9d2c-bf6bd67df78b",
+            "timestamp": "2026-09-09T10:25:39.233033+00:00",
             "actor": "demo-builder",
             "operation": "analysis_execution",
             "target": "open_meteo_cairo_historical",
             "outcome": "succeeded",
-            "correlation_id": "0fd57043-1481-447b-b533-85520bad7530",
+            "correlation_id": "1c4feb20-0f0f-4380-b68f-9f98e82d35d1",
             "details": {
               "result_type": "climate_analysis",
               "metric_count": 4
             }
           },
           {
-            "event_id": "e380e8c4-98b1-49dd-bf6e-1effe788e4d7",
-            "timestamp": "2026-09-09T10:20:58.054385+00:00",
+            "event_id": "eef4346f-ef3d-475a-852c-ba75ccbd1c2d",
+            "timestamp": "2026-09-09T10:25:39.233033+00:00",
             "actor": "demo-builder",
             "operation": "dataset_ingestion",
             "target": "open_meteo_cairo_historical",
             "outcome": "succeeded",
-            "correlation_id": "0fd57043-1481-447b-b533-85520bad7530",
+            "correlation_id": "1c4feb20-0f0f-4380-b68f-9f98e82d35d1",
             "details": {
               "quality_status": "passed",
               "analysis_result_type": "climate_analysis",
@@ -1594,8 +1594,8 @@
             "end": "2024-01-03T23:00:00+00:00"
           },
           "license": "CC BY 4.0",
-          "ingestion_timestamp": "2026-09-09T10:20:58.049778+00:00",
-          "processing_timestamp": "2026-09-09T10:20:58.054385+00:00",
+          "ingestion_timestamp": "2026-09-09T10:25:39.225575+00:00",
+          "processing_timestamp": "2026-09-09T10:25:39.233033+00:00",
           "fixture": false,
           "checksum_sha256": null,
           "source_system": null,
@@ -1611,8 +1611,8 @@
           "records_repaired": 0,
           "records_quarantined": 0,
           "records_rejected": 0,
-          "duration_seconds": 0.005308,
-          "throughput_records_per_second": 13564.431047
+          "duration_seconds": 0.014607,
+          "throughput_records_per_second": 4929.143561
         },
         "quarantine": []
       }
@@ -2326,42 +2326,42 @@
               "input_ref": "repository://tests/fixtures/synthetic_mobility_route.geojson",
               "output_ref": "raw:synthetic_refrigerated_route",
               "operation": "ingest_geojson",
-              "timestamp": "2026-09-09T10:20:58.057392+00:00"
+              "timestamp": "2026-09-09T10:25:39.249118+00:00"
             },
             {
               "stage": "schema_discovery",
               "input_ref": "raw:synthetic_refrigerated_route",
               "output_ref": "catalog:synthetic_refrigerated_route",
               "operation": "profile_and_classify",
-              "timestamp": "2026-09-09T10:20:58.058391+00:00"
+              "timestamp": "2026-09-09T10:25:39.249118+00:00"
             },
             {
               "stage": "quality_checks",
               "input_ref": "raw:synthetic_refrigerated_route",
               "output_ref": "quality:synthetic_refrigerated_route",
               "operation": "deterministic_quality_rules",
-              "timestamp": "2026-09-09T10:20:58.058391+00:00"
+              "timestamp": "2026-09-09T10:25:39.249118+00:00"
             },
             {
               "stage": "analysis",
               "input_ref": "quality:synthetic_refrigerated_route",
               "output_ref": "analysis:synthetic_refrigerated_route",
               "operation": "mobility_analysis",
-              "timestamp": "2026-09-09T10:20:58.059393+00:00"
+              "timestamp": "2026-09-09T10:25:39.252698+00:00"
             },
             {
               "stage": "evaluation",
               "input_ref": "analysis:synthetic_refrigerated_route",
               "output_ref": "evaluation:synthetic_refrigerated_route",
               "operation": "evaluate_mobility",
-              "timestamp": "2026-09-09T10:20:58.059393+00:00"
+              "timestamp": "2026-09-09T10:25:39.252698+00:00"
             },
             {
               "stage": "visualization",
               "input_ref": "evaluation:synthetic_refrigerated_route",
               "output_ref": "visualization:synthetic_refrigerated_route",
               "operation": "deterministic_recommendation",
-              "timestamp": "2026-09-09T10:20:58.059393+00:00"
+              "timestamp": "2026-09-09T10:25:39.252698+00:00"
             }
           ]
         },
@@ -2508,7 +2508,7 @@
           ],
           "sensitivity": "public_fixture",
           "retention_policy": "repository test fixture",
-          "ingestion_timestamp": "2026-09-09T10:20:58.057392+00:00",
+          "ingestion_timestamp": "2026-09-09T10:25:39.249118+00:00",
           "transformation_history": [
             "flattened GeoJSON properties",
             "derived latitude and longitude from Point geometry"
@@ -2524,92 +2524,92 @@
             "input_ref": "repository://tests/fixtures/synthetic_mobility_route.geojson",
             "output_ref": "raw:synthetic_refrigerated_route",
             "operation": "ingest_geojson",
-            "timestamp": "2026-09-09T10:20:58.057392+00:00"
+            "timestamp": "2026-09-09T10:25:39.249118+00:00"
           },
           {
             "stage": "schema_discovery",
             "input_ref": "raw:synthetic_refrigerated_route",
             "output_ref": "catalog:synthetic_refrigerated_route",
             "operation": "profile_and_classify",
-            "timestamp": "2026-09-09T10:20:58.058391+00:00"
+            "timestamp": "2026-09-09T10:25:39.249118+00:00"
           },
           {
             "stage": "quality_checks",
             "input_ref": "raw:synthetic_refrigerated_route",
             "output_ref": "quality:synthetic_refrigerated_route",
             "operation": "deterministic_quality_rules",
-            "timestamp": "2026-09-09T10:20:58.058391+00:00"
+            "timestamp": "2026-09-09T10:25:39.249118+00:00"
           },
           {
             "stage": "analysis",
             "input_ref": "quality:synthetic_refrigerated_route",
             "output_ref": "analysis:synthetic_refrigerated_route",
             "operation": "mobility_analysis",
-            "timestamp": "2026-09-09T10:20:58.059393+00:00"
+            "timestamp": "2026-09-09T10:25:39.252698+00:00"
           },
           {
             "stage": "evaluation",
             "input_ref": "analysis:synthetic_refrigerated_route",
             "output_ref": "evaluation:synthetic_refrigerated_route",
             "operation": "evaluate_mobility",
-            "timestamp": "2026-09-09T10:20:58.059393+00:00"
+            "timestamp": "2026-09-09T10:25:39.252698+00:00"
           },
           {
             "stage": "visualization",
             "input_ref": "evaluation:synthetic_refrigerated_route",
             "output_ref": "visualization:synthetic_refrigerated_route",
             "operation": "deterministic_recommendation",
-            "timestamp": "2026-09-09T10:20:58.059393+00:00"
+            "timestamp": "2026-09-09T10:25:39.252698+00:00"
           }
         ],
         "audit_events": [
           {
-            "event_id": "7b6ee589-db58-4fed-b860-0a11ad4450a3",
-            "timestamp": "2026-09-09T10:20:58.057392+00:00",
+            "event_id": "36c92a92-a9d4-4502-879f-6e6af9520c6f",
+            "timestamp": "2026-09-09T10:25:39.249118+00:00",
             "actor": "demo-builder",
             "operation": "dataset_ingestion",
             "target": "synthetic_refrigerated_route",
             "outcome": "started",
-            "correlation_id": "912ce530-a4e6-49cb-af2c-43580da1eb55",
+            "correlation_id": "c90e0270-8268-4ce0-a773-a872ae57a6e5",
             "details": {
               "record_count": 6,
               "source_format": "geojson"
             }
           },
           {
-            "event_id": "3f54a26f-0dde-46f2-854f-d926f2ff79e5",
-            "timestamp": "2026-09-09T10:20:58.058391+00:00",
+            "event_id": "7202d3d0-ae8d-467b-9a30-3ad35d1774af",
+            "timestamp": "2026-09-09T10:25:39.249118+00:00",
             "actor": "demo-builder",
             "operation": "quality_evaluation",
             "target": "synthetic_refrigerated_route",
             "outcome": "passed",
-            "correlation_id": "912ce530-a4e6-49cb-af2c-43580da1eb55",
+            "correlation_id": "c90e0270-8268-4ce0-a773-a872ae57a6e5",
             "details": {
               "quality_score": 100.0,
               "issue_count": 0
             }
           },
           {
-            "event_id": "981fa02e-8d77-4a2e-94de-6a95e8ed9f38",
-            "timestamp": "2026-09-09T10:20:58.059393+00:00",
+            "event_id": "833d9cc5-c945-494a-9b42-68b4fbc1e5f5",
+            "timestamp": "2026-09-09T10:25:39.252698+00:00",
             "actor": "demo-builder",
             "operation": "analysis_execution",
             "target": "synthetic_refrigerated_route",
             "outcome": "succeeded",
-            "correlation_id": "912ce530-a4e6-49cb-af2c-43580da1eb55",
+            "correlation_id": "c90e0270-8268-4ce0-a773-a872ae57a6e5",
             "details": {
               "result_type": "mobility_analysis",
               "metric_count": 4
             }
           },
           {
-            "event_id": "86d5df3c-4a3e-4aa9-8561-27deea097760",
-            "timestamp": "2026-09-09T10:20:58.059393+00:00",
+            "event_id": "0caf93cb-f240-48c8-86b4-2b01b9ae96dd",
+            "timestamp": "2026-09-09T10:25:39.252698+00:00",
             "actor": "demo-builder",
             "operation": "dataset_ingestion",
             "target": "synthetic_refrigerated_route",
             "outcome": "succeeded",
-            "correlation_id": "912ce530-a4e6-49cb-af2c-43580da1eb55",
+            "correlation_id": "c90e0270-8268-4ce0-a773-a872ae57a6e5",
             "details": {
               "quality_status": "passed",
               "analysis_result_type": "mobility_analysis",
@@ -2641,8 +2641,8 @@
             "end": "2024-02-10T08:44:00+00:00"
           },
           "license": "not_applicable_test_fixture",
-          "ingestion_timestamp": "2026-09-09T10:20:58.057392+00:00",
-          "processing_timestamp": "2026-09-09T10:20:58.059393+00:00",
+          "ingestion_timestamp": "2026-09-09T10:25:39.249118+00:00",
+          "processing_timestamp": "2026-09-09T10:25:39.252698+00:00",
           "fixture": true,
           "checksum_sha256": null,
           "source_system": null,
@@ -2658,8 +2658,8 @@
           "records_repaired": 0,
           "records_quarantined": 0,
           "records_rejected": 0,
-          "duration_seconds": 0.001889,
-          "throughput_records_per_second": 3176.283748
+          "duration_seconds": 0.004872,
+          "throughput_records_per_second": 1231.527094
         },
         "quarantine": []
       }
@@ -3478,8 +3478,8 @@
           "geographic_coverage": "Egypt (synthetic Cairo, Alexandria, and related zones)",
           "temporal_coverage": null,
           "license": "not_provided",
-          "ingestion_timestamp": "2026-09-09T10:20:58.099285+00:00",
-          "processing_timestamp": "2026-09-09T10:20:58.099285+00:00",
+          "ingestion_timestamp": "2026-09-09T10:25:39.365708+00:00",
+          "processing_timestamp": "2026-09-09T10:25:39.372584+00:00",
           "fixture": true,
           "checksum_sha256": "26d3381fff7a1b71b02d7ae4a18470c7976651dee15984841539f3bb5573c7ae",
           "source_system": "VerdaTrace Cohesive Data Pack",
@@ -6561,8 +6561,8 @@
           "geographic_coverage": "Egypt (synthetic Cairo, Alexandria, and related zones)",
           "temporal_coverage": null,
           "license": "not_provided",
-          "ingestion_timestamp": "2026-09-09T10:20:58.114475+00:00",
-          "processing_timestamp": "2026-09-09T10:20:58.114475+00:00",
+          "ingestion_timestamp": "2026-09-09T10:25:39.423899+00:00",
+          "processing_timestamp": "2026-09-09T10:25:39.423899+00:00",
           "fixture": true,
           "checksum_sha256": "7e383683015e1ac0fa664d1740a1577c90e8f8b98cdc2fa7f6c6dae677a0971a",
           "source_system": "VerdaTrace Cohesive Data Pack",
@@ -9312,8 +9312,8 @@
           "geographic_coverage": "Egypt (synthetic Cairo, Alexandria, and related zones)",
           "temporal_coverage": null,
           "license": "not_provided",
-          "ingestion_timestamp": "2026-09-09T10:20:58.141740+00:00",
-          "processing_timestamp": "2026-09-09T10:20:58.141740+00:00",
+          "ingestion_timestamp": "2026-09-09T10:25:39.505012+00:00",
+          "processing_timestamp": "2026-09-09T10:25:39.505012+00:00",
           "fixture": true,
           "checksum_sha256": "c824342c522bdff4c679e03e64de3ce940cf894c00a81aa86add906c8bd11500",
           "source_system": "VerdaTrace Cohesive Data Pack",
@@ -13035,8 +13035,8 @@
           "geographic_coverage": "Egypt (synthetic Cairo, Alexandria, and related zones)",
           "temporal_coverage": null,
           "license": "not_provided",
-          "ingestion_timestamp": "2026-09-09T10:20:58.186343+00:00",
-          "processing_timestamp": "2026-09-09T10:20:58.186343+00:00",
+          "ingestion_timestamp": "2026-09-09T10:25:39.622663+00:00",
+          "processing_timestamp": "2026-09-09T10:25:39.627570+00:00",
           "fixture": true,
           "checksum_sha256": "a889c7dae1f4a6c9740f7a523f6d2671ac3352cf69eb128df0d3461592df624f",
           "source_system": "VerdaTrace Cohesive Data Pack",
@@ -17803,8 +17803,8 @@
             "end": "2026-08-28T22:21:08+00:00"
           },
           "license": "not_provided",
-          "ingestion_timestamp": "2026-09-09T10:20:59.293671+00:00",
-          "processing_timestamp": "2026-09-09T10:20:59.294677+00:00",
+          "ingestion_timestamp": "2026-09-09T10:25:42.756050+00:00",
+          "processing_timestamp": "2026-09-09T10:25:42.756050+00:00",
           "fixture": true,
           "checksum_sha256": "1dca4e977636fe21a0690c1fb629d92e7d9d4e2288eab379b5faf7d186bf7909",
           "source_system": "VerdaTrace Cohesive Data Pack",
@@ -21681,8 +21681,8 @@
             "end": "2026-08-28T23:06:31+00:00"
           },
           "license": "not_provided",
-          "ingestion_timestamp": "2026-09-09T10:21:01.303202+00:00",
-          "processing_timestamp": "2026-09-09T10:21:01.303202+00:00",
+          "ingestion_timestamp": "2026-09-09T10:25:48.350192+00:00",
+          "processing_timestamp": "2026-09-09T10:25:48.350192+00:00",
           "fixture": true,
           "checksum_sha256": "a82f94e8bb3cd1e224416bba4e3db563026ae090f3658964a04d188b59946d3c",
           "source_system": "VerdaTrace Cohesive Data Pack",
@@ -26111,8 +26111,8 @@
             "end": "2026-08-28T18:24:29+00:00"
           },
           "license": "not_provided",
-          "ingestion_timestamp": "2026-09-09T10:21:03.495222+00:00",
-          "processing_timestamp": "2026-09-09T10:21:03.495222+00:00",
+          "ingestion_timestamp": "2026-09-09T10:25:55.407112+00:00",
+          "processing_timestamp": "2026-09-09T10:25:55.407112+00:00",
           "fixture": true,
           "checksum_sha256": "3a82a55ea9c72eee529bc1307409c5f7ec06518cde7f996f83b5ce0fe2fcdda7",
           "source_system": "VerdaTrace Cohesive Data Pack",
@@ -32902,8 +32902,8 @@
             "end": "2026-08-28T21:05:17+00:00"
           },
           "license": "not_provided",
-          "ingestion_timestamp": "2026-09-09T10:21:04.399299+00:00",
-          "processing_timestamp": "2026-09-09T10:21:04.399299+00:00",
+          "ingestion_timestamp": "2026-09-09T10:25:58.188285+00:00",
+          "processing_timestamp": "2026-09-09T10:25:58.188285+00:00",
           "fixture": true,
           "checksum_sha256": "66979d73dc4910b7fd329e16c35318685c51715328961e24c7dd4bb8c8734cd7",
           "source_system": "VerdaTrace Cohesive Data Pack",
@@ -37000,8 +37000,8 @@
             "end": "2026-08-28T20:20:35+00:00"
           },
           "license": "not_provided",
-          "ingestion_timestamp": "2026-09-09T10:21:05.199827+00:00",
-          "processing_timestamp": "2026-09-09T10:21:05.199827+00:00",
+          "ingestion_timestamp": "2026-09-09T10:26:01.134512+00:00",
+          "processing_timestamp": "2026-09-09T10:26:01.134512+00:00",
           "fixture": true,
           "checksum_sha256": "bd2e62051d7c3cd2a571176ba7a76cc94e6cb5ef9db787f5d89812481a0e92d6",
           "source_system": "VerdaTrace Cohesive Data Pack",
@@ -47354,8 +47354,8 @@
           "geographic_coverage": "Egypt (synthetic Cairo, Alexandria, and related zones)",
           "temporal_coverage": null,
           "license": "not_provided",
-          "ingestion_timestamp": "2026-09-09T10:21:05.531368+00:00",
-          "processing_timestamp": "2026-09-09T10:21:05.531368+00:00",
+          "ingestion_timestamp": "2026-09-09T10:26:02.137517+00:00",
+          "processing_timestamp": "2026-09-09T10:26:02.137517+00:00",
           "fixture": true,
           "checksum_sha256": "0fdf15ba157d01ac5ddcae7c98937433155b8ec1bab96ee7af6dacf17279b27d",
           "source_system": "VerdaTrace Cohesive Data Pack",
@@ -51414,8 +51414,8 @@
             "end": "2026-08-28T16:01:47+00:00"
           },
           "license": "not_provided",
-          "ingestion_timestamp": "2026-09-09T10:21:05.693609+00:00",
-          "processing_timestamp": "2026-09-09T10:21:05.694616+00:00",
+          "ingestion_timestamp": "2026-09-09T10:26:02.665451+00:00",
+          "processing_timestamp": "2026-09-09T10:26:02.665451+00:00",
           "fixture": true,
           "checksum_sha256": "e24f7b1f9e5e048f6295ea13573e52a54d0e65f06a4d6a777e5003b19ce37d77",
           "source_system": "VerdaTrace Cohesive Data Pack",
@@ -55082,8 +55082,8 @@
             "end": "2026-08-28T23:46:25+00:00"
           },
           "license": "not_provided",
-          "ingestion_timestamp": "2026-09-09T10:21:05.895154+00:00",
-          "processing_timestamp": "2026-09-09T10:21:05.895154+00:00",
+          "ingestion_timestamp": "2026-09-09T10:26:03.227518+00:00",
+          "processing_timestamp": "2026-09-09T10:26:03.227518+00:00",
           "fixture": true,
           "checksum_sha256": "91f861f3361b46e95c0ce7e36f6dc047b2bcf57206b0605a5bd409b6243a0aff",
           "source_system": "VerdaTrace Cohesive Data Pack",
@@ -179785,6 +179785,12 @@
       "zone_mean_absolute_error": 15.4,
       "method": "mean supplied analytical_evaluation score per zone compared with independently derived Zone 360 suitability"
     },
+    "spatial": {
+      "containment": "WGS84 point-in-polygon helper available for explicit joins",
+      "proximity": "haversine distance helper available",
+      "zone_aggregation": "aggregates keyed by supplied zone_id relationships",
+      "geometry_dependency": "optional; no heavyweight GIS dependency required for the demo"
+    },
     "lineage": {
       "edges": [
         {
@@ -180893,7 +180899,7 @@
       }
     ],
     "processing": {
-      "duration_seconds": 14.794,
+      "duration_seconds": 45.572,
       "datasets_processed": 12,
       "raw_records_processed": 537160,
       "preview_strategy": "head sample capped at 300 records per dataset"
